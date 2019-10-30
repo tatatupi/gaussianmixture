@@ -1,0 +1,56 @@
+---
+title: "Trabalho - Parte I"
+author: "Caio, Taiguara e Walmir"
+date: "10/30/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Parâmetros
+
+```{r params}
+n = 50000
+
+## Parâmetros da distribuiçao
+mu = 13
+sigma2 = 0.5
+nu = 0.2
+
+#Parâmetros das distribuições a priori
+m = 11
+V = 1
+a = 3
+b = 5
+```
+
+## Gerando a amostra
+Gerando uma amostra de tamanho n.
+```{r sample, echo=FALSE}
+sample = nu * (mu + sigma2*100*rnorm(n)) + (1 - nu)*(mu + sigma2*rnorm(n))
+```
+
+Histograma da amostra.
+```{r hist, echo=FALSE}
+hist(sample, breaks=1000)
+```
+
+
+## plot da distribuição
+
+Gerando uma amostra de tamanho n.
+
+```{r pressure, echo=FALSE}
+x = linspace(-1000, 1000, n = 1000000)
+y = gauss(x, mean = mu, sigma = sigma2)
+
+plot(y,x)
+```
+
+Histograma da amostra.
+
+```{r pressure, echo=FALSE}
+hist(X, breaks=1000)
+```
