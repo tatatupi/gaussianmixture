@@ -14,4 +14,4 @@ ponto <img src="https://latex.codecogs.com/svg.latex?\Large&space;x,\mu\in\mathc
 
 DICA: pode-se usar, sem provar, que a mistura finita de distribuições normais pode ser hierarquicamente representada por 
 
-<img src="https://latex.codecogs.com/svg.latex?\Large&space;X_i|\mu,\sigma^2,\U_i=u_i)\sim{N}(\mu,\sigma^2u_i^{-1})"/> e <img src="https://latex.codecogs.com/svg.latex?\Large&space;U_i|\mu\sim{discreta}(1,100)"/>, com <img src="https://latex.codecogs.com/svg.latex?\Large&space;P(U_i=100)=\nu"/>
+<img src="https://latex.codecogs.com/svg.latex?\Large&space;X_i|\mu,\sigma^2,\U_i=u_i\sim{N}(\mu,\sigma^2u_i^{-1})"/> e <img src="https://latex.codecogs.com/svg.latex?\Large&space;U_i|\mu\sim{discreta}(1,100)"/>, com <img src="https://latex.codecogs.com/svg.latex?\Large&space;P(U_i=100)=\nu"/>
