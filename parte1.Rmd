@@ -2,55 +2,118 @@
 title: "Trabalho - Parte I"
 author: "Caio, Taiguara e Walmir"
 date: "10/30/2019"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(encoding = 'UTF-8')
 ```
 
-## Parâmetros
+## Parametros
 
 ```{r params}
-n = 50000
+n = 500
 
 ## Parâmetros da distribuiçao
 mu = 13
-sigma2 = 0.5
+sigma2 = 8
 nu = 0.2
 
 #Parâmetros das distribuições a priori
 m = 11
 V = 1
 a = 3
-b = 5
+d = 5
 ```
 
 ## Gerando a amostra
+
+Definindo a pdf para uma indicadora de $U_i$:
+
+```{r discrete}
+IU_pdf <- function(n, nu, a = 0, b = 1) {
+  unif = runif(n)
+  (unif < nu)*a + (unif >= nu)*b
+}
+```
+
+Gerando uma amostra de tamanho $n$:
+
+```{r sample, echo=TRUE}
+IU = IU_pdf(n, nu)
+sample = IU * (mu + sigma2*100*rnorm(n)) + (1 - IU)*(mu + sigma2*rnorm(n))
+hist(sample, breaks = 50, prob=T)
+```
+
+## Definindo *a posteriori*
+
+```{r log_likelihood, echo=TRUE}
+A <- function(X, mu, sigma2, nu) {
+  n = length(X)
+  sum_arg = 0;
+  for (i in 1:n) {
+    a = (nu/10)*exp(-(X[i]-mu)^2/(2*100*sigma2))
+    b = (1 - nu)*exp(-(X[i]-mu)^2/(2*sigma2))
+    
+    if (a > b) {
+      sum_arg = sum_arg + log(a) + log(1+(c/a))
+    } else {
+      sum_arg = sum_arg + log(c) + log(1+(a/c))
+    }
+  }
+  exp(sum_arg)
+}
+
+h <- function(aux, n, mu, sigma2, nu, m, V, a, d) {
+  aux * (1/sigma2)^((n+1)/2 + a + 1) * exp(-((mu-m)^2/(2*V) + d) / sigma2)
+}
+
+```
+
+
+
+# Quadratura
+
+## Definindo as regioes de aproximacao
+
+```{r inf_params, echo=TRUE}
+L = 1000
+
+mu_bounds = 10
+mu_grid = seq(m-mu_bounds, m+mu_bounds, 2*mu_bounds/L)
+
+sigma2_grid = seq(0.1, sigma2*2, (sigma2*2 - 0.1)/L)
+
+nu_grid = seq(0, 1, 1/L)
+```
+
+
+## Estimando o K
+
+```{r k, echo=TRUE}
+
+inv_k = 0
+n = length(sample)
+
+# for (i in 1:length(mu_grid)) {
+#   for (j in 1:length(sigma2_grid)) {
+#     for (k in 1:length(nu_grid)) {
+#       aux = A(sample, mu_grid[i], sigma2_grid[j], nu_grid[k])
+#       inv_k = inv_k + h(aux, n, mu_grid[i], sigma2_grid[j], nu_grid[k], m, V, a, d)
+#     }
+#   }
+# }
+
+inv_k
+
+```
+
+
+
 Gerando uma amostra de tamanho n.
-```{r sample, echo=FALSE}
-sample = nu * (mu + sigma2*100*rnorm(n)) + (1 - nu)*(mu + sigma2*rnorm(n))
-```
-
-Histograma da amostra.
-```{r hist, echo=FALSE}
-hist(sample, breaks=1000)
-```
 
 
-## plot da distribuição
 
-Gerando uma amostra de tamanho n.
-
-```{r pressure, echo=FALSE}
-x = linspace(-1000, 1000, n = 1000000)
-y = gauss(x, mean = mu, sigma = sigma2)
-
-plot(y,x)
-```
-
-Histograma da amostra.
-
-```{r pressure, echo=FALSE}
-hist(X, breaks=1000)
-```
