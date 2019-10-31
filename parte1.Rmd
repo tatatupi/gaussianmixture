@@ -19,56 +19,47 @@ n = 500
 
 ## Parametros reais da distribuicao amostral 
 mu = 13
-sigma2 = 8
-nu = 0.2
+sigma2 = 0.25
+nu = 0.4
 
 #Parametros das distribuicoes a priori
-m = 11
+m = 12
 V = 1
-a = 3
-d = 5
+a = 4
+d = 1
 ```
 
 ## Gerando a amostra
 
-Definindo a pdf para uma indicadora de $U_i$:
-
-```{r discrete}
-IU_pdf <- function(n, nu, a = 0, b = 1) {
-  unif = runif(n)
-  (unif < nu)*a + (unif >= nu)*b
-}
-```
-
 Gerando uma amostra de tamanho $n$:
 
 ```{r sample, echo=TRUE}
-IU = IU_pdf(n, nu)
-sample = IU * (mu + sigma2*100*rnorm(n)) + (1 - IU)*(mu + sigma2*rnorm(n))
+U = sample(c(1,100), n, replace = T, c(1-nu,nu))
+sample = rnorm(n, mu, sqrt(sigma2*U))
 hist(sample, breaks = 50, prob=T)
 ```
 
 ## Definindo *a posteriori*
 
 ```{r log_likelihood, echo=TRUE}
-A <- function(X, mu, sigma2, nu) {
+logA <- function(X, mu, sigma2, nu) {
   n = length(X)
-  sum_arg = 0;
-  for (i in 1:n) {
-    a = (nu/10)*exp(-(X[i]-mu)^2/(2*100*sigma2))
-    b = (1 - nu)*exp(-(X[i]-mu)^2/(2*sigma2))
-    
-    if (a > b) {
-      sum_arg = sum_arg + log(a) + log(1+(b/a))
-    } else {
-      sum_arg = sum_arg + log(b) + log(1+(a/b))
-    }
-  }
-  exp(sum_arg)
+  termo100 = log(nu/10) -(X-mu)^2/(2*100*sigma2)
+  termo1 = log(1 - nu) -(X-mu)^2/(2*sigma2)
+  
+  indicator = (termo100 > termo1)
+  
+  # log1p(x) computes log(1+x) accurately also for |x| << 1.
+  log_caso100 = termo100 + log1p( (10*(1-nu)/nu) * exp( (-(X-mu)^2/(2*sigma2)) - (-(X-mu)^2/(2*100*sigma2)) ) ) 
+  log_caso100[!indicator] = 0
+  log_caso1   =   termo1 + log1p( nu/(10*(1-nu)) * exp( (-(X-mu)^2/(2*100*sigma2)) - (-(X-mu)^2/(2*sigma2)) ) ) 
+  log_caso1[indicator] = 0
+
+  sum(log_caso100)+sum(log_caso1)
 }
 
-h <- function(aux, n, mu, sigma2, nu, m, V, a, d) {
-  aux * (1/sigma2)^((n+1)/2 + a + 1) * exp(-((mu-m)^2/(2*V) + d) / sigma2)
+logh <- function(aux, n, mu, sigma2, nu, m, V, a, d) {
+  aux + ((n+1)/2 + a + 1)*log(1/sigma2) + (-((mu-m)^2/(2*V) + d) / sigma2)
 }
 
 ```
@@ -82,12 +73,15 @@ h <- function(aux, n, mu, sigma2, nu, m, V, a, d) {
 ```{r inf_params, echo=TRUE}
 L = 100
 
-mu_bounds = 10
-mu_grid = seq(m-mu_bounds, m+mu_bounds, 2*mu_bounds/L)
+mu_bounds = 3
+mu_step = 2*mu_bounds/L
+mu_grid = seq(m-mu_bounds, m+mu_bounds, mu_step)
 
-sigma2_grid = seq(0.1, sigma2*2, (sigma2*2 - 0.1)/L)
+sigma2_step = (sigma2*2)/L
+sigma2_grid = seq(0.1, sigma2*2, sigma2_step)
 
-nu_grid = seq(0, 1, 1/L)
+nu_step = 1/L
+nu_grid = seq(0.2, 0.6, nu_step)
 ```
 
 
@@ -98,18 +92,25 @@ nu_grid = seq(0, 1, 1/L)
 inv_k = 0
 n = length(sample)
 
-# for (i in 1:length(mu_grid)) {
-#   for (j in 1:length(sigma2_grid)) {
-#     for (k in 1:length(nu_grid)) {
-#       aux = A(sample, mu_grid[i], sigma2_grid[j], nu_grid[k])
-#       inv_k = inv_k + h(aux, n, mu_grid[i], sigma2_grid[j], nu_grid[k], m, V, a, d)
-#     }
-#   }
-# }
+for (i in 1:length(mu_grid)) {
+  for (j in 1:length(sigma2_grid)) {
+    for (k in 1:length(nu_grid)) {
+      aux = logA(sample, mu_grid[i], sigma2_grid[j], nu_grid[k])
+      print(aux)
+      logh_ijk = logh(aux, n, mu_grid[i], sigma2_grid[j], nu_grid[k], m, V, a, d)
+      print(logh_ijk)
+      inv_k = inv_k + exp(logh_ijk)
+      print(inv_k)
+    }
+  }
+}
 
-inv_k
+inv_k = inv_k * nu_step * sigma2_step * mu_step
 
+k = 1/inv_k
 ```
+
+
 
 
 
