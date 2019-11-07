@@ -215,15 +215,12 @@ prod_step = mu_step*s2_step*nu_step; prod_step
 
 cprop = function(l, X, mgr, s2gr, ngr, prst, m, V, a, d){
   c = 0
-  n = length(X)
   ar.aux = array(dim = rep(l, 3))
   for (i in 1:l) {
     for (j in 1:l) {
       for (k in 1:l) {
-        aux1 = sum(logA(X, mgr[i], s2gr[j], ngr[k]))
-        aux2 = logh(n, mgr[i], s2gr[j], ngr[k],
-                    m, V, a, d)
-        aux = aux1 + aux2
+        aux = logkpost(X, mgr[i], s2gr[j], ngr[k],
+                       m, V, a, d)
         ar.aux[i,j,k] = aux
         c = c + exp(aux)*prst
       }
@@ -256,122 +253,107 @@ pr_dup12; pr_dup13; pr_dup23
 postmu_quarie = function(l, X, mgr, s2gr, ngr, prst,
                          m, V, a, d, c) {
     postmu = numeric(l)
-    n = length(X)
     for (i in 1:l) {
       postconj = 0
       for (j in 1:l) {
         for(k in 1:l) {
-          aux1 = sum(logA(X, mgr[i], s2gr[j], ngr[k]))
-          aux2 = logh(n, mgr[i], s2gr[j], ngr[k],
-                      m, V, a, d)
-          aux = aux1 + aux2
+          aux = logkpost(X, mgr[i], s2gr[j], ngr[k],
+                         m, V, a, d)
           postconj = postconj + exp(aux)*prst
         }
       }
       postmu[i] = postconj/c
     }
-
-    return(list(postmu, mean(postmu), var(postmu),
-                median(postmu),
-                min(postmu), max(postmu),
-                skewness(postmu), kurtosis(postmu)))
+    return(postmu)
 }
+
+#mean(postmu), var(postmu), median(postmu), min(postmu),
+#max(postmu), skewness(postmu), kurtosis(postmu)
 
 pmq = postmu_quarie(l=l, X=sam, mgr=mu_gr, s2gr=s2_gr,
                     ngr=nu_gr, prst=pr_dup23, m=m, V=V,
-                    a=a_1, d=d_1, c=c[[1]])
-pmq
-hist(pmq[[1]])
+                    a=a, d=d, c=c[[1]])
+pmq; hist(pmq)
 
 posts2_quarie = function(l, X, mgr, s2gr, ngr, prst,
                          m, V, a, d, c) {
   posts2 = numeric(l)
-  n = length(X)
   for (i in 1:l) {
     postconj = 0
     for (j in 1:l) {
       for(k in 1:l) {
-        aux1 = sum(logA(X, mgr[j], s2gr[i], ngr[k]))
-        aux2 = logh(n, mgr[j], s2gr[i], ngr[k],
-                    m, V, a, d)
-        aux = aux1 + aux2
+        aux = logkpost(X, mgr[j], s2gr[i], ngr[k],
+                       m, V, a, d)
         postconj = postconj + exp(aux)*prst
       }
     }
     posts2[i] = postconj/c
   }
-
-  return(list(posts2, mean(posts2), var(posts2),
-              median(posts2),
-              min(posts2), max(posts2),
-              skewness(posts2), kurtosis(posts2)))
+  return(posts2)
 }
 
-psq = posts2_quarie(l=l, X=sample2_1,
-  mgr=mu_gr_1, s2gr=sigma2_gr_1, ngr=nu_gr,
-  prst=pr1_dup13, m=m, V=V, a=a_1, d=d_1, c=c1[[1]])
-psq1
-hist(psq1[[1]])
+#mean(posts2), var(posts2), median(posts2), min(posts2),
+#max(posts2), skewness(posts2), kurtosis(posts2)
 
-psq2 = posts2_quarie(l=l, X=sample2_2,
-  mgr=mu_gr_2, s2gr=sigma2_gr_2, ngr=nu_gr,
-  prst=pr2_dup13, m=m, V=V, a=a_2, d=d_2, c=c2[[1]])
-psq2
-hist(psq2[[1]])
-
-psq3 = posts2_quarie(l=l, X=sample2_3,
-  mgr=mu_gr_3, s2gr=sigma2_gr_3, ngr=nu_gr,
-  prst=pr3_dup13, m=m, V=V, a=a_3, d=d_3, c=c3[[1]])
-psq3
-hist(psq3[[1]])
-
-# As estimativas para a média de sigma2, no primeiro e no
-# terceiro casos, foram bem menores ao comparar com o va-
-# lor de sigma2 no modelo.
+psq = posts2_quarie(l=l, X=sam, mgr=mu_gr, s2gr=s2_gr,
+                    ngr=nu_gr, prst=pr_dup13, m=m, V=V,
+                    a=a, d=d, c=c[[1]])
+psq; hist(psq)
 
 postnu_quarie = function(l, X, mgr, s2gr, ngr, prst,
                          m, V, a, d, c) {
   postnu = numeric(l)
-  n = length(X)
+  #n = length(X)
   for (i in 1:l) {
     postconj = 0
     for (j in 1:l) {
       for(k in 1:l) {
-        aux1 = sum(logA(X, mgr[j], s2gr[k], ngr[i]))
-        aux2 = logh(n, mgr[j], s2gr[k], ngr[i],
-                    m, V, a, d)
-        aux = aux1 + aux2
+        #aux1 = sum(logA(X, mgr[j], s2gr[k], ngr[i]))
+        #aux2 = logh(n, mgr[j], s2gr[k], ngr[i],
+        #            m, V, a, d)
+        #aux = aux1 + aux2
+        aux = logkpost(X, mgr[j], s2gr[k], ngr[i],
+                       m, V, a, d)
         postconj = postconj + exp(aux)*prst
       }
     }
     postnu[i] = postconj/c
   }
-
-  return(list(postnu, mean(postnu), var(postnu),
-              median(postnu),
-              min(postnu), max(postnu),
-              skewness(postnu), kurtosis(postnu)))
+  return(postnu)
 }
 
-pnq1 = postnu_quarie(l=l, X=sample2_1,
-  mgr=mu_gr_1, s2gr=sigma2_gr_1, ngr=nu_gr,
-  prst=pr1_dup12, m=m, V=V, a=a_1, d=d_1, c=c1[[1]])
-pnq1
-hist(pnq1[[1]])
+#mean(postnu), var(postnu), median(postnu), min(postnu),
+#max(postnu), skewness(postnu), kurtosis(postnu)
 
-pnq2 = postnu_quarie(l=l, X=sample2_2,
-  mgr=mu_gr_2, s2gr=sigma2_gr_2, ngr=nu_gr,
-  prst=pr2_dup12, m=m, V=V, a=a_2, d=d_2, c=c2[[1]])
-pnq2
-hist(pnq2[[1]])
+pnq = postnu_quarie(l=l, X=sam, mgr=mu_gr, s2gr=s2_gr,
+                    ngr=nu_gr, prst=pr_dup12, m=m, V=V,
+                    a=a, d=d, c=c[[1]])
+pnq; hist(pnq)
 
-pnq3 = postnu_quarie(l=l, X=sample2_3,
-  mgr=mu_gr_3, s2gr=sigma2_gr_3, ngr=nu_gr,
-  prst=pr3_dup12, m=m, V=V, a=a_3, d=d_3, c=c3[[1]])
-pnq3
-hist(pnq3[[1]])
+# Para calcular média, variância, assimetria e curtose de
+# cada parâmetro a posteriori, considere as funções a se-
+# guir:
 
-# Distribuição totalmente assimétrica, com valor estimado
-# para a média muito longe do especificado no modelo. Pe-
-# lo menos pode-se concluir que a integração numérica pa-
-# ra nu não é alterada por variações em sigma_2.
+stat_post = function(gr, marg, prst) {
+  media = 0
+  var = 0
+  assim = 0
+  cur = 0
+  l = length(gr)
+
+  aux1 = sum(gr*marg*prst)     #Aproxima 1º momento.
+  aux2 = sum((gr^2)*marg*prst) #Aproxima 2º momento.
+  aux3 = sum((gr^3)*marg*prst) #Aproxima 3º momento.
+  aux4 = sum((gr^4)*marg*prst) #Aproxima 4º momento.
+
+  media = aux1
+  var = aux2 - (media)^2
+  assim = (aux3 - 3*media*var - media^3)/(var^(3/2))
+  cur = (aux4 - 4*media*aux3 +
+         6*media^2*aux2 - 3*(media^4))/(var^2)
+  return(list(media, var, assim, cur))
+}
+
+stat_post(mu_gr, pmq, mu_step)
+stat_post(s2_gr, psq, s2_step)
+stat_post(nu_gr, pnq, nu_step)
