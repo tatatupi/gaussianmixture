@@ -4,63 +4,31 @@ rm(list=ls(all=TRUE))
 n = 500
 
 # Parâmetros do modelo para a distribuição amostral:
-mu = 11
-sigma2_1 = 4
-sigma2_2 = 0.16
-sigma2_3 = 1
-nu = 0.2
+mu = 11; s2 = 0.64; nu = 0.2
 
-# Hiperparâmetros das distribuições a priori:
-m = 11
-V = 1
-a_1 = 7; d_1 = 26
-a_2 = 7; d_2 = 1
-a_3 = 7; d_3 = 6.5
+# Hiperparâmetros das distribuições a priori (somente pa-
+# ra mu e sigma2):
+m = 11; V = 1; a = 7; d = 4
 
-# Para ter uma ideia da dispersão de mu a priori:
+# Distribuição de mu a priori (dados s2, m e V):
 set.seed(122019)
-hist(rnorm(n=10000, mean=m, sd=sqrt(V*sigma2_1)),
-     prob=T, breaks=100)
-hist(rnorm(n=10000, mean=m, sd=sqrt(V*sigma2_2)),
-     prob=T, breaks=100)
-hist(rnorm(n=10000, mean=m, sd=sqrt(V*sigma2_3)),
-     prob=T, breaks=100)
-# Massa probabilística concentrada quase que totalmente
-# entre 5 e 17 (caso 1); 10 e 12 (caso 2) e 8 e 14 (ca-
-# so 3) e todas aproximadamente centradas em 11.
+s_mu = rnorm(n=5000, mean=m, sd=sqrt(V*s2))
+hist(s_mu, prob=T, breaks=100)
+median(s_mu); mean(s_mu); min(s_mu); max(s_mu)
+# Massa probabilística concentrada quase totalmente entre
+# 9 e 13 e aproximadamente centrada em 11.
 
-# Para ter uma ideia da dispersão de sigma2 a priori:
+# Distribuição de sigma2 a priori (dados a e d):
 set.seed(122019)
-s1 = 1/rgamma(n=10000, shape=a_1, rate=d_1)
-hist(s1, prob=T, breaks=100)
-median(s1); mean(s1); min(s1); max(s1)
-s2 = 1/rgamma(n=10000, shape=a_2, rate=d_2)
-hist(s2, prob=T, breaks=100)
-median(s2); mean(s2); min(s2); max(s2)
-s3 = 1/rgamma(n=10000, shape=a_3, rate=d_3)
-hist(s3, prob=T, breaks=100)
-median(s3); mean(s3); min(s3); max(s3)
-# Massa probabilística concentrada quase que totalmente
-# entre 1.5 e 10.5 e aproximadamente centrada em 4 (ca-
-# so 1), concent. quase que totalmente entre .05 e .0.4
-# e aproximadamente centrada em 0.16 (caso 2) e concen-
-# trada quase que totalmente entre 0.4 e 3.4, aproxima-
-# damente centrada em 1 (caso 3).
+s_s2 = 1/rgamma(n=5000, shape=a, rate=d)
+hist(s_s2, prob=T, breaks=100)
+median(s_s2); mean(s_s2); min(s_s2); max(s_s2)
+# Massa probabilística concentrada quase totalmente entre
+# 0.2 e 1.5 e aproximadamente centrada em 0.64.
 
-# A priori, o parâmetro nu é uniforme em (0,1).
+# A priori, nu está distribuído uniformemente em (0,1).
 
-# Como gerar indicadoras da mistura dado nu:
-#Inu_pdf = function(n, nu, a = 0, b = 1) {
-#  unif = runif(n)
-#  #(unif < nu)*a + (unif >= nu)*b # Taiguara (complem.).
-#  (unif >= nu)*a + (unif < nu)*b  # Walmir (val. orig.).
-#}
-
-#mean(Inu_pdf(100, nu))
-#mean(Inu_pdf(1000, nu))
-#mean(Inu_pdf(10000, nu))
-
-# Como gerar da variável auxiliar U (Dani):
+# Gerando da variável auxiliar U:
 
 U_pdf = function(n, nu) {
   u = sample(c(100, 1), prob=c(nu, 1-nu),
@@ -71,72 +39,20 @@ U_pdf = function(n, nu) {
 #table(U_pdf(1000, nu))
 #table(U_pdf(10000, nu))
 
-# Gerando uma amostra de tamanho $n$:
-
-# 1ª forma: gerando da própria densidade da mistura:
-
-#nu_s = nu_pdf(n, nu)
-#sample = nu_s*(mu + sigma2*100*rnorm(n)) +
-#         (1 - nu_s)*(mu + sigma2*rnorm(n))
-
-# Note que devemos usar todos os parâmetros do modelo,
-# como se os conhecêssemos:
-
-#set.seed(122019)
-#Inu = Inu_pdf(n, nu)
-#set.seed(122019)
-#sample1 = Inu*(mu + sqrt(sigma2/100)*rnorm(n)) +
-#          (1 - Inu)*(mu + sqrt(sigma2)*rnorm(n))
-#hist(sample, breaks=50, prob=T)
-#sample1_1 = Inu*(rnorm(n, mu, sqrt(sigma2_1/100))) +
-#            (1 - Inu)*(rnorm(n, mu, sqrt(sigma2_1)))
-#hist(sample1_1, breaks=50, prob=T)
-#sample1_2 = Inu*(rnorm(n, mu, sqrt(sigma2_2/100))) +
-#  (1 - Inu)*(rnorm(n, mu, sqrt(sigma2_2)))
-#hist(sample1_2, breaks=50, prob=T)
-#sample1_3 = Inu*(rnorm(n, mu, sqrt(sigma2_3/100))) +
-#  (1 - Inu)*(rnorm(n, mu, sqrt(sigma2_3)))
-#hist(sample1_3, breaks=50, prob=T)
-
-# 2ª forma: gerando de forma hierárquica (Dani):
+# Gerando uma amostra de tamanho n hierarquicamente:
 
 set.seed(122019)
 u = U_pdf(n, nu)
-sample2_1 = rnorm(n, mu, sqrt(sigma2_1/u))
-hist(sample2_1, breaks=100, prob=T)
-sample2_2 = rnorm(n, mu, sqrt(sigma2_2/u))
-hist(sample2_2, breaks=100, prob=T)
-sample2_3 = rnorm(n, mu, sqrt(sigma2_3/u))
-hist(sample2_3, breaks=100, prob=T)
-
-# Dúvida: devemos mesmo dividir a variância da normal por
-# 100 como diz o enunciado na geração hierárquica? O cer-
-# to não seria multiplicar? Pelo o que os artigos indicam
-# devemos sim dividir.
+sam = rnorm(n, mu, sqrt(s2*u))
+hist(sam, breaks=100, prob=T)
 
 # Definindo a distribuição *a posteriori*:
 
-A = function(X, mu, sigma2, nu) {
-  n = length(X)
-  k1 = (nu/10)*exp(-(X-mu)^2/(2*100*sigma2))
-  k2 = (1-nu)*exp(-(X-mu)^2/(2*sigma2))
-  k = k1 + k2
-  return(k)
-}
-
-#A(sample2_1, mu, sigma2_1, nu)
-#A(sample2_2, mu, sigma2_2, nu)
-#A(sample2_3, mu, sigma2_3, nu)
-#hist(A(sample2_1, mu, sigma2_1, nu), prob=T, breaks=50)
-#hist(A(sample2_2, mu, sigma2_2, nu), prob=T, breaks=50)
-#hist(A(sample2_3, mu, sigma2_3, nu), prob=T, breaks=50)
-#prod(A(sample2_1, mu, sigma2_1, nu))
-#prod(A(sample2_2, mu, sigma2_2, nu))
-#prod(A(sample2_3, mu, sigma2_3, nu))
-
-# Claramente, devemos trabalhar com o logaritmo de A, uma
-# vez que o produtório é muito baixo como esperado, mesmo
-# quando sigma2 é pequeno.
+# Em geral, se trabalha com o logaritmo da verossimilhan-
+# ça, uma vez que o produtório é muito baixo mesmo quando
+# sigma2 é pequeno. Na função a seguir calculamos o loga-
+# ritmo do produtório apenas da soma envolvendo os 2 com-
+# ponentes da mistura:
 
 logA = function(X, mu, sigma2, nu) {
   n = length(X)
@@ -144,213 +60,160 @@ logA = function(X, mu, sigma2, nu) {
   k2 = (1-nu)*exp(-(X-mu)^2/(2*sigma2))
   k = log(k1 + k2)
   return(k)
-  #return(sum(k))
 }
 
-logA(sample2_1, mu, sigma2_1, nu)
-logA(sample2_2, mu, sigma2_2, nu)
-logA(sample2_3, mu, sigma2_3, nu)
-hist(logA(sample2_1, mu, sigma2_1, nu),
-     prob=T, breaks=50)
-hist(logA(sample2_2, mu, sigma2_2, nu),
-     prob=T, breaks=50)
-hist(logA(sample2_3, mu, sigma2_3, nu),
-     prob=T, breaks=50)
-sum(logA(sample2_1, mu, sigma2_1, nu))
-sum(logA(sample2_2, mu, sigma2_2, nu))
-sum(logA(sample2_3, mu, sigma2_3, nu))
+logA(sam, mu, s2, nu)
+hist(logA(sam, mu, s2, nu), prob=T, breaks=50)
+sum(logA(sam, mu, s2, nu))
 
-# logA é negativa e tratável. A diferença é pequena mesmo
-# se o parâmetro sigma2 variar bastante.
-
-h = function(n, mu, sigma2, nu, m, V, a, d) {
-  k1 = (1/sigma2)^((n + 1)/2 + a + 1)
-  k2 = exp(-((mu - m)^2/(2*V) + d)/sigma2)
-  k = k1*k2
-  return(k)
-}
-
-#h(n, mu, sigma2_1, nu, m, V, a_1, d_1)
-#h(n, mu, sigma2_2, nu, m, V, a_2, d_2)
-#h(n, mu, sigma2_3, nu, m, V, a_3, d_3)
-# Muito pequeno se sigma2 é grande;
-# Muito grande se sigma2 é pequeno.
+# Função para calcular logaritmo do produto de termos en-
+# volvendo apenas parâmetros e hiperparâmetros livres dos
+# valores na amostra (presentes nos componentes da mistu-
+# ra):
 
 logh = function(n, mu, sigma2, nu, m, V, a, d) {
   k1 = -((n + 1)/2 + a + 1)*log(sigma2)
   k2 = -((mu - m)^2/(2*V) + d)/sigma2
   k = k1 + k2
   return(k)
-  #return(sum(k))
 }
 
-logh(n, mu, sigma2_1, nu, m, V, a_1, d_1)
-logh(n, mu, sigma2_2, nu, m, V, a_2, d_2)
-logh(n, mu, sigma2_3, nu, m, V, a_3, d_3)
-# Negativo se sigma2 é grande, mas tratável;
-# Positivo se sigma2 é pequeno, idem.
+logh(n, mu, s2, nu, m, V, a, d)
 
-# Para encontrar o máximo da distribuição a posteriori,
-# será melhor trabalhar com o logaritmo do seu núcleo:
+# Por fim, para o logaritmo (do núcleo) da distribuição a
+# posteriori, temos que:
 
-logkerpost_1 = logA(sample2_1, mu, sigma2_1, nu) +
-               logh(sample2_1, mu, sigma2_1, nu,
-                    m, V, a_1, d_1)
-logkerpost_2 = logA(sample2_2, mu, sigma2_2, nu) +
-               logh(sample2_2, mu, sigma2_2, nu,
-                    m, V, a_2, d_2)
-logkerpost_3 = logA(sample2_3, mu, sigma2_3, nu) +
-               logh(sample2_3, mu, sigma2_3, nu,
-                    m, V, a_3, d_3)
-hist(logkerpost_1, prob=T, breaks = 50)
-hist(logkerpost_2, prob=T, breaks = 50)
-hist(logkerpost_3, prob=T, breaks = 50)
-
-kerpost_1 = exp(logkerpost_1)
-kerpost_2 = exp(logkerpost_2)
-kerpost_3 = exp(logkerpost_3)
-hist(kerpost_1, prob=T, breaks = 50)
-hist(kerpost_2, prob=T, breaks = 50)
-hist(kerpost_3, prob=T, breaks = 50)
+logkpost = function(X, mu, sigma2, nu, m, V, a, d) {
+  n = length(X)
+  lA = logA(X, mu, sigma2, nu)
+  lh = logh(n, mu, sigma2, nu, m, V, a, d)
+  lkp = sum(lA) + lh
+  return(lkp)
+}
 
 # Método da Quadratura de Riemann:
 
 L = 50 # Número de intervalos.
 
-# Note que, a posteriori, não temos ideia de como cada um
-# dos parâmetros estão distribuídos dado o respectivo es-
-# paço paramétrico. Assim, precisaríamos amostrar valores
-# de cada um deles, de suas densidades marginais a poste-
-# riori correspondentes, para ter uma ideia do respectivo
-# tamanho do intervalo de integração.
+# Note que, a posteriori, não temos nenhuma ideia de como
+# cada parâmetro está distribuído no seu respectivo espa-
+# paço paramétrico. Conjuntamente, não conseguimos extra-
+# ir amostras a posteriori dos 3 parâmetros.
 
-# Como a amostra tem tamanho 500, pelo Teorema Central do
-# Limite é possível aproximar a variância a posteriori de
-# cada parâmetro por 1/500 da variância a priori.
+# Para escolher o intervalo de integração associado a ca-
+# da parâmetro, fixemos para os outros dois os seus valo-
+# res correspondentes no modelo e calculemos o exponenci-
+# al do logaritmo da posteriori (de modo a evitar proble-
+# mas numéricos) como uma função do parâmetro para o qual
+# queremos definir o intervalo. Na região em que a função
+# tiver maior maior massa, é onde construiremos nosso in-
+# tervalo de intergração.
 
-# Para mu, aproximamos sua distribuição a posteriori por:
+# Começando por mu, temos que:
 
-mu = 11
-sigma2_1 = 4
-sigma2_2 = 0.16
-sigma2_3 = 1
-nu = 0.2
+mu_sup = seq(9, 13, 0.01) # A massa posteriori pode estar
+t_mu = length(mu_sup)     # concentrada ao menos no mesmo
+kp_mu = numeric(t_mu)     # intervalo que a priori.
 
-m = 11
-V = 1
-# Variância teórica de mu a priori: 4; 0.16; 1
-# Variância aproximada de mu a posteriori: 4/n; 0.16/n e
-# 1/n
-# Para se ter uma ideia da dispersão de mu a posteriori:
-set.seed(122019)
-hist(rnorm(n=10000, mean=m, sd=sqrt(V*sigma2_1/n)),
-     prob=T, breaks=100)
-hist(rnorm(n=10000, mean=m, sd=sqrt(V*sigma2_2/n)),
-     prob=T, breaks=100)
-hist(rnorm(n=10000, mean=m, sd=sqrt(V*sigma2_3/n)),
-     prob=T, breaks=100)
-# Massa probabilística concentrada quase que totalmente
-# entre 10.7 e 11.3 (caso 1), 10.95 e 11.05 (caso 2) ou
-# 10.9 e 11.1 (caso 3), todas aproximadamente centradas
-# em 11.
+for(i in 1:t_mu) {
+  kp_mu[i] = exp(logkpost(X=sam,
+    mu=mu_sup[i], sigma2=s2, nu=nu, m=m, V=V, a=a, d=d))
+}
+plot(mu_sup, kp_mu, type="l")
 
-# Temos os intervalos:
+mu_sup = seq(10.8, 11.2, 0.001) # Redefinindo.
+t_mu = length(mu_sup)
+kp_mu = numeric(t_mu)
 
-mu_step_1 = (11.3-10.7)/L
-mu_gr_1 = seq(10.7, 11.3, mu_step_1)
-mu_gr_1
+for(i in 1:t_mu) {
+  kp_mu[i] = exp(logkpost(X=sam,
+    mu=mu_sup[i], sigma2=s2, nu=nu, m=m, V=V, a=a, d=d))
+}
+plot(mu_sup, kp_mu, type="l")
 
-mu_step_2 = (11.05-10.95)/L
-mu_gr_2 = seq(10.95, 11.05, mu_step_2)
-mu_gr_2
+# Para mu o intervalo de integ. será de 10.85 a 11.13.
 
-mu_step_3 = (11.1-10.9)/L
-mu_gr_3 = seq(10.9, 11.1, mu_step_3)
-mu_gr_3
+# Para sigma2, temos que:
 
-# Para sigma2, aproximamos sua distrib. a posteriori por:
+s2_sup = seq(0.2, 1.5, 0.001)
+t_s2 = length(s2_sup)
+kp_s2 = numeric(t_s2)
 
-a_1 = 7; d_1 = 26
-a_2 = 7; d_2 = 1
-a_3 = 7; d_3 = 6.5
-# Variância teórica de sigma2 a priori:
-26^2/((7-1)^2*(7-2))  #3.7556
-1^2/((7-1)^2*(7-2))   #0.0056
-6.5^2/((7-1)^2*(7-2)) #0.2347
-# Variância aproximada de mu a posteriori:
-3.7556/n; 0.0056/n; 0.2347/n
-# Para ter uma ideia da dispersão de sigma2 a posteriori:
-set.seed(122019)
-hist(rnorm(n=10000, mean=sigma2_1, sd=sqrt(3.7556/n)),
-     prob=T, breaks=100)
-hist(rnorm(n=10000, mean=sigma2_2, sd=sqrt(0.0056/n)),
-     prob=T, breaks=100)
-hist(rnorm(n=10000, mean=sigma2_3, sd=sqrt(0.2347/n)),
-     prob=T, breaks=100)
-# Massa probabilística concentrada quase que totalmente
-# entre 3.8 e 4.2 e aproximadamente centrada em 4 (caso
-# 1), concentrada quase que totalmente entre .15 e .17,
-# e aproximadamente centrada em 0.16 (caso 2) e concen-
-# trada quase que totalmente entre 0.94 e 1.06, aproxi-
-# madamente centrada em 1 (caso 3).
+for(i in 1:t_s2) {
+  kp_s2[i] = exp(logkpost(X=sam,
+    mu=mu, sigma2=s2_sup[i], nu=nu, m=m, V=V, a=a, d=d))
+}
+plot(s2_sup, kp_s2, type="l")
 
-# Temos os intervalos:
+s2_sup = seq(0.4, 0.8, 0.001) # Redefinindo.
+t_s2 = length(s2_sup)
+kp_s2 = numeric(t_s2)
 
-sigma2_step_1 = (4.2-3.8)/L
-sigma2_gr_1 = seq(3.8, 4.2, sigma2_step_1)
-sigma2_gr_1
+for(i in 1:t_s2) {
+  kp_s2[i] = exp(logkpost(X=sam,
+    mu=mu, sigma2=s2_sup[i], nu=nu, m=m, V=V, a=a, d=d))
+}
+plot(s2_sup, kp_s2, type="l")
 
-sigma2_step_2 = (0.17-0.15)/L
-sigma2_gr_2 = seq(0.15, 0.17, sigma2_step_2)
-sigma2_gr_2
+# Para sigma2 o intervalo de integ. será de 0.48 a 0.76.
 
-sigma2_step_3 = (1.06-0.94)/L
-sigma2_gr_3 = seq(0.94, 1.06, sigma2_step_3)
-sigma2_gr_3
+# Por fim, para nu temos que:
 
-# Para nu, sua variância a priori é igual a 1/12. Se con-
-# siderarmos que mu=0.2 no modelo, a distribuição de nu a
-# posteriori pode ser aproximada pelo TCL por:
+nu_sup = seq(0, 1, 0.001)
+t_nu = length(nu_sup)
+kp_nu = numeric(t_nu)
 
-set.seed(122019)
-hist(rnorm(n=10000, mean=nu, sd=sqrt(1/(12*500))),
-     prob=T, breaks=100)
+for(i in 1:t_nu) {
+  kp_nu[i] = exp(logkpost(X=sam,
+    mu=mu, sigma2=s2, nu=nu_sup[i], m=m, V=V, a=a, d=d))
+}
+plot(nu_sup, kp_nu, type="l")
 
-# Temos o intervalo:
+nu_sup = seq(0.1, 0.3, 0.001) #Redefinindo.
+t_nu = length(nu_sup)
+kp_nu = numeric(t_nu)
 
-nu_step = (0.24-0.16)/L
-nu_gr = seq(0.16, 0.24, nu_step)
+for(i in 1:t_nu) {
+  kp_nu[i] = exp(logkpost(X=sam,
+    mu=mu, sigma2=s2, nu=nu_sup[i], m=m, V=V, a=a, d=d))
+}
+plot(nu_sup, kp_nu, type="l")
+
+# Para nu o intervalo de integ. será de 0.13 a 0.26.
+
+# Observe que nenhum dos três intervalos escolhidos ficou
+# centrado no mesmo valor assumido para o modelo. Mais um
+# sinal da importância de considerar tanto a informação a
+# priori quanto a dada pela amostra.
+
+# Temos então os intervalos:
+
+mu_step = (11.13 - 10.85)/L
+mu_gr = seq(10.85, 11.13, mu_step)
+mu_gr
+
+s2_step = (0.76 - 0.48)/L
+s2_gr = seq(0.48, 0.76, s2_step)
+s2_gr
+
+nu_step = (0.26 - 0.13)/L
+nu_gr = seq(0.13, 0.26, nu_step)
 nu_gr
 
-# E por fim, as grades:
+# E a grade:
 
-grid_tri_1 = cbind(mu_gr_1, sigma2_gr_1, nu_gr)
-grid_tri_2 = cbind(mu_gr_2, sigma2_gr_2, nu_gr)
-grid_tri_3 = cbind(mu_gr_3, sigma2_gr_3, nu_gr)
-grid_tri_1
-grid_tri_2
-grid_tri_3
-
-# Observe que no segundo grid temos variações bem menores
-# para mu e sigma2, dado que sigma2 é pequeno.
-
-l = nrow(grid_tri_1); l
+grid_tri = cbind(mu_gr, s2_gr, nu_gr); grid_tri
+l = nrow(grid_tri); l
 
 # Como os tamanhos dos passos são iguais em todas as três
 # dimensões, podemos calcular os produtos antes de inici-
 # ar a rotina iterativa:
 
-prod_step_1 = mu_step_1*sigma2_step_1*nu_step
-prod_step_2 = mu_step_2*sigma2_step_2*nu_step
-prod_step_3 = mu_step_3*sigma2_step_3*nu_step
-prod_step_1
-prod_step_2
-prod_step_3
+prod_step = mu_step*s2_step*nu_step; prod_step
 
 # Função para calcular a constante de proporcionalidade:
 
-cprop = function(l, X, mgr, s2gr, ngr, prst,
-                  m, V, a, d, const=0) {
+cprop = function(l, X, mgr, s2gr, ngr, prst, m, V, a, d){
   c = 0
   n = length(X)
   ar.aux = array(dim = rep(l, 3))
@@ -362,56 +225,18 @@ cprop = function(l, X, mgr, s2gr, ngr, prst,
                     m, V, a, d)
         aux = aux1 + aux2
         ar.aux[i,j,k] = aux
-        c = c + exp(aux + const)*prst
+        c = c + exp(aux)*prst
       }
     }
   }
-  c_ver = c/exp(const)
   hist(ar.aux, prob=T, breaks=1000)
-  return(list(c, c_ver, min(ar.aux), max(ar.aux),
+  return(list(c, min(ar.aux), max(ar.aux),
               median(ar.aux), mean(ar.aux)))
 }
 
-# No primeiro caso (sigma2 = 4), temos que:
-
-c1 = cprop(l=l, X=sample2_1, mgr=mu_gr_1,
-           s2gr=sigma2_gr_1, ngr=nu_gr,
-           prst=prod_step_1, m=m, V=V, a=a_1, d=d_1)
-c1
-
-# A soma de c será na prática nula se a variância do mo-
-# delo (sigma2) for alta (a precisão do R não basta para
-# detectar que cada parcela é diferente de zero). Assim,
-# não podemos estimar c corretamente sem usar algum ter-
-# mo multiplicativo. Refazendo com este termo (exp(640))
-# temos:
-
-cprop(l=l, X=sample2_1, mgr=mu_gr_1, s2gr=sigma2_gr_1,
-      ngr=nu_gr, prst=prod_step_1, m=m, V=V,
-      a=a_1, d=d_1, const=640)
-
-# Mesmo multiplicando e dividindo, temos o mesmo resulta-
-# do de antes.
-
-# No segundo caso (sigma2 = 0.16), temos que:
-
-c2 = cprop(l=l, X=sample2_2, mgr=mu_gr_2,
-           s2gr=sigma2_gr_2, ngr=nu_gr,
-           prst=prod_step_2, m=m, V=V, a=a_2, d=d_2)
-c2
-
-# Em ambos os casos (variância grande ou pequena) a qua-
-# dratura é demorada com muitas iterações, e mesmo assim
-# não se obtém um número facilmente tangível. E se a va-
-# riância for unitária:
-
-c3 = cprop(l=l, X=sample2_3, mgr=mu_gr_3,
-           s2gr=sigma2_gr_3, ngr=nu_gr,
-           prst=prod_step_3, m=m, V=V, a=a_3, d=d_3)
-c3
-
-# Mesmo com variância unitária, c tem um valor muito pe-
-# queno.
+c = cprop(l=l, X=sam, mgr=mu_gr, s2gr=s2_gr, ngr=nu_gr,
+           prst=prod_step, m=m, V=V, a=a, d=d)
+c
 
 # Pacote para cálculo de assimetria e curtose amostrais:
 
@@ -420,20 +245,10 @@ library(moments)
 
 # Vamos precisar dos produtos dos grides 2 a 2:
 
-pr1_dup12 = mu_step_1*sigma2_step_1
-pr1_dup13 = mu_step_1*nu_step
-pr1_dup23 = sigma2_step_1*nu_step
-pr1_dup12; pr1_dup13; pr1_dup23
-
-pr2_dup12 = mu_step_2*sigma2_step_2
-pr2_dup13 = mu_step_2*nu_step
-pr2_dup23 = sigma2_step_2*nu_step
-pr2_dup12; pr2_dup13; pr2_dup23
-
-pr3_dup12 = mu_step_3*sigma2_step_3
-pr3_dup13 = mu_step_3*nu_step
-pr3_dup23 = sigma2_step_3*nu_step
-pr3_dup12; pr3_dup13; pr3_dup23
+pr_dup12 = mu_step*s2_step
+pr_dup13 = mu_step*nu_step
+pr_dup23 = s2_step*nu_step
+pr_dup12; pr_dup13; pr_dup23
 
 # Para calcular densidades marginais a posteriori, consi-
 # dere as funções:
@@ -462,28 +277,11 @@ postmu_quarie = function(l, X, mgr, s2gr, ngr, prst,
                 skewness(postmu), kurtosis(postmu)))
 }
 
-pmq1 = postmu_quarie(l=l, X=sample2_1,
-  mgr=mu_gr_1, s2gr=sigma2_gr_1, ngr=nu_gr,
-  prst=pr1_dup23, m=m, V=V, a=a_1, d=d_1, c=c1[[1]])
-pmq1
-hist(pmq1[[1]])
-
-pmq2 = postmu_quarie(l=l, X=sample2_2,
-  mgr=mu_gr_2, s2gr=sigma2_gr_2, ngr=nu_gr,
-  prst=pr2_dup23, m=m, V=V, a=a_2, d=d_2, c=c2[[1]])
-pmq2
-hist(pmq2[[1]])
-
-pmq3 = postmu_quarie(l=l, X=sample2_3,
-  mgr=mu_gr_3, s2gr=sigma2_gr_3, ngr=nu_gr,
-  prst=pr3_dup23, m=m, V=V, a=a_3, d=d_3, c=c3[[1]])
-pmq3
-hist(pmq3[[1]])
-
-# Todas as estimativas foram ou muito pequenas se a vari-
-# ância era maior do que 1, ou muito grandes se a variân-
-# cia era menor do que ou igual a 1 (mas um menos discre-
-# pantes neste último caso).
+pmq = postmu_quarie(l=l, X=sam, mgr=mu_gr, s2gr=s2_gr,
+                    ngr=nu_gr, prst=pr_dup23, m=m, V=V,
+                    a=a_1, d=d_1, c=c[[1]])
+pmq
+hist(pmq[[1]])
 
 posts2_quarie = function(l, X, mgr, s2gr, ngr, prst,
                          m, V, a, d, c) {
@@ -509,7 +307,7 @@ posts2_quarie = function(l, X, mgr, s2gr, ngr, prst,
               skewness(posts2), kurtosis(posts2)))
 }
 
-psq1 = posts2_quarie(l=l, X=sample2_1,
+psq = posts2_quarie(l=l, X=sample2_1,
   mgr=mu_gr_1, s2gr=sigma2_gr_1, ngr=nu_gr,
   prst=pr1_dup13, m=m, V=V, a=a_1, d=d_1, c=c1[[1]])
 psq1
