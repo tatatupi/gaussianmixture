@@ -93,7 +93,9 @@ logkpost = function(X, mu, sigma2, nu, m, V, a, d) {
 
 # Método da Quadratura de Riemann:
 
-L = 50 # Número de intervalos.
+L1 = 15  # Número de intervalos.
+L2 = 50
+L3 = 100
 
 # Note que, a posteriori, não temos nenhuma ideia de como
 # cada parâmetro está distribuído no seu respectivo espa-
@@ -155,7 +157,7 @@ for(i in 1:t_s2) {
 }
 plot(s2_sup, kp_s2, type="l")
 
-# Para sigma2 o intervalo de integ. será de 0.48 a 0.76.
+# Para sigma2 o intervalo de integ. será de 0.48 a 0.78.
 
 # Por fim, para nu temos que:
 
@@ -188,28 +190,46 @@ plot(nu_sup, kp_nu, type="l")
 
 # Temos então os intervalos:
 
-mu_step = (11.13 - 10.85)/L
-mu_gr = seq(10.85, 11.13, mu_step)
-mu_gr
+mu_step1 = (11.13 - 10.85)/L1
+mu_step2 = (11.13 - 10.85)/L2
+mu_step3 = (11.13 - 10.85)/L3
+mu_gr1 = seq(10.85, 11.13, mu_step1)
+mu_gr2 = seq(10.85, 11.13, mu_step2)
+mu_gr3 = seq(10.85, 11.13, mu_step3)
+mu_gr1; mu_gr2; mu_gr3
 
-s2_step = (0.76 - 0.48)/L
-s2_gr = seq(0.48, 0.76, s2_step)
-s2_gr
+s2_step1 = (0.78 - 0.48)/L1
+s2_step2 = (0.78 - 0.48)/L2
+s2_step3 = (0.78 - 0.48)/L3
+s2_gr1 = seq(0.48, 0.78, s2_step1)
+s2_gr2 = seq(0.48, 0.78, s2_step2)
+s2_gr3 = seq(0.48, 0.78, s2_step3)
+s2_gr1; s2_gr2; s2_gr3
 
-nu_step = (0.26 - 0.13)/L
-nu_gr = seq(0.13, 0.26, nu_step)
-nu_gr
+nu_step1 = (0.26 - 0.13)/L1
+nu_step2 = (0.26 - 0.13)/L2
+nu_step3 = (0.26 - 0.13)/L3
+nu_gr1 = seq(0.13, 0.26, nu_step1)
+nu_gr2 = seq(0.13, 0.26, nu_step2)
+nu_gr3 = seq(0.13, 0.26, nu_step3)
+nu_gr1; nu_gr2; nu_gr3
 
 # E a grade:
 
-grid_tri = cbind(mu_gr, s2_gr, nu_gr); grid_tri
-l = nrow(grid_tri); l
+grid_tri1 = cbind(mu_gr1, s2_gr1, nu_gr1); grid_tri1
+grid_tri2 = cbind(mu_gr2, s2_gr2, nu_gr2); grid_tri2
+grid_tri3 = cbind(mu_gr3, s2_gr3, nu_gr3); grid_tri3
+l1 = nrow(grid_tri1); l1
+l2 = nrow(grid_tri2); l2
+l3 = nrow(grid_tri3); l3
 
 # Como os tamanhos dos passos são iguais em todas as três
 # dimensões, podemos calcular os produtos antes de inici-
 # ar a rotina iterativa:
 
-prod_step = mu_step*s2_step*nu_step; prod_step
+prod_step1 = mu_step1*s2_step1*nu_step1; prod_step1
+prod_step2 = mu_step2*s2_step2*nu_step2; prod_step2
+prod_step3 = mu_step3*s2_step3*nu_step3; prod_step3
 
 # Função para calcular a constante de proporcionalidade:
 
@@ -231,21 +251,33 @@ cprop = function(l, X, mgr, s2gr, ngr, prst, m, V, a, d){
               median(ar.aux), mean(ar.aux)))
 }
 
-c = cprop(l=l, X=sam, mgr=mu_gr, s2gr=s2_gr, ngr=nu_gr,
-           prst=prod_step, m=m, V=V, a=a, d=d)
-c
-
-# Pacote para cálculo de assimetria e curtose amostrais:
-
-#install.packages("moments")
-library(moments)
+c1 = cprop(l=l1, X=sam,
+           mgr=mu_gr1, s2gr=s2_gr1, ngr=nu_gr1,
+           prst=prod_step1, m=m, V=V, a=a, d=d)
+c2 = cprop(l=l2, X=sam,
+           mgr=mu_gr2, s2gr=s2_gr2, ngr=nu_gr2,
+           prst=prod_step2, m=m, V=V, a=a, d=d)
+c3 = cprop(l=l3, X=sam,
+           mgr=mu_gr3, s2gr=s2_gr3, ngr=nu_gr3,
+           prst=prod_step3, m=m, V=V, a=a, d=d)
+c1; c2; c3
 
 # Vamos precisar dos produtos dos grides 2 a 2:
 
-pr_dup12 = mu_step*s2_step
-pr_dup13 = mu_step*nu_step
-pr_dup23 = s2_step*nu_step
-pr_dup12; pr_dup13; pr_dup23
+pr1_dup12 = mu_step1*s2_step1
+pr1_dup13 = mu_step1*nu_step1
+pr1_dup23 = s2_step1*nu_step1
+pr1_dup12; pr1_dup13; pr1_dup23
+
+pr2_dup12 = mu_step2*s2_step2
+pr2_dup13 = mu_step2*nu_step2
+pr2_dup23 = s2_step2*nu_step2
+pr2_dup12; pr2_dup13; pr2_dup23
+
+pr3_dup12 = mu_step3*s2_step3
+pr3_dup13 = mu_step3*nu_step3
+pr3_dup23 = s2_step3*nu_step3
+pr3_dup12; pr3_dup13; pr3_dup23
 
 # Para calcular densidades marginais a posteriori, consi-
 # dere as funções:
@@ -267,13 +299,22 @@ postmu_quarie = function(l, X, mgr, s2gr, ngr, prst,
     return(postmu)
 }
 
-#mean(postmu), var(postmu), median(postmu), min(postmu),
-#max(postmu), skewness(postmu), kurtosis(postmu)
+pmq1 = postmu_quarie(
+  l=l1, X=sam, mgr=mu_gr1, s2gr=s2_gr1, ngr=nu_gr1,
+  prst=pr1_dup23, m=m, V=V, a=a, d=d, c=c1[[1]])
+pmq2 = postmu_quarie(
+  l=l2, X=sam, mgr=mu_gr2, s2gr=s2_gr2, ngr=nu_gr2,
+  prst=pr2_dup23, m=m, V=V, a=a, d=d, c=c2[[1]])
+pmq3 = postmu_quarie(
+  l=l3, X=sam, mgr=mu_gr3, s2gr=s2_gr3, ngr=nu_gr3,
+  prst=pr3_dup23, m=m, V=V, a=a, d=d, c=c3[[1]])
 
-pmq = postmu_quarie(l=l, X=sam, mgr=mu_gr, s2gr=s2_gr,
-                    ngr=nu_gr, prst=pr_dup23, m=m, V=V,
-                    a=a, d=d, c=c[[1]])
-pmq; hist(pmq)
+pmq1; pmq2; pmq3
+hist(pmq1); hist(pmq2); hist(pmq3)
+
+plot(mu_gr1, pmq1, type = "l")
+plot(mu_gr2, pmq2, type = "l")
+plot(mu_gr3, pmq3, type = "l")
 
 posts2_quarie = function(l, X, mgr, s2gr, ngr, prst,
                          m, V, a, d, c) {
@@ -292,26 +333,30 @@ posts2_quarie = function(l, X, mgr, s2gr, ngr, prst,
   return(posts2)
 }
 
-#mean(posts2), var(posts2), median(posts2), min(posts2),
-#max(posts2), skewness(posts2), kurtosis(posts2)
+psq1 = posts2_quarie(
+  l=l1, X=sam, mgr=mu_gr1, s2gr=s2_gr1, ngr=nu_gr1,
+  prst=pr1_dup13, m=m, V=V, a=a, d=d, c=c1[[1]])
+psq2 = posts2_quarie(
+  l=l2, X=sam, mgr=mu_gr2, s2gr=s2_gr2, ngr=nu_gr2,
+  prst=pr2_dup13, m=m, V=V, a=a, d=d, c=c2[[1]])
+psq3 = posts2_quarie(
+  l=l3, X=sam, mgr=mu_gr3, s2gr=s2_gr3, ngr=nu_gr3,
+  prst=pr3_dup13, m=m, V=V, a=a, d=d, c=c3[[1]])
 
-psq = posts2_quarie(l=l, X=sam, mgr=mu_gr, s2gr=s2_gr,
-                    ngr=nu_gr, prst=pr_dup13, m=m, V=V,
-                    a=a, d=d, c=c[[1]])
-psq; hist(psq)
+psq1; psq2; psq3
+hist(psq1); hist(psq2); hist(psq3)
+
+plot(s2_gr1, psq1, type = "l")
+plot(s2_gr2, psq2, type = "l")
+plot(s2_gr3, psq3, type = "l")
 
 postnu_quarie = function(l, X, mgr, s2gr, ngr, prst,
                          m, V, a, d, c) {
   postnu = numeric(l)
-  #n = length(X)
   for (i in 1:l) {
     postconj = 0
     for (j in 1:l) {
       for(k in 1:l) {
-        #aux1 = sum(logA(X, mgr[j], s2gr[k], ngr[i]))
-        #aux2 = logh(n, mgr[j], s2gr[k], ngr[i],
-        #            m, V, a, d)
-        #aux = aux1 + aux2
         aux = logkpost(X, mgr[j], s2gr[k], ngr[i],
                        m, V, a, d)
         postconj = postconj + exp(aux)*prst
@@ -322,13 +367,22 @@ postnu_quarie = function(l, X, mgr, s2gr, ngr, prst,
   return(postnu)
 }
 
-#mean(postnu), var(postnu), median(postnu), min(postnu),
-#max(postnu), skewness(postnu), kurtosis(postnu)
+pnq1 = postnu_quarie(
+  l=l1, X=sam, mgr=mu_gr1, s2gr=s2_gr1, ngr=nu_gr1,
+  prst=pr1_dup12, m=m, V=V, a=a, d=d, c=c1[[1]])
+pnq2 = postnu_quarie(
+  l=l2, X=sam, mgr=mu_gr2, s2gr=s2_gr2, ngr=nu_gr2,
+  prst=pr2_dup12, m=m, V=V, a=a, d=d, c=c2[[1]])
+pnq3 = postnu_quarie(
+  l=l3, X=sam, mgr=mu_gr3, s2gr=s2_gr3, ngr=nu_gr3,
+  prst=pr3_dup12, m=m, V=V, a=a, d=d, c=c3[[1]])
 
-pnq = postnu_quarie(l=l, X=sam, mgr=mu_gr, s2gr=s2_gr,
-                    ngr=nu_gr, prst=pr_dup12, m=m, V=V,
-                    a=a, d=d, c=c[[1]])
-pnq; hist(pnq)
+pnq1; pnq2; pnq3
+hist(pnq1); hist(pnq2); hist(pnq3)
+
+plot(nu_gr1, pnq1, type = "l")
+plot(nu_gr2, pnq2, type = "l")
+plot(nu_gr3, pnq3, type = "l")
 
 # Para calcular média, variância, assimetria e curtose de
 # cada parâmetro a posteriori, considere as funções a se-
@@ -354,6 +408,14 @@ stat_post = function(gr, marg, prst) {
   return(list(media, var, assim, cur))
 }
 
-stat_post(mu_gr, pmq, mu_step)
-stat_post(s2_gr, psq, s2_step)
-stat_post(nu_gr, pnq, nu_step)
+stat_post(mu_gr1, pmq1, mu_step1)
+stat_post(mu_gr2, pmq2, mu_step2)
+stat_post(mu_gr3, pmq3, mu_step3)
+
+stat_post(s2_gr1, psq1, s2_step1)
+stat_post(s2_gr2, psq2, s2_step2)
+stat_post(s2_gr3, psq3, s2_step3)
+
+stat_post(nu_gr1, pnq1, nu_step1)
+stat_post(nu_gr2, pnq2, nu_step2)
+stat_post(nu_gr3, pnq3, nu_step3)
