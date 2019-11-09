@@ -1,0 +1,88 @@
+\documentclass[12pt,reqno,a4paper,oneside]{report}
+
+\usepackage{amsfonts, amsmath,
+	        amssymb, amsthm}  % Fontes e símbolos matemáticos da AMS.
+\usepackage{graphicx}         % Importação de gráficos.
+\usepackage[brazil]{babel}    % Idioma português (Brasil) como padrão.
+\usepackage[utf8]{inputenc}   % Codificação UTF-8.
+\usepackage{natbib}           % Para citações.
+
+\usepackage{bm}          % Equações em negrito com qualidade superior.
+\usepackage{booktabs}    % Edição de linhas de tabelas.
+\usepackage{caption}     % Edição do texto dos títulos de tabelas.
+\usepackage{color}       % Edição de cores.
+\usepackage{indentfirst} % Indentará sempre o 1º parágrafo de cada seção do relatório.
+%\usepackage{enumitem}   % Edição mais elaborada de listas
+                         % Conflito com ambiente "enumerate"!.
+%\usepackage{hyperref}   % Criação de "hyperlinks".
+\usepackage{multirow}    % Para obter uma célula com uma coluna e várias linhas.
+\usepackage{ragged2e}    % Opções de alinhamento do texto.
+\usepackage{titlesec}    % Formatação de títulos de seções.
+
+\usepackage[top=2cm, bottom=2cm,
+            left=2cm, right=2cm]{geometry} % Margens do texto.
+
+\titleformat{\chapter}[display]
+    {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{10pt}{\large}
+\titlespacing*{\chapter}{0pt}{0pt}{15pt}
+
+\titleformat{\section}
+{\normalfont\bfseries\normalsize}
+{\thesection.}{0.5em}{}
+
+\captionsetup{justification = centering} %Centraliza os títulos das tabelas.
+
+% Símbolo matemático para independência entre variáveis aleatórias:
+
+\newcommand\indep{\protect\mathpalette{\protect\independenT}{\perp}}\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\begin{document}
+
+\title{\huge Relatório do Trabalho de\\
+	Estatística Bayesiana I}
+\author{\\
+	\huge Mistura de Normais\\
+	\huge com Variância Contaminada
+	\\
+	\\
+	\\
+	\\
+	\Large Caio Balieiro\\
+	\Large Taiguara Melo Tupinambás\\
+	\Large Walmir dos Reis Miranda Filho\\
+	\\
+	\\
+	\\
+	\Large Prof. Dani Gamerman\\
+	\Large Profª Rosangela Helena Loschi\\
+	\\
+	\\
+	\\
+	Programa de Pós-Graduação em Estatística\\
+	Instituto de Ciências Exatas\\
+	Universidade Federal de Minas Gerais\\
+	\\
+	\\}
+\date{Belo Horizonte, 2 de dezembro de 2019}
+\maketitle
+
+\section*{\Large Introdução}
+
+%Texto descrevendo o modelo de mistura de normais com variância contaminada (referenciando possivelmente alguns dos artigos consultados) e os objetivos do trabalho.
+
+\section*{\Large O Método da Quadratura de Riemann}
+
+%Texto descrevendo o método e como foi feita neste trabalho a aproximação via quadratura de Riemann.
+
+\section*{\Large O Método da Reamostragem Ponderada}
+
+%Texto descrevendo o método e como foi feita neste trabalho a geração de variáveis aleatórias da distribuição de interesse usando este mesmo método.
+
+\section*{\Large O Método de Monte Carlo via Cadeias de Markov}
+
+%Texto descrevendo o método e como foi feita neste trabalho a geração de variáveis aleatórias da distribuição de interesse usando este mesmo método, bem como o amostrador selecionado (possivelmente Gibbs ou outro que for de melhor uso para todo o grupo).
+
+\bibliographystyle{unsrt}
+%\bibliography{arquivo.bib}
+
+\end{document}
