@@ -2,3 +2,4 @@
 *.log
 *.Rhistory
 *.aux
+*.synctex.gz
