@@ -39,8 +39,7 @@ logh = function(n, mu, sigma2, nu, m, V, a, d) {
 # ção da distribuição a posteriori:
 
 logr = function(sigma2, nu) {
-  k = log(sigma2) + log(nu) - log(1-nu)
-      - 2*log(1 + (1-nu)/nu)
+  k = log(sigma2) + 3*log(nu) - log(1-nu)
   return(k)
 }
 

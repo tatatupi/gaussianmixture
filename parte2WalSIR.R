@@ -74,9 +74,9 @@ summary(r3_q[,1])
 summary(exp(r1_q[,2]))
 summary(exp(r2_q[,2]))
 summary(exp(r3_q[,2]))
-summary(1/(1+exp(-r1_q[,3])))
-summary(1/(1+exp(-r2_q[,3])))
-summary(1/(1+exp(-r3_q[,3])))
+summary(1/(1 + exp(-r1_q[,3])))
+summary(1/(1 + exp(-r2_q[,3])))
+summary(1/(1 + exp(-r3_q[,3])))
 
 d1_q = dmvnorm(r1_q, mean=c(11, log(0.64), log(0.2/0.8)),
                sigma=diag(3))
@@ -97,10 +97,10 @@ aux13 = numeric(am3); aux23 = numeric(am3)
 
 for(i in 1:am1) {
   aux11[i] = logkpost_re(
-      X = sam, mu = r1_q[i,1], sigma2 = exp(r1_q[i,2]),
-      nu = 1/(1 + exp(-r1_q[i,3])), m, V, a, d)
+    X = sam, mu = r1_q[i,1], sigma2 = exp(r1_q[i,2]),
+    nu = 1/(1 + exp(-r1_q[i,3])), m, V, a, d)
 }
-aux21 = aux1/d1_q
+aux21 = aux11/d1_q
 w1 = aux21/sum(aux21); sum(w1)
 
 for(i in 1:am2) {
