@@ -19,6 +19,8 @@
 \usepackage{ragged2e}    % Opções de alinhamento do texto.
 \usepackage{titlesec}    % Formatação de títulos de seções.
 
+\usepackage[FIGTOPCAP]{subfigure}
+
 \usepackage[top=2cm, bottom=2cm,
             left=2cm, right=2cm]{geometry} % Margens do texto.
 
@@ -70,9 +72,94 @@
 
 %Texto descrevendo o modelo de mistura de normais com variância contaminada (referenciando possivelmente alguns dos artigos consultados) e os objetivos do trabalho.
 
-\section*{\Large O Método da Quadratura de Riemann}
+\begin{figure}[!htb]
+	\centering
+	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/priori_mu.pdf}}
+	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/priori_sigma.pdf}} 
+	\caption{Distribuições a priori}
+	\label{fig:priori}
+\end{figure}
 
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.75\textwidth]{figuras/parte1/amostra_n.pdf}
+	\caption{Amostra de tamanho 500.}
+	\label{fig:sample}
+\end{figure}
+
+
+
+\section*{\Large O Método da Quadratura de Riemann}
 %Texto descrevendo o método e como foi feita neste trabalho a aproximação via quadratura de Riemann.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.75\textwidth]{figuras/parte1/logA.pdf}
+	\caption{Amostra de tamanho 500.}
+	\label{fig:logA}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/grid_mu1.pdf}}
+	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/grid_mu2.pdf}} 
+	\caption{Grade de mu}
+	\label{fig:grid_mu}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/grid_sigma1.pdf}}
+	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/grid_sigma2.pdf}} 
+	\caption{Grades de sigma}
+	\label{fig:grid_sigma}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/grid_nu1.pdf}}
+	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/grid_nu2.pdf}} 
+	\caption{Grades de nu}
+	\label{fig:grid_nu}
+\end{figure}
+
+
+\begin{figure}[!htb]
+	\centering
+	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/constante_prop_16.pdf}}
+	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/constante_prop_51.pdf}} 
+	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/constante_prop_101.pdf}} 
+	\caption{Calculo da constante de proporcionalidade}
+	\label{fig:const_prop}
+\end{figure}
+
+
+\begin{figure}[!htb]
+	\centering
+	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_mu1.pdf}}
+	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_mu2.pdf}} 
+	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_mu3.pdf}} 
+	\caption{Posteriori de mu}
+	\label{fig:post_mu}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_sigma1.pdf}}
+	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_sigma2.pdf}} 
+	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_sigma3.pdf}} 
+	\caption{Posteriori de sigma}
+	\label{fig:post_sigma}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_nu1.pdf}}
+	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_nu2.pdf}} 
+	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_nu3.pdf}} 
+	\caption{Posteriori de nu}
+	\label{fig:post_nu}
+\end{figure}
 
 \section*{\Large O Método da Reamostragem Ponderada}
 

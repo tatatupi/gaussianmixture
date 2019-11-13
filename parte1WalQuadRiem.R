@@ -13,7 +13,12 @@ m = 11; V = 1; a = 7; d = 4
 # Distribuição de mu a priori (dados s2, m e V):
 set.seed(122019)
 s_mu = rnorm(n=5000, mean=m, sd=sqrt(V*s2))
+
+#PLOT 
+pdf(file="./figuras/parte1/priori_mu.pdf")
 hist(s_mu, prob=T, breaks=100)
+dev.off() 
+
 median(s_mu); mean(s_mu); min(s_mu); max(s_mu)
 # Massa probabilística concentrada quase totalmente entre
 # 9 e 13 e aproximadamente centrada em 11.
@@ -21,7 +26,12 @@ median(s_mu); mean(s_mu); min(s_mu); max(s_mu)
 # Distribuição de sigma2 a priori (dados a e d):
 set.seed(122019)
 s_s2 = 1/rgamma(n=5000, shape=a, rate=d)
+
+#PLOT 
+pdf(file="./figuras/parte1/priori_sigma.pdf")
 hist(s_s2, prob=T, breaks=100)
+dev.off() 
+
 median(s_s2); mean(s_s2); min(s_s2); max(s_s2)
 # Massa probabilística concentrada quase totalmente entre
 # 0.2 e 1.5 e aproximadamente centrada em 0.64.
@@ -44,7 +54,12 @@ U_pdf = function(n, nu) {
 set.seed(122019)
 u = U_pdf(n, nu)
 sam = rnorm(n, mu, sqrt(s2*u))
+
+#PLOT 
+pdf(file="./figuras/parte1/amostra_n.pdf")
 hist(sam, breaks=100, prob=T)
+dev.off()
+
 
 # Definindo a distribuição *a posteriori*:
 
@@ -53,6 +68,7 @@ hist(sam, breaks=100, prob=T)
 # sigma2 é pequeno. Na função a seguir calculamos o loga-
 # ritmo do produtório apenas da soma envolvendo os 2 com-
 # ponentes da mistura:
+
 
 logA = function(X, mu, sigma2, nu) {
   n = length(X)
@@ -63,7 +79,12 @@ logA = function(X, mu, sigma2, nu) {
 }
 
 logA(sam, mu, s2, nu)
+
+#PLOT 
+pdf(file="./figuras/parte1/logA.pdf")
 hist(logA(sam, mu, s2, nu), prob=T, breaks=50)
+dev.off()
+
 sum(logA(sam, mu, s2, nu))
 
 # Função para calcular logaritmo do produto de termos en-
@@ -121,7 +142,11 @@ for(i in 1:t_mu) {
   kp_mu[i] = exp(logkpost(X=sam,
     mu=mu_sup[i], sigma2=s2, nu=nu, m=m, V=V, a=a, d=d))
 }
+
+#PLOT 
+pdf(file="./figuras/parte1/grid_mu1.pdf")
 plot(mu_sup, kp_mu, type="l")
+dev.off()
 
 mu_sup = seq(10.8, 11.2, 0.001) # Redefinindo.
 t_mu = length(mu_sup)
@@ -131,7 +156,11 @@ for(i in 1:t_mu) {
   kp_mu[i] = exp(logkpost(X=sam,
     mu=mu_sup[i], sigma2=s2, nu=nu, m=m, V=V, a=a, d=d))
 }
+
+#PLOT 
+pdf(file="./figuras/parte1/grid_mu2.pdf")
 plot(mu_sup, kp_mu, type="l")
+dev.off()
 
 # Para mu o intervalo de integ. será de 10.85 a 11.13.
 
@@ -145,7 +174,11 @@ for(i in 1:t_s2) {
   kp_s2[i] = exp(logkpost(X=sam,
     mu=mu, sigma2=s2_sup[i], nu=nu, m=m, V=V, a=a, d=d))
 }
+
+#PLOT
+pdf(file="./figuras/parte1/grid_sigma1.pdf")
 plot(s2_sup, kp_s2, type="l")
+dev.off()
 
 s2_sup = seq(0.4, 0.8, 0.001) # Redefinindo.
 t_s2 = length(s2_sup)
@@ -155,7 +188,11 @@ for(i in 1:t_s2) {
   kp_s2[i] = exp(logkpost(X=sam,
     mu=mu, sigma2=s2_sup[i], nu=nu, m=m, V=V, a=a, d=d))
 }
+
+#PLOT
+pdf(file="./figuras/parte1/grid_sigma2.pdf")
 plot(s2_sup, kp_s2, type="l")
+dev.off()
 
 # Para sigma2 o intervalo de integ. será de 0.48 a 0.78.
 
@@ -169,7 +206,10 @@ for(i in 1:t_nu) {
   kp_nu[i] = exp(logkpost(X=sam,
     mu=mu, sigma2=s2, nu=nu_sup[i], m=m, V=V, a=a, d=d))
 }
+#PLOT
+pdf(file="./figuras/parte1/grid_nu1.pdf")
 plot(nu_sup, kp_nu, type="l")
+dev.off()
 
 nu_sup = seq(0.1, 0.3, 0.001) #Redefinindo.
 t_nu = length(nu_sup)
@@ -179,7 +219,10 @@ for(i in 1:t_nu) {
   kp_nu[i] = exp(logkpost(X=sam,
     mu=mu, sigma2=s2, nu=nu_sup[i], m=m, V=V, a=a, d=d))
 }
+#PLOT
+pdf(file="./figuras/parte1/grid_nu2.pdf")
 plot(nu_sup, kp_nu, type="l")
+dev.off()
 
 # Para nu o intervalo de integ. será de 0.13 a 0.26.
 
@@ -235,6 +278,7 @@ prod_step3 = mu_step3*s2_step3*nu_step3; prod_step3
 
 cprop = function(l, X, mgr, s2gr, ngr, prst, m, V, a, d){
   c = 0
+  
   ar.aux = array(dim = rep(l, 3))
   for (i in 1:l) {
     for (j in 1:l) {
@@ -246,7 +290,10 @@ cprop = function(l, X, mgr, s2gr, ngr, prst, m, V, a, d){
       }
     }
   }
+  #PLOTS
+  pdf(file=paste('./figuras/parte1/constante_prop_', l, '.pdf', sep=''))
   hist(ar.aux, prob=T, breaks=1000)
+  dev.off()
   return(list(c, min(ar.aux), max(ar.aux),
               median(ar.aux), mean(ar.aux)))
 }
@@ -310,11 +357,27 @@ pmq3 = postmu_quarie(
   prst=pr3_dup23, m=m, V=V, a=a, d=d, c=c3[[1]])
 
 pmq1; pmq2; pmq3
-hist(pmq1); hist(pmq2); hist(pmq3)
 
+# PLOTS
+pdf(file="./figuras/parte1/post_mu1.pdf")
+hist(pmq1);
+dev.off()
+pdf(file="./figuras/parte1/post_mu2.pdf")
+hist(pmq2); 
+dev.off()
+pdf(file="./figuras/parte1/post_mu3.pdf")
+hist(pmq3)
+dev.off()
+
+pdf(file="./figuras/parte1/grid_mu_final1.pdf")
 plot(mu_gr1, pmq1, type = "l")
+dev.off()
+pdf(file="./figuras/parte1/grid_mu_final2.pdf")
 plot(mu_gr2, pmq2, type = "l")
+dev.off()
+pdf(file="./figuras/parte1/grid_mu_final3.pdf")
 plot(mu_gr3, pmq3, type = "l")
+dev.off()
 
 posts2_quarie = function(l, X, mgr, s2gr, ngr, prst,
                          m, V, a, d, c) {
@@ -344,11 +407,27 @@ psq3 = posts2_quarie(
   prst=pr3_dup13, m=m, V=V, a=a, d=d, c=c3[[1]])
 
 psq1; psq2; psq3
-hist(psq1); hist(psq2); hist(psq3)
 
+# PLOTS
+pdf(file="./figuras/parte1/post_sigma1.pdf")
+hist(psq1);
+dev.off()
+pdf(file="./figuras/parte1/post_sigma2.pdf")
+hist(psq2); 
+dev.off()
+pdf(file="./figuras/parte1/post_sigma3.pdf")
+hist(psq3)
+dev.off()
+
+pdf(file="./figuras/parte1/grid_sigma_final1.pdf")
 plot(s2_gr1, psq1, type = "l")
+dev.off()
+pdf(file="./figuras/parte1/grid_sigma_final2.pdf")
 plot(s2_gr2, psq2, type = "l")
+dev.off()
+pdf(file="./figuras/parte1/grid_sigma_final3.pdf")
 plot(s2_gr3, psq3, type = "l")
+dev.off()
 
 postnu_quarie = function(l, X, mgr, s2gr, ngr, prst,
                          m, V, a, d, c) {
@@ -378,11 +457,27 @@ pnq3 = postnu_quarie(
   prst=pr3_dup12, m=m, V=V, a=a, d=d, c=c3[[1]])
 
 pnq1; pnq2; pnq3
-hist(pnq1); hist(pnq2); hist(pnq3)
+pdf(file="./figuras/parte1/post_nu1.pdf")
+hist(pnq1);
+dev.off()
+pdf(file="./figuras/parte1/post_nu2.pdf")
+hist(pnq2); 
+dev.off()
+pdf(file="./figuras/parte1/post_nu3.pdf")
+hist(pnq3)
+dev.off()
 
+pdf(file="./figuras/parte1/grid_nu_final1.pdf")
 plot(nu_gr1, pnq1, type = "l")
+dev.off()
+pdf(file="./figuras/parte1/grid_nu_final1.pdf")
 plot(nu_gr2, pnq2, type = "l")
+dev.off()
+pdf(file="./figuras/parte1/grid_nu_final1.pdf")
 plot(nu_gr3, pnq3, type = "l")
+dev.off()
+
+
 
 # Para calcular média, variância, assimetria e curtose de
 # cada parâmetro a posteriori, considere as funções a se-
