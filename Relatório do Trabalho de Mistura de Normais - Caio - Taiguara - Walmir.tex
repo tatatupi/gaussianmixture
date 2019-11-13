@@ -72,6 +72,28 @@
 
 %Texto descrevendo o modelo de mistura de normais com variância contaminada (referenciando possivelmente alguns dos artigos consultados) e os objetivos do trabalho.
 
+
+Considere uma amostra $X = (X_{1}, X_{2}, ..., X_{n})$ independente e identicamente distribuída da seguinte mistura finita de distribuições normais:
+
+
+\begin{equation}\label{eq:dist_amostral}
+f(x|\mu,\sigma^2,\nu)=\nu\phi(x|\mu,100\sigma^2)+(1-\nu)\phi(x|\mu,\sigma^2), x\in\mathcal{R}
+\end{equation}
+
+Onde $\phi(x|M,V)$ denota a função densidade de probabilidade da distribuição normal com média M e variância V avaliada no ponto $x,\mu\in\mathcal{R},\sigma^2\in\mathcal{R^+}"$ e $\nu\in(0,1)$.
+
+\begin{itemize}
+	\item Assuma que, \textit{a priori}, $\mu|\sigma^2\sim{N}(m,V\sigma^2),\sigma^2\sim{GI}(a,d)$ e $\nu\sim{U}(0,1)$. Encontre a expressão da densidade $a posteriori$ de ($\mu$,$\sigma^2$,$\nu$).
+	\item Escolha valores apropriados para ($\mu$,$\sigma^2$,$\nu$). Fixado estes parâmetros, gere uma amostra de tamanho n = 500 da distribuição amostral. Armazene estes valores para análises posteriores. Faça uma apresentação gráfica apropriada da amostra gerada. Determine a média, variância, curtose e assimetria da amostra gerada.
+\end{itemize}
+
+DICA: pode-se usar, sem provar, que a mistura finita de distribuições normais pode ser hierarquicamente representada por 
+
+$X_i|\mu,\sigma^2,U_{i}=u_i\sim{N}(\mu,\sigma^2u_i^{-1})$ e $U_i|\mu\sim{discreta}(1,100)$, com $P(U_i=100)=\nu$.
+
+\subsection*{Escolha dos Parâmetros \textit{a priori}}
+
+
 \begin{figure}[!htb]
 	\centering
 	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/priori_mu.pdf}}
