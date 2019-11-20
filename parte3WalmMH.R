@@ -219,5 +219,17 @@ hist(am2_p$XparMH_nu, breaks=50, prob=T)
 st_sam_post(am3_p$XparMH_nu)
 hist(am3_p$XparMH_nu, breaks=50, prob=T)
 
-# Verificando a convergência e autocorrelação das cadeias
-# geradas para cada parâmetro...
+# Verificando a autocorrelação das cadeias geradas em ca-
+# da parâmetro:
+
+acf(am1_p$XparMH_mu)
+acf(am2_p$XparMH_mu)
+acf(am3_p$XparMH_mu)
+
+acf(am1_p$XparMH_s2)
+acf(am2_p$XparMH_s2)
+acf(am3_p$XparMH_s2)
+
+acf(am1_p$XparMH_nu)
+acf(am2_p$XparMH_nu)
+acf(am3_p$XparMH_nu)
