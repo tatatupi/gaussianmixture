@@ -36,14 +36,17 @@ logkpost(sam, mu, s2, nu, m, V, a, d) #Soma as log-veros-
 # remos considerar uma densidade conhecida, da qual sabe-
 # mos gerar valores aleatórios (amostras).
 
-# Escolhemos como densidade conhecida a normal multivari-
-# ada, com k=3. Desta forma, como nem todos os argumentos
-# da posteriori variam na reta real, devemos reparametri-
-# zá-los de tal forma que todos os suportes dos novos pa-
-# râmetros coincidam com os das médias na normal multiva-
-# riada. Logo, a reparametrização será feita tomando fun-
-# ções que levem sigma e nu de seus domínios para imagens
-# na reta real (funções logarítmica e logística).
+# Escolhemos como densidade conhecida a distribuição nor-
+# mal multivariada com dimensão 3.
+
+# Como nem todo argumento da posteriori varia na reta re-
+# al, vamos reparametrizá-los de modo que todos os supor-
+# tes dos novos parâmetros coincidam com os das médias na
+# normal multivariada.
+
+# Logo, a reparametrização será feita tomando funções que
+# levem sigma e nu dos seus domínios para imagens na reta
+# real (funções logarítmica e logística).
 
 logkpost_re(sam, mu, s2, nu, m, V, a, d)
 
@@ -51,22 +54,57 @@ logkpost_re(sam, mu, s2, nu, m, V, a, d)
 
 am1 = 500; am2 = 5000; am3 = 50000
 
-# Geremos agora da distrib. normal multivariada com média
-# de cada componente dada pelo respectivo valor no modelo
-# e variância dada pela matriz identidade de ordem 3:
+# Na escolha dos parâmetros da distribuição normal multi-
+# variada, o vetor de médias será dado pelos valores ver-
+# dadeiros de cada parâmetro do modelo gerador dos dados.
+
+# Já na matriz de covariância, sua diagonal principal se-
+# rá dada pelo quadrado de um sexto do valor da distância
+# entre os pontos de concentração da distribuição de cada
+# parâmetro, dados os demais. Vimos na quadratura de Rie-
+# mann que:
+
+# mu está concentrado entre 10.85 e 11.13;
+# sigma2 está concentrado entre 0.48 e 0.78;
+# nu está concentrado entre 0.13 e 0.26.
+
+# Reparametrizando, temos que:
+
+# par1 está concentrado entre 10.85 e 11.13;
+# par2 está concentrado entre log(0.48) e log(0.78);
+# par3 está concentrado entre log(0.13/0.87) e
+# log(0.26/0.74);
+
+((11.13-10.85)/6)^2
+((log(0.78)-log(0.48))/6)^2
+((log(0.26/0.74)-log(0.13/0.87))/6)^2
+
+# Logo, diag(Matriz) = c(0.0022, 0.0065, 0.0203).
+
+# Embora cada uma das distribuições a posteriori não seja
+# exatamente dada pela normal univariada, a ideia é obter
+# uma variância tal que 99.7% da massa probabilística es-
+# tivesse contida (3 desvios padrões), na prática 100%, e
+# ao mesmo tempo cobrir o mínimo possível de regiões cuja
+# massa probabilística seja praticamente nula.
+
+# Para os demais elementos da matriz de covariância, ire-
+# mos supor que a correlação entre os parâmetros é nula.
+
+# Geremos agora da distribuição normal multivariada:
 
 library(mvtnorm) # Pacote com funções densidade e gerado-
                  # ra da distrib. normal multivariada.
 
 set.seed(122019)
 r1_q = rmvnorm(am1, mean=c(11, log(0.64), log(0.2/0.8)),
-               sigma=diag(3))
+               sigma=diag(c(0.0022, 0.0065, 0.0203)))
 set.seed(122019)
 r2_q = rmvnorm(am2, mean=c(11, log(0.64), log(0.2/0.8)),
-               sigma=diag(3))
+               sigma=diag(c(0.0022, 0.0065, 0.0203)))
 set.seed(122019)
 r3_q = rmvnorm(am3, mean=c(11, log(0.64), log(0.2/0.8)),
-               sigma=diag(3))
+               sigma=diag(c(0.0022, 0.0065, 0.0203)))
 
 summary(r1_q[,1])
 summary(r2_q[,1])
@@ -90,56 +128,50 @@ d3_q = dmvnorm(r3_q, mean=c(11, log(0.64), log(0.2/0.8)),
 # to amostral, os avaliando no núcleo da posteriori dese-
 # jada para geração:
 
-w1 = numeric(am1); w2 = numeric(am2); w3 = numeric(am3)
-aux11 = numeric(am1); aux21 = numeric(am1)
-aux12 = numeric(am2); aux22 = numeric(am2)
-aux13 = numeric(am3); aux23 = numeric(am3)
-
-for(i in 1:am1) {
-  aux11[i] = logkpost_re(
-    X = sam, mu = r1_q[i,1], sigma2 = exp(r1_q[i,2]),
-    nu = 1/(1 + exp(-r1_q[i,3])), m, V, a, d)
+weiSIR = function(X, r_q, m, V, a, d, d_q) {
+  k = nrow(r_q)
+  aux1 = aux2 = w = numeric(k)
+  for(i in 1:k) {
+    aux1[i] = logkpost_re(X=X, mu=r_q[i,1],
+      sigma2=exp(r_q[i,2]), nu=1/(1+exp(-r_q[i,3])),
+      m=m, V=V, a=a, d=d)
+  }
+  aux2 = aux1/d_q
+  w = aux2/sum(aux2)
+  return(w)
 }
-aux21 = aux11/d1_q
-w1 = aux21/sum(aux21); sum(w1)
 
-for(i in 1:am2) {
-  aux12[i] = logkpost_re(
-    X = sam, mu = r2_q[i,1], sigma2 = exp(r2_q[i,2]),
-    nu = 1/(1 + exp(-r2_q[i,3])), m, V, a, d)
-}
-aux22 = aux12/d2_q
-w2 = aux22/sum(aux22); sum(w2)
-
-for(i in 1:am3) {
-  aux13[i] = logkpost_re(
-    X = sam, mu = r3_q[i,1], sigma2 = exp(r3_q[i,2]),
-    nu = 1/(1 + exp(-r3_q[i,3])), m, V, a, d)
-}
-aux23 = aux13/d3_q
-w3 = aux23/sum(aux23); sum(w3)
+w1 = weiSIR(sam, r1_q, m, V, a, d, d1_q)
+w2 = weiSIR(sam, r2_q, m, V, a, d, d2_q)
+w3 = weiSIR(sam, r3_q, m, V, a, d, d3_q)
 
 set.seed(122019)
 am1_mu_p = sample(x=r1_q[,1], size=am1,
                   replace=T, prob=w1)
+set.seed(122019)
 am1_s2_p = sample(x=exp(r1_q[,2]), size=am1,
                   replace=T, prob=w1)
+set.seed(122019)
 am1_nu_p = sample(x=1/(1+exp(-r1_q[,3])), size=am1,
                   replace=T, prob=w1)
 
 set.seed(122019)
 am2_mu_p = sample(x=r2_q[,1], size=am2,
                   replace=T, prob=w2)
+set.seed(122019)
 am2_s2_p = sample(x=exp(r2_q[,2]), size=am2,
                   replace=T, prob=w2)
+set.seed(122019)
 am2_nu_p = sample(x=1/(1+exp(-r2_q[,3])), size=am2,
                   replace=T, prob=w2)
 
 set.seed(122019)
 am3_mu_p = sample(x=r3_q[,1], size=am3,
                   replace=T, prob=w3)
+set.seed(122019)
 am3_s2_p = sample(x=exp(r3_q[,2]), size=am3,
                   replace=T, prob=w3)
+set.seed(122019)
 am3_nu_p = sample(x=1/(1+exp(-r3_q[,3])), size=am3,
                   replace=T, prob=w3)
 
