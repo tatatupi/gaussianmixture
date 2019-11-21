@@ -3,3 +3,6 @@
 *.Rhistory
 *.aux
 *.gz
+*.bbl
+*.blg
+*.out

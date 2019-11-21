@@ -1,4 +1,4 @@
-\documentclass[12pt,reqno,a4paper,oneside]{report}
+\documentclass[12pt,reqno,a4paper,oneside, titlepage]{article}
 
 \usepackage{amsfonts, amsmath,
 	        amssymb, amsthm}  % Fontes e símbolos matemáticos da AMS.
@@ -14,10 +14,12 @@
 \usepackage{indentfirst} % Indentará sempre o 1º parágrafo de cada seção do relatório.
 %\usepackage{enumitem}   % Edição mais elaborada de listas
                          % Conflito com ambiente "enumerate"!.
-%\usepackage{hyperref}   % Criação de "hyperlinks".
+%\usepackage{hyperref}    % Criação de "hyperlinks".
 \usepackage{multirow}    % Para obter uma célula com uma coluna e várias linhas.
 \usepackage{ragged2e}    % Opções de alinhamento do texto.
 \usepackage{titlesec}    % Formatação de títulos de seções.
+
+\usepackage{cite}
 
 \usepackage[FIGTOPCAP]{subfigure}
 
@@ -28,9 +30,9 @@
     {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{10pt}{\large}
 \titlespacing*{\chapter}{0pt}{0pt}{15pt}
 
-\titleformat{\section}
-{\normalfont\bfseries\normalsize}
-{\thesection.}{0.5em}{}
+%\titleformat{\section}
+%{\normalfont\bfseries\normalsize}
+%{\thesection.}{0.5em}{}
 
 \captionsetup{justification = centering} %Centraliza os títulos das tabelas.
 
@@ -66,32 +68,47 @@
 	\\
 	\\}
 \date{Belo Horizonte, 2 de dezembro de 2019}
+
 \maketitle
 
-\section*{\Large Introdução}
+
+\section{Introdução}
+
+Este trabalho tem como objetivo a implementação de agoritmos para aproximação de uma distribuição \textit{a posteriori}, através das técnicas: i) quadratura de Riemann; ii) amostragem por importância (SIR); e iii) \textit{Markov chain Monte Carlo} (MCMC), via Metropolis-hastings. 
+
+A Seção \ref{formulacao} descreve o modelo utilizado para a distribuição amostral, uma mistura finita de distribuições normais, e para as distribuições \textit{a priori}. Em seguida, os parâmetros escolhidos para a simulação são definidos na Seção \ref{parametros} e uma amostra gerada por simualção, para um tamanho amostral de 500, é apresentada na Seção \ref{amostra}. Finalmente, nas Seções \ref{quadratura}, \ref{sir} e \ref{mcmc}, os algoritmos são apresentados, assim como os resultados obtidos.
+
+\subsection{Formulação do Modelo}\label{formulacao}
 
 %Texto descrevendo o modelo de mistura de normais com variância contaminada (referenciando possivelmente alguns dos artigos consultados) e os objetivos do trabalho.
 
-
 Considere uma amostra $X = (X_{1}, X_{2}, ..., X_{n})$ independente e identicamente distribuída da seguinte mistura finita de distribuições normais:
 
-
 \begin{equation}\label{eq:dist_amostral}
-f(x|\mu,\sigma^2,\nu)=\nu\phi(x|\mu,100\sigma^2)+(1-\nu)\phi(x|\mu,\sigma^2), x\in\mathcal{R}
+f(x|\mu,\sigma^2,\nu)=\nu\phi(x|\mu,100\sigma^2)+(1-\nu)\phi(x|\mu,\sigma^2), \ x\in\mathcal{R},
 \end{equation}
 
-Onde $\phi(x|M,V)$ denota a função densidade de probabilidade da distribuição normal com média M e variância V avaliada no ponto $x,\mu\in\mathcal{R},\sigma^2\in\mathcal{R^+}"$ e $\nu\in(0,1)$.
+\noindent onde $\phi(x|M,V)$ denota a função densidade de probabilidade da distribuição normal com média M e variância V avaliada no ponto $x,\mu\in\mathcal{R},\sigma^2\in\mathcal{R^+}$ e $\nu\in(0,1)$. Os parâmetros $\mu$, $\sigma^2$ e $\mu$ possuem distribuição \textit{a priori} conforme
 
-\begin{itemize}
-	\item Assuma que, \textit{a priori}, $\mu|\sigma^2\sim{N}(m,V\sigma^2),\sigma^2\sim{GI}(a,d)$ e $\nu\sim{U}(0,1)$. Encontre a expressão da densidade $a posteriori$ de ($\mu$,$\sigma^2$,$\nu$).
-	\item Escolha valores apropriados para ($\mu$,$\sigma^2$,$\nu$). Fixado estes parâmetros, gere uma amostra de tamanho n = 500 da distribuição amostral. Armazene estes valores para análises posteriores. Faça uma apresentação gráfica apropriada da amostra gerada. Determine a média, variância, curtose e assimetria da amostra gerada.
-\end{itemize}
+
+\begin{equation}\label{eq:priori}
+\begin{split}
+\mu|\sigma^2\sim{N}(m,V\sigma^2),\\
+\sigma^2\sim{GI}(a,d),\\
+\nu\sim{U}(0,1).\\
+\end{split}
+\end{equation}
+
+%Encontre a expressão da densidade $a posteriori$ de ($\mu$,$\sigma^2$,$\nu$).
+
+%Escolha valores apropriados para ($\mu$,$\sigma^2$,$\nu$). Fixado estes parâmetros, gere uma amostra de tamanho n = 500 da distribuição amostral. Armazene estes valores para análises posteriores. Faça uma apresentação gráfica apropriada da amostra gerada. Determine a média, variância, curtose e assimetria da amostra gerada.
+
 
 DICA: pode-se usar, sem provar, que a mistura finita de distribuições normais pode ser hierarquicamente representada por 
 
-$X_i|\mu,\sigma^2,U_{i}=u_i\sim{N}(\mu,\sigma^2u_i^{-1})$ e $U_i|\mu\sim{discreta}(1,100)$, com $P(U_i=100)=\nu$.
 
-\subsection*{Escolha dos Parâmetros \textit{a priori}}
+
+\subsection{Escolha dos Parâmetros \textit{a priori}}\label{parametros}
 
 
 \begin{figure}[!htb]
@@ -102,6 +119,19 @@ $X_i|\mu,\sigma^2,U_{i}=u_i\sim{N}(\mu,\sigma^2u_i^{-1})$ e $U_i|\mu\sim{discret
 	\label{fig:priori}
 \end{figure}
 
+\subsection{Amostra Gerada}\label{amostra}
+
+Para gerar a amostra, foi utilizada a representação hierárquica da mistura finita de distribuições normais \citep{Chen2017}, definida como:
+
+\begin{equation}\label{eq:hierquica}
+\begin{split}
+X_i|\mu,\sigma^2,U_{i}=u_i\sim{N}(\mu,\sigma^2u_i^{-1}),\\
+U_i|\mu\sim{discreta}(1,100),\\ 
+P(U_i=100)=\nu.\\
+\end{split}
+\end{equation}
+
+
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.75\textwidth]{figuras/parte1/amostra_n.pdf}
@@ -111,7 +141,7 @@ $X_i|\mu,\sigma^2,U_{i}=u_i\sim{N}(\mu,\sigma^2u_i^{-1})$ e $U_i|\mu\sim{discret
 
 
 
-\section*{\Large O Método da Quadratura de Riemann}
+\section{O Método da Quadratura de Riemann}\label{quadratura}
 %Texto descrevendo o método e como foi feita neste trabalho a aproximação via quadratura de Riemann.
 
 \begin{figure}[!htb]
@@ -183,15 +213,15 @@ $X_i|\mu,\sigma^2,U_{i}=u_i\sim{N}(\mu,\sigma^2u_i^{-1})$ e $U_i|\mu\sim{discret
 	\label{fig:post_nu}
 \end{figure}
 
-\section*{\Large O Método da Reamostragem Ponderada}
+\section{O Método da Reamostragem Ponderada}\label{sir}
 
 %Texto descrevendo o método e como foi feita neste trabalho a geração de variáveis aleatórias da distribuição de interesse usando este mesmo método.
 
-\section*{\Large O Método de Monte Carlo via Cadeias de Markov}
+\section{O Método de Monte Carlo via Cadeias de Markov}\label{mcmc}
 
 %Texto descrevendo o método e como foi feita neste trabalho a geração de variáveis aleatórias da distribuição de interesse usando este mesmo método, bem como o amostrador selecionado (possivelmente Gibbs ou outro que for de melhor uso para todo o grupo).
 
 \bibliographystyle{unsrt}
-%\bibliography{arquivo.bib}
+\bibliography{ref}
 
-\end{document}
+\end{document}	
