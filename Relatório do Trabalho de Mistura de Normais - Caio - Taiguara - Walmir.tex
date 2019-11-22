@@ -3,6 +3,7 @@
 \usepackage{amsfonts, amsmath,
 	        amssymb, amsthm}  % Fontes e símbolos matemáticos da AMS.
 \usepackage{graphicx}         % Importação de gráficos.
+\usepackage{subfig}
 \usepackage[brazil]{babel}    % Idioma português (Brasil) como padrão.
 \usepackage[utf8]{inputenc}   % Codificação UTF-8.
 %\usepackage{natbib}           % Para citações.
@@ -120,25 +121,22 @@ Como não se tem uma expressão fechada para $p(\mu, \sigma^2, \nu | \bm{x})$, m
 
 Antes de implementar cada um dos métodos numéricos, foram feitos três gráficos (Figuras \ref{fig:maspro_mu} a \ref{fig:maspro_nu}) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ quando se varia um dos três parâmetros e os outros dois são mantidos fixos nos respectivos valores verdadeiros pressupostos para o modelo que gerou a amostra. Tais gráficos permitem dizer, para cada parâmetro, quais são os intervalos do suporte correspondente que concentram praticamente toda a massa probabilística da densidade marginal \textit{a posteriori} associada, ainda que as densidades calculadas sejam válidas apenas quando os outros dois parâmetros são fixados em valores arbitrários. Esta informação será útil para definir os intervalos de integração na quadratura de Riemann e a matriz de covariância da distribuição proposta nos métodos SIR e MCMC-MH para aproximação das densidades marginais verdadeiras.
 
-\begin{figure}[htb]
+\begin{figure}[htb]%
 	\centering
-	\includegraphics[scale=0.7]{figuras/maspro_mu.pdf}
-	\caption{Intervalo para $\mu$ pelo núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ dado $\sigma^2 = 0.64, \nu = 0.2$}
-	\label{fig:maspro_mu}
-\end{figure}
-
-\begin{figure}[htb]
-	\centering
-	\includegraphics[scale=0.7]{figuras/maspro_s2.pdf}
-	\caption{Intervalo para $\sigma^2$ pelo núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ dados $\mu = 11, \nu = 0.2$}
-	\label{fig:maspro_s2}
-\end{figure}
-
-\begin{figure}[htb]
-	\centering
-	\includegraphics[scale=0.7]{figuras/maspro_nu.pdf}
-	\caption{Intervalo para $\nu$ pelo núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ dados $\mu = 11, \sigma^2 = 0.64$}
-	\label{fig:maspro_nu}
+	\subfloat[Intervalo para $\mu$ dados $\sigma^2 = 0.64, \nu = 0.2$]{
+		{
+			\label{fig:maspro_mu}
+			\includegraphics[scale=0.4]{figuras/maspro_mu.pdf}}}%
+	\qquad
+	\subfloat[Intervalo para $\sigma^2$ dados $\mu = 11, \nu = 0.2$]{
+		{
+			\label{fig:maspro_s2}
+			\includegraphics[scale=0.4]{figuras/maspro_s2.pdf}}}%
+	\subfloat[Intervalo para $nu$ dados $\mu = 11, \sigma^2 = 0.64$]{
+		{
+			\label{fig:maspro_nu}
+			\includegraphics[scale=0.4]{figuras/maspro_nu.pdf}}}%
+	\caption{Intervalos de massa probabilística para cada parâmetro (variável aleatória) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$}%
 \end{figure}
 
 \section{\Large O Método da Quadratura de Riemann}\label{quarie}
