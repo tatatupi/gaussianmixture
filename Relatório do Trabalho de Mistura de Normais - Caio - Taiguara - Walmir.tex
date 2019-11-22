@@ -1,11 +1,12 @@
-\documentclass[12pt,reqno,a4paper,oneside, titlepage]{article}
+\documentclass[12pt,reqno,a4paper,oneside]{article}
 
 \usepackage{amsfonts, amsmath,
 	        amssymb, amsthm}  % Fontes e símbolos matemáticos da AMS.
 \usepackage{graphicx}         % Importação de gráficos.
 \usepackage[brazil]{babel}    % Idioma português (Brasil) como padrão.
 \usepackage[utf8]{inputenc}   % Codificação UTF-8.
-\usepackage{natbib}           % Para citações.
+%\usepackage{natbib}           % Para citações.
+%\usepackage{cite}             % Idem.
 
 \usepackage{bm}          % Equações em negrito com qualidade superior.
 \usepackage{booktabs}    % Edição de linhas de tabelas.
@@ -13,28 +14,17 @@
 \usepackage{color}       % Edição de cores.
 \usepackage{indentfirst} % Indentará sempre o 1º parágrafo de cada seção do relatório.
 %\usepackage{enumitem}   % Edição mais elaborada de listas
-                         % Conflito com ambiente "enumerate"!.
-%\usepackage{hyperref}    % Criação de "hyperlinks".
+                         % Conflito com ambiente "enumerate" no beamer!.
+%\usepackage{hyperref}   % Criação de "hyperlinks".
 \usepackage{multirow}    % Para obter uma célula com uma coluna e várias linhas.
 \usepackage{ragged2e}    % Opções de alinhamento do texto.
-\usepackage{titlesec}    % Formatação de títulos de seções.
 
-\usepackage{cite}
-
-\usepackage[FIGTOPCAP]{subfigure}
+%\usepackage[FIGTOPCAP]{subfigure} % Acesso a figuras dentro de pastas.
 
 \usepackage[top=2cm, bottom=2cm,
             left=2cm, right=2cm]{geometry} % Margens do texto.
 
-\titleformat{\chapter}[display]
-    {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{10pt}{\large}
-\titlespacing*{\chapter}{0pt}{0pt}{15pt}
-
-%\titleformat{\section}
-%{\normalfont\bfseries\normalsize}
-%{\thesection.}{0.5em}{}
-
-\captionsetup{justification = centering} %Centraliza os títulos das tabelas.
+\captionsetup{justification = centering} % Centraliza os títulos das tabelas.
 
 % Símbolo matemático para independência entre variáveis aleatórias:
 
@@ -45,8 +35,9 @@
 \title{\huge Relatório do Trabalho de\\
 	Estatística Bayesiana I}
 \author{\\
+	\\
 	\huge Mistura de Normais\\
-	\huge com Variância Contaminada
+	\huge com Variância Contaminada\\
 	\\
 	\\
 	\\
@@ -57,8 +48,11 @@
 	\\
 	\\
 	\\
+	\\
 	\Large Prof. Dani Gamerman\\
 	\Large Profª Rosangela Helena Loschi\\
+	\\
+	\\
 	\\
 	\\
 	\\
@@ -66,162 +60,104 @@
 	Instituto de Ciências Exatas\\
 	Universidade Federal de Minas Gerais\\
 	\\
+	\\
+	\\
+	\\
+	\\
 	\\}
 \date{Belo Horizonte, 2 de dezembro de 2019}
-
 \maketitle
 
+\newpage
 
-\section{Introdução}
+\section{\Large Introdução}
 
-Este trabalho tem como objetivo a implementação de agoritmos para aproximação de uma distribuição \textit{a posteriori}, através das técnicas: i) quadratura de Riemann; ii) amostragem por importância (SIR); e iii) \textit{Markov chain Monte Carlo} (MCMC), via Metropolis-hastings. 
+O presente trabalho tem como objetivo obter, dada uma densidade \textit{a posteriori} conjunta dos parâmetros de um modelo probabilístico para uma amostra previamente observada, as densidades marginais de cada parâmetro, bem como as estatísticas de média; variância; assimetria e curtose associadas, a partir da implementação de três métodos numéricos, a saber: (i) integração via quadratura de Riemann; (ii) reamostragem por importância sequencial (em inglês, \textit{Sequential Importance Resampling}, ou SIR); e (iii) integração via Monte Carlo em cadeias de Markov (em inglês, \textit{Markov chain Monte Carlo}, ou MCMC) com inovações dadas pelo algoritmo de Metropolis-Hastings (MH).
 
-A Seção \ref{formulacao} descreve o modelo utilizado para a distribuição amostral, uma mistura finita de distribuições normais, e para as distribuições \textit{a priori}. Em seguida, os parâmetros escolhidos para a simulação são definidos na Seção \ref{parametros} e uma amostra gerada por simualção, para um tamanho amostral de 500, é apresentada na Seção \ref{amostra}. Finalmente, nas Seções \ref{quadratura}, \ref{sir} e \ref{mcmc}, os algoritmos são apresentados, assim como os resultados obtidos.
-
-\subsection{Formulação do Modelo}\label{formulacao}
-
-%Texto descrevendo o modelo de mistura de normais com variância contaminada (referenciando possivelmente alguns dos artigos consultados) e os objetivos do trabalho.
-
-Considere uma amostra $X = (X_{1}, X_{2}, ..., X_{n})$ independente e identicamente distribuída da seguinte mistura finita de distribuições normais:
-
-\begin{equation}\label{eq:dist_amostral}
-f(x|\mu,\sigma^2,\nu)=\nu\phi(x|\mu,100\sigma^2)+(1-\nu)\phi(x|\mu,\sigma^2), \ x\in\mathcal{R},
+Para o modelo que gerou a amostra observada, será pressuposto que sua especificação é dada por uma mistura finita de normais. Sejam $X_{1}, \ldots, X_{n}$ amostras aleatórias independentes, condicionalmente a um vetor de parâmetros $\bm{\theta} = (\mu, \sigma^2, \nu)$, e identicamente distribuídas com função densidade dada por
+\begin{equation}\label{eq:dist_am}
+f(x | \mu, \sigma^2, \nu) = \nu \phi(x | \mu, 100 \sigma^2) + (1 - \nu) \phi(x | \mu, \sigma^2), \ x \in \mathbb{R},
 \end{equation}
+\noindent onde $\phi(x | \mu, \sigma^2) = (2\pi\sigma^2)^{-1} \exp[-(x - \mu)^2/(2\sigma^2)]$ denota a função densidade da distribuição normal com média $\mu$ e variância $\sigma^2$ avaliada no ponto $x$. Para o suporte de cada parâmetro, tem-se que $\mu \in \mathbb{R}, \sigma^2 \in \mathbb{R}_+$ e $\nu \in (0,1)$.
 
-\noindent onde $\phi(x|M,V)$ denota a função densidade de probabilidade da distribuição normal com média M e variância V avaliada no ponto $x,\mu\in\mathcal{R},\sigma^2\in\mathcal{R^+}$ e $\nu\in(0,1)$. Os parâmetros $\mu$, $\sigma^2$ e $\mu$ possuem distribuição \textit{a priori} conforme
+A mistura finita descrita em \eqref{eq:dist_am} possui duas componentes normais que diferem nas respectivas variâncias: para a primeira componente, o valor é 100 vezes o da segunda. Desta forma, tem-se uma mistura finita de normais com variância \textit{contaminada}.
 
+Para os parâmetros $\mu$, $\sigma^2$ e $\nu$, será pressuposto que cada um segue uma distribuição \textit{a priori} predeterminada: $\mu | \sigma^2 \sim{N} (m, V \sigma^2)$, onde $N(\cdot)$ denota a distribuição normal com média $m \in \mathbb{R}$ e variância $V \sigma^2$, $V > 0$; $\sigma^2 \sim{GI} (a,d)$, onde $GI(\cdot)$ denota a distribuição gama inversa com parâmetros de forma $a > 0$ e de taxa $d > 0$ (inverso da escala); e $\nu \sim{U}(0,1)$, a distribuição uniforme contínua padrão.
 
-\begin{equation}\label{eq:priori}
-\begin{split}
-\mu|\sigma^2\sim{N}(m,V\sigma^2),\\
-\sigma^2\sim{GI}(a,d),\\
-\nu\sim{U}(0,1).\\
-\end{split}
+Para gerar uma amostra aleatória do modelo em $\eqref{eq:dist_am}$, foi utilizada uma representação hierárquica (Lachos \textit{et al.}, 2013)\cite{Lachos2013} tal que
+\begin{equation}
+X_i | \mu, \sigma^2, U_{i} = u_i \sim{N}(\mu, \sigma^2 u_i^{-1}), \quad U_i | \mu \sim{p_d}(1,100) : P(U_i = 100) = \nu. \label{eq:hier}
 \end{equation}
+\noindent onde $p_d(a,b)$ denota uma função de probabilidade (discreta) que atribui massa probabilística apenas aos pontos $a$ e $b$.
 
-%Encontre a expressão da densidade $a posteriori$ de ($\mu$,$\sigma^2$,$\nu$).
+A partir do produto entre a função de verossimilhança $f(\bm{x} | \mu, \sigma^2, \nu)$ para uma amostra $\bm{x} = (x_1, \ldots, x_n)$ gerada através da representação hierárquica em \eqref{eq:hier} e das densidades \textit{a priori} para cada parâmetro do modelo, obtém-se o núcleo (em inglês, \textit{kernel}) da densidade \textit{a posteriori} conjunta $p(\mu, \sigma^2, \nu | \bm{x})$. Como a expressão da densidade \textit{a posteriori} possui uma constante de proporcionalidade $f(x_1, \ldots, x_n) = f(\bm{x})$ não facilmente calculável, mas que não depende dos parâmetros, pode-se usar o núcleo daquela para inferir sobre cada um dos parâmetros. No modelo de mistura finita de duas componentes normais com variância contaminada, temos que
+\begin{align}
+p(\mu, \sigma^2, \nu | \bm{x})
+&= \dfrac{f(\bm{x} | \mu, \sigma^2, \nu) \times p(\mu, \sigma^2, \nu)}{f(\bm{x})} \propto \prod_{i=1}^{n} f(x_i) \times p(\mu | \sigma^2) \times p(\sigma^2) \times p(\nu) \nonumber\\
+&\propto \prod_{i=1}^{n} \left[ \nu \phi(x_i | \mu, 100 \sigma^2) + (1 - \nu) \phi(x_i | \mu, \sigma^2) \right] \times \nonumber \\
+&\times \phi(\mu | m, V \sigma^2) \times \dfrac{d^a}{\Gamma(a)} \left(\dfrac{1}{\sigma^2}\right)^{a + 1} \exp\left(-\dfrac{d}{\sigma^2}\right) \nonumber \\
+&\propto \left(\dfrac{1}{\sigma^2}\right)^{(n + 1)/2 + a + 1} \exp\left\{-\dfrac{\left[(\mu - m)^2 / (2V) + d\right]}{\sigma^2}\right\} \times \textrm{A}(\bm{x} | \mu, \sigma^2, \nu), \label{eq:dist_post}
+\end{align}
+onde
+\begin{equation*}
+\textrm{A}(\bm{x} | \mu, \sigma^2, \nu) = \prod_{i=1}^{n} \left\{  \dfrac{\nu}{10} \exp\left[-\dfrac{(x_i - \mu)^2}{200\sigma^2}\right] + (1 - \nu) \exp\left[-\dfrac{(x_i - \mu)^2}{2\sigma^2}\right] \right\}
+\end{equation*}
 
-%Escolha valores apropriados para ($\mu$,$\sigma^2$,$\nu$). Fixado estes parâmetros, gere uma amostra de tamanho n = 500 da distribuição amostral. Armazene estes valores para análises posteriores. Faça uma apresentação gráfica apropriada da amostra gerada. Determine a média, variância, curtose e assimetria da amostra gerada.
+Evidentemente, trabalhar diretamente com o lado direito em \eqref{eq:dist_post} não é computacionalmente agradável, uma vez que esta é um produto de várias quantidades sempre menores do que 1, muitas delas próximas de 0, o que pode levar a problemas de aproximação numérica. Desta forma, sempre que for necessário calcular o núcleo da \textit{posteriori}, dada uma amostra, inicialmente será tomada a soma do logaritmo de todos as quantidades que compõem este produto e só depois esta mesma soma será exponenciada. Dependendo do quão negativa for a soma (o logaritmo de termos entre 0 e 1 é sempre negativo), quando exponenciada ela pode ou não ser numericamente igual a 0.
 
+Logo, na geração da amostra $\bm{x}$ deve-se escolher valores de $\mu$, $\sigma^2$ e $\nu$ tais que o núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ não seja numericamente nulo para os verdadeiros valores dos parâmetros. Considerando o uso da linguagem de programação \textit{R} (R Core Team, 2019)\cite{RCoreTeam2019}, esta escolha não é difícil. Na versão 3.5.3, o menor valor que pode ser tomado como argumento da função \verb|exp()| do \textit{R} é $-709$. Desta forma, basta tomar $\mu$, $\sigma^2$ e $\nu$ tais que o logaritmo do lado direito em \eqref{eq:dist_post} seja maior do que $-709$.
 
-DICA: pode-se usar, sem provar, que a mistura finita de distribuições normais pode ser hierarquicamente representada por 
+Para o presente trabalho, foram considerados uma amostra de tamanho $n=500$ (Figura \ref{fig:sample_n}) da mistura finita de normais com variância contaminada parametrizada de tal forma que $\mu = 11$; $\sigma^2 = 0.64$ e $\nu = 0.2$, com hiperparâmetros $m = 11$; $V = 1$; $a = 7$ e $d = 4$ nas distribuições \textit{a priori}. Fixada uma semente aleatória, para a amostra gerada a partir dos valores citados, o logaritmo do núcleo da densidade \textit{a posteriori} foi igual a $-518.9061$, cuja exponencial é aproximadamente igual a $4.385 \times 10^{-226}$.
 
-
-
-\subsection{Escolha dos Parâmetros \textit{a priori}}\label{parametros}
-
-
-\begin{figure}[!htb]
+\begin{figure}[htb]
 	\centering
-	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/priori_mu.pdf}}
-	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/priori_sigma.pdf}} 
-	\caption{Distribuições a priori}
-	\label{fig:priori}
+	\includegraphics[scale=0.8]{figuras/amostra_n.pdf}
+	\caption{Histograma da amostra gerada do modelo}
+	\label{fig:sample_n}
 \end{figure}
 
-\subsection{Amostra Gerada}\label{amostra}
+Como não se tem uma expressão fechada para $p(\mu, \sigma^2, \nu | \bm{x})$, mas apenas de seu núcleo, para obter as densidades marginais de $\mu$, $\sigma^2$ e $\nu$ dado $\bm{x}$, bem como as estatísticas associadas a cada uma delas, é necessário aproximá-las por algum método numérico. Na seções \ref{quarie}, é apresentado o primeiro dos três métodos considerados: a integração via quadratura de Riemann. Por sua vez, na seção \ref{sir} é descrito o método SIR. Por fim, na seção \ref{mcmc}, é retratada a integração via MCMC com inovações MH. Todos os métodos serão testados e comparados no contexto do modelo exposto acima. Na seção \ref{consfin}, são resumidos os resultados obtidos para os três métodos, bem como é feita uma avaliação comparativa da qualidade de sua convergência.
 
-Para gerar a amostra, foi utilizada a representação hierárquica da mistura finita de distribuições normais \citep{Chen2017}, definida como:
+Antes de implementar cada um dos métodos numéricos, foram feitos três gráficos (Figuras \ref{fig:maspro_mu} a \ref{fig:maspro_nu}) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ quando se varia um dos três parâmetros e os outros dois são mantidos fixos nos respectivos valores verdadeiros pressupostos para o modelo que gerou a amostra. Tais gráficos permitem dizer, para cada parâmetro, quais são os intervalos do suporte correspondente que concentram praticamente toda a massa probabilística da densidade marginal \textit{a posteriori} associada, ainda que as densidades calculadas sejam válidas apenas quando os outros dois parâmetros são fixados em valores arbitrários. Esta informação será útil para definir os intervalos de integração na quadratura de Riemann e a matriz de covariância da distribuição proposta nos métodos SIR e MCMC-MH para aproximação das densidades marginais verdadeiras.
 
-\begin{equation}\label{eq:hierquica}
-\begin{split}
-X_i|\mu,\sigma^2,U_{i}=u_i\sim{N}(\mu,\sigma^2u_i^{-1}),\\
-U_i|\mu\sim{discreta}(1,100),\\ 
-P(U_i=100)=\nu.\\
-\end{split}
-\end{equation}
-
-
-\begin{figure}[!htb]
+\begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.75\textwidth]{figuras/parte1/amostra_n.pdf}
-	\caption{Amostra de tamanho 500.}
-	\label{fig:sample}
+	\includegraphics[scale=0.7]{figuras/maspro_mu.pdf}
+	\caption{Intervalo para $\mu$ pelo núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ dado $\sigma^2 = 0.64, \nu = 0.2$}
+	\label{fig:maspro_mu}
 \end{figure}
 
+\begin{figure}[htb]
+	\centering
+	\includegraphics[scale=0.7]{figuras/maspro_s2.pdf}
+	\caption{Intervalo para $\sigma^2$ pelo núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ dados $\mu = 11, \nu = 0.2$}
+	\label{fig:maspro_s2}
+\end{figure}
 
+\begin{figure}[htb]
+	\centering
+	\includegraphics[scale=0.7]{figuras/maspro_nu.pdf}
+	\caption{Intervalo para $\nu$ pelo núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ dados $\mu = 11, \sigma^2 = 0.64$}
+	\label{fig:maspro_nu}
+\end{figure}
 
-\section{O Método da Quadratura de Riemann}\label{quadratura}
+\section{\Large O Método da Quadratura de Riemann}\label{quarie}
+
 %Texto descrevendo o método e como foi feita neste trabalho a aproximação via quadratura de Riemann.
 
-\begin{figure}[!htb]
-	\centering
-	\includegraphics[width=0.75\textwidth]{figuras/parte1/logA.pdf}
-	\caption{Amostra de tamanho 500.}
-	\label{fig:logA}
-\end{figure}
-
-\begin{figure}[!htb]
-	\centering
-	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/grid_mu1.pdf}}
-	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/grid_mu2.pdf}} 
-	\caption{Grade de mu}
-	\label{fig:grid_mu}
-\end{figure}
-
-\begin{figure}[!htb]
-	\centering
-	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/grid_sigma1.pdf}}
-	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/grid_sigma2.pdf}} 
-	\caption{Grades de sigma}
-	\label{fig:grid_sigma}
-\end{figure}
-
-\begin{figure}[!htb]
-	\centering
-	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/grid_nu1.pdf}}
-	\subfigure[]{\includegraphics[width=0.45\textwidth]{figuras/parte1/grid_nu2.pdf}} 
-	\caption{Grades de nu}
-	\label{fig:grid_nu}
-\end{figure}
-
-
-\begin{figure}[!htb]
-	\centering
-	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/constante_prop_16.pdf}}
-	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/constante_prop_51.pdf}} 
-	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/constante_prop_101.pdf}} 
-	\caption{Calculo da constante de proporcionalidade}
-	\label{fig:const_prop}
-\end{figure}
-
-
-\begin{figure}[!htb]
-	\centering
-	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_mu1.pdf}}
-	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_mu2.pdf}} 
-	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_mu3.pdf}} 
-	\caption{Posteriori de mu}
-	\label{fig:post_mu}
-\end{figure}
-
-\begin{figure}[!htb]
-	\centering
-	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_sigma1.pdf}}
-	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_sigma2.pdf}} 
-	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_sigma3.pdf}} 
-	\caption{Posteriori de sigma}
-	\label{fig:post_sigma}
-\end{figure}
-
-\begin{figure}[!htb]
-	\centering
-	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_nu1.pdf}}
-	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_nu2.pdf}} 
-	\subfigure[]{\includegraphics[width=0.3\textwidth]{figuras/parte1/post_nu3.pdf}} 
-	\caption{Posteriori de nu}
-	\label{fig:post_nu}
-\end{figure}
-
-\section{O Método da Reamostragem Ponderada}\label{sir}
+\section{\Large O Método da Reamostragem Ponderada}\label{sir}
 
 %Texto descrevendo o método e como foi feita neste trabalho a geração de variáveis aleatórias da distribuição de interesse usando este mesmo método.
 
-\section{O Método de Monte Carlo via Cadeias de Markov}\label{mcmc}
+\section{\Large O Método de Monte Carlo via Cadeias de Markov}\label{mcmc}
 
 %Texto descrevendo o método e como foi feita neste trabalho a geração de variáveis aleatórias da distribuição de interesse usando este mesmo método, bem como o amostrador selecionado (possivelmente Gibbs ou outro que for de melhor uso para todo o grupo).
+
+\section{Considerações Finais}\label{consfin}
+
+%Texto descrevendo de forma resumida o que foi feito nas seções anteriores, bem como os resultados dos métodos quanto à convergência, à medida que se aumenta o tamanho amostral m da distribuição \textit{a poseteriori}.
 
 \bibliographystyle{unsrt}
 \bibliography{ref}
 
-\end{document}	
+\end{document}
