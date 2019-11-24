@@ -71,9 +71,9 @@
 
 \newpage
 
-\section{\Large Introdução}
+\section{Introdução}
 
-O presente trabalho tem como objetivo obter, dada uma densidade \textit{a posteriori} conjunta dos parâmetros de um modelo probabilístico para uma amostra previamente observada, as densidades marginais de cada parâmetro, bem como as estatísticas de média; variância; assimetria e curtose associadas, a partir da implementação de três métodos numéricos, a saber: (i) integração via quadratura de Riemann; (ii) reamostragem por importância sequencial (em inglês, \textit{Sequential Importance Resampling}, ou SIR); e (iii) integração via Monte Carlo em cadeias de Markov (em inglês, \textit{Markov chain Monte Carlo}, ou MCMC) com inovações dadas pelo algoritmo de Metropolis-Hastings (MH).
+O presente trabalho tem como objetivo obter, dada uma densidade \textit{a posteriori} conjunta dos parâmetros de um modelo probabilístico para uma amostra previamente observada, as densidades \textit{a posteriori} marginais de cada parâmetro, bem como as estatísticas de média; variância; assimetria e curtose associadas, a partir da implementação de três métodos numéricos, a saber: (i) integração via quadratura de Riemann; (ii) reamostragem por importância sequencial (em inglês, \textit{Sequential Importance Resampling}, ou SIR); e (iii) integração via Monte Carlo em cadeias de Markov (em inglês, \textit{Markov Chain Monte Carlo}, ou MCMC) com inovações dadas pelo algoritmo de Metropolis-Hastings (MH).
 
 Para o modelo que gerou a amostra observada, será pressuposto que sua especificação é dada por uma mistura finita de normais. Sejam $X_{1}, \ldots, X_{n}$ amostras aleatórias independentes, condicionalmente a um vetor de parâmetros $\bm{\theta} = (\mu, \sigma^2, \nu)$, e identicamente distribuídas com função densidade dada por
 \begin{equation}\label{eq:dist_am}
@@ -117,37 +117,58 @@ Para o presente trabalho, foram considerados uma amostra de tamanho $n=500$ (Fig
 	\label{fig:sample_n}
 \end{figure}
 
-Como não se tem uma expressão fechada para $p(\mu, \sigma^2, \nu | \bm{x})$, mas apenas de seu núcleo, para obter as densidades marginais de $\mu$, $\sigma^2$ e $\nu$ dado $\bm{x}$, bem como as estatísticas associadas a cada uma delas, é necessário aproximá-las por algum método numérico. Na seções \ref{quarie}, é apresentado o primeiro dos três métodos considerados: a integração via quadratura de Riemann. Por sua vez, na seção \ref{sir} é descrito o método SIR. Por fim, na seção \ref{mcmc}, é retratada a integração via MCMC com inovações MH. Todos os métodos serão testados e comparados no contexto do modelo exposto acima. Na seção \ref{consfin}, são resumidos os resultados obtidos para os três métodos, bem como é feita uma avaliação comparativa da qualidade de sua convergência.
+Como não se tem uma expressão fechada para $p(\mu, \sigma^2, \nu | \bm{x})$, mas apenas de seu núcleo, para obter as densidades \textit{a posteriori} marginais de $\mu$, $\sigma^2$ e $\nu$ dado $\bm{x}$, bem como as estatísticas associadas a cada uma delas, é necessário aproximá-las por algum método numérico. Na seções \ref{quarie}, é apresentado o primeiro dos três métodos considerados: a integração via quadratura de Riemann. Por sua vez, na seção \ref{sir} é descrito o método SIR. Por fim, na seção \ref{mcmc}, é retratada a integração via MCMC com inovações MH. Todos os métodos serão testados e comparados no contexto do modelo exposto acima. Na seção \ref{consfin}, são resumidos os resultados obtidos para os três métodos, bem como é feita uma avaliação comparativa da qualidade de sua convergência.
 
-Antes de implementar cada um dos métodos numéricos, foram feitos três gráficos (Figuras \ref{fig:maspro_mu} a \ref{fig:maspro_nu}) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ quando se varia um dos três parâmetros e os outros dois são mantidos fixos nos respectivos valores verdadeiros pressupostos para o modelo que gerou a amostra. Tais gráficos permitem dizer, para cada parâmetro, quais são os intervalos do suporte correspondente que concentram praticamente toda a massa probabilística da densidade marginal \textit{a posteriori} associada, ainda que as densidades calculadas sejam válidas apenas quando os outros dois parâmetros são fixados em valores arbitrários. Esta informação será útil para definir os intervalos de integração na quadratura de Riemann e a matriz de covariância da distribuição proposta nos métodos SIR e MCMC-MH para aproximação das densidades marginais verdadeiras.
+Antes de implementar cada um dos métodos numéricos, foram feitos três gráficos (Figuras \ref{fig:maspro_mu} a \ref{fig:maspro_nu}) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ quando se varia um dos três parâmetros e os outros dois são mantidos fixos nos respectivos valores verdadeiros pressupostos para o modelo que gerou a amostra. Tais gráficos permitem dizer, para cada parâmetro, quais são os intervalos do suporte correspondente que concentram praticamente toda a massa probabilística da densidade \textit{a posteriori} marginal associada, ainda que as densidades calculadas sejam válidas apenas quando os outros dois parâmetros são fixados em valores arbitrários. Esta informação será útil para definir os intervalos de integração na quadratura de Riemann e a matriz de covariância da distribuição proposta nos métodos SIR e MCMC-MH para aproximação das densidades \textit{a posteriori} marginais verdadeiras.
 
 \begin{figure}[htb]%
 	\centering
-	\subfloat[Intervalo para $\mu$ dados $\sigma^2 = 0.64, \nu = 0.2$]{
+	\subfloat[$I_{\mu} = (10.85,11.13)$, dados $\sigma^2 = 0.64, \nu = 0.2$]{
 		{
 			\label{fig:maspro_mu}
 			\includegraphics[scale=0.4]{figuras/maspro_mu.pdf}}}%
 	\qquad
-	\subfloat[Intervalo para $\sigma^2$ dados $\mu = 11, \nu = 0.2$]{
+	\subfloat[$I_{\sigma^2} = (0.48, 0.78)$, dados $\mu = 11, \nu = 0.2$]{
 		{
 			\label{fig:maspro_s2}
 			\includegraphics[scale=0.4]{figuras/maspro_s2.pdf}}}%
-	\subfloat[Intervalo para $nu$ dados $\mu = 11, \sigma^2 = 0.64$]{
+	\subfloat[$I_{\nu} = (0.13, 0.26)$ dados $\mu = 11, \sigma^2 = 0.64$]{
 		{
 			\label{fig:maspro_nu}
 			\includegraphics[scale=0.4]{figuras/maspro_nu.pdf}}}%
 	\caption{Intervalos de massa probabilística para cada parâmetro (variável aleatória) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$}%
 \end{figure}
 
-\section{\Large O Método da Quadratura de Riemann}\label{quarie}
+\newpage
+
+\section{O Método da Quadratura de Riemann}\label{quarie}
+
+Em problemas multidimensionais, a densidade marginal correspondente a cada variável aleatória para a qual se deseja fazer inferência é obtida integrando a densidade conjunta sobre as demais. Frequentemente, o cálculo das integrais pode ser difícil ou mesmo impossível analiticamente. No caso de uma densidade \textit{a posteriori} conjunta deve-se aproximar algumas das, ou todas as, integrais associadas a cada densidade \textit{a posteriori} marginal de interesse por métodos numéricos, os quais podem ser determinísticos ou estocásticos. Neste presente trabalho, isto será feito para todos os 3 parâmetros do modelo de mistura finita de normais com variância contaminada.
+
+Dentre os métodos determinísticos mais usuais, para a aproximação das integrais correspondentes às densidades \textit{a posteriori} marginais de $\mu$, $\sigma^2$ e $\nu$, será utilizado o método da quadratura de Riemann, um caso particular e o mais simples da família das \textit{fórmulas de Newton-Cotes} (Chapra, 2015)\cite{Chapra2015}, as quais substituem o verdadeiro integrando por uma aproximação polinomial dentro de cada subintervalo contido no intervalo de integração. Na quadratura de Riemann, o integrando avaliado em cada subintervalo é aproximado por uma função constante avaliada no limite inferior (ou superior) do mesmo subintervalo.
+
+Aproximações polinomiais com nós igualmente espaçados a cada subintervalo, como as regras de quadratura do Trapézio (grau 1) ou de Simpson (grau 2), obtém resultados com menor erro do que a quadratura de Riemann. Quando o grau da aproximação polinomial tende ao infinito, a quadratura converge para o verdadeiro valor da integral. Porém, em problemas de dimensão igual a 2 ou superior, usar aproximações polinomiais com nós torna-se muito custoso computacionalmente, uma vez que temos três ou mais termos na soma que aproximará a integral para cada dimensão. Por esta razão, escolheu-se a quadratura de Riemann para obter densidades \textit{a posteriori} marginais de $\mu$, $\sigma^2$ e $\nu$, pois esta regra possui um único termo na soma aproximadora, facilitando a programação das rotinas iterativas associadas. Em uma dada aproximação, o mesmo número de intervalos será usado para todas as dimensões.
+
+Antes de aproximar as densidades \textit{a posteriori} marginais de cada parâmetro, é necessário aproximar o inverso da constante de proporcionalidade. Dados três parâmetros $(\alpha_1, \alpha_2, \alpha_3)$ e uma amostra dos dados $\bm{y}$ quaisquer, suponha que se deseja aproximar a densidade \textit{a posteriori} marginal de $\alpha_3$ dados os pontos $r_i, s_j, t_k$ da grade formada por todos os subintervalos de integração, $i, j, k \in \{1, \ldots, L\}$. Temos pela quadratura de Riemann que
+\begin{align}
+p(\alpha_3 | \bm{y})
+&= \iint p(\alpha_1, \alpha_2, \alpha_3 | \bm{y}) d\alpha_1 d\alpha_2 \nonumber \\
+\Rightarrow p(t_k | \bm{y})
+&= \iint p(\alpha_1, \alpha_2, t_k | \bm{y}) d\alpha_1 d\alpha_2 \approx \sum_{i=1}^{L} \sum_{j=1}^{L} p(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j \nonumber \\
+&= \sum_{i=1}^{L} \sum_{j=1}^{L} c \cdot h(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j \label{eq:dpm_riem}
+\end{align}
+
+Como o inverso de $c$, a constante de proporcionalidade, é dado pela densidade \textit{a priori} preditiva $f(\bm{y})$, a qual é obtida integrando-se o núcleo resultante do produto entre a função de verossimilhança $f(\bm{y} | \alpha_1, \alpha_2, \alpha_3)$ e as densidades (ou funções de probabilidade) \textit{a priori} para $\alpha_1$, $\alpha_2$ e $\alpha_3$, também é possível aproximar $c^{-1}$ pela quadratura de Riemann. Neste caso, $c^{-1} = \sum_{i=1}^{L} \sum_{j=1}^{L} \sum_{k=1}^{L} h(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j \Delta_k$. Com o valor aproximado para $c$, é possível calcular \eqref{eq:dpm_riem} nos limites superior e inferior de todos os subintervalos de um dado parâmetro e enfim obter uma aproximação da densidade \emph{a posteriori} marginal deste mesmo parâmetro através de uma curva gráfica que liga todos os valores calculados. Evidentemente, quanto menor o tamanho de cada subintervalo, melhor a curva traçada aproximará a verdadeira densidade.
+
+Para o modelo de mistura finita de normais com variância contaminada, 
 
 %Texto descrevendo o método e como foi feita neste trabalho a aproximação via quadratura de Riemann.
 
-\section{\Large O Método da Reamostragem Ponderada}\label{sir}
+\section{O Método da Reamostragem Por Importância Sequencial (SIR)}\label{sir}
 
 %Texto descrevendo o método e como foi feita neste trabalho a geração de variáveis aleatórias da distribuição de interesse usando este mesmo método.
 
-\section{\Large O Método de Monte Carlo via Cadeias de Markov}\label{mcmc}
+\section{O Método de Monte Carlo via Cadeias de Markov (MCMC)}\label{mcmc}
 
 %Texto descrevendo o método e como foi feita neste trabalho a geração de variáveis aleatórias da distribuição de interesse usando este mesmo método, bem como o amostrador selecionado (possivelmente Gibbs ou outro que for de melhor uso para todo o grupo).
 
@@ -157,5 +178,169 @@ Antes de implementar cada um dos métodos numéricos, foram feitos três gráfic
 
 \bibliographystyle{unsrt}
 \bibliography{ref}
+
+\newpage
+
+\section*{Apêndice: Código R para os Resultados Apresentados}
+
+\subsection*{Introdução}
+
+\begin{verbatim}
+# Tamanho amostral "n"; parâmetros "mu", "s2" (sigma^2) e "nu" do modelo para
+# a distribuição amostral e hiperparâmetros m, V, a e d das distribuições "a
+# priori" (somente para "mu" e "s2"):
+
+n = 500; mu = 11; s2 = 0.64; nu = 0.2; m = 11; V = 1; a = 7; d = 4
+
+# Geração hierárquica da amostra de tamanho "n" do modelo:
+
+U_pdf = function(n, nu) {
+	u = sample(c(100, 1), prob=c(nu, 1-nu), size=n, replace=T)
+}
+
+set.seed(122019)
+
+u = U_pdf(n, nu)
+sam = rnorm(n, mu, sqrt(s2*u))
+
+# Histograma da amostra gerada do modelo (figura 1):
+
+par(mar = c(5,5,3,2))
+hist(sam, breaks=100, prob=T, main="", xlim = c(-10, 40), ylim = c(0, 0.5),
+	 xlab = "Amostra do modelo", ylab = "Densidade empírica")
+
+# Cálculo do logaritmo do núcleo da distribuição "a posteriori" original:
+
+logA = function(X, mu, sigma2, nu) {
+	n = length(X)
+	k1 = (nu/10)*exp(-(X-mu)^2/(2*100*sigma2))
+	k2 = (1-nu)*exp(-(X-mu)^2/(2*sigma2))
+	k = log(k1 + k2)
+	return(k)
+}
+
+logh = function(n, mu, sigma2, nu, m, V, a, d) {
+	k1 = -((n + 1)/2 + a + 1)*log(sigma2)
+	k2 = -((mu - m)^2/(2*V) + d)/sigma2
+	k = k1 + k2
+	return(k)
+}
+
+logkpost = function(X, mu, sigma2, nu, m, V, a, d) {
+	n = length(X)
+	lA = logA(X, mu, sigma2, nu)
+	lh = logh(n, mu, sigma2, nu, m, V, a, d)
+	lkp = sum(lA) + lh
+	return(lkp)
+}
+
+# Gráficos dos intervalos de massa probabilística para cada parâmetro do
+# núcleo da distribuição "a posteriori", fixados os demais, após algumas
+# tentativas anteriores para redução dos limites do gráfico e melhor vi-
+# sualização da curva (figuras 2a a 2c):
+
+mu_sup=seq(10.8, 11.2, 0.001); t_mu=length(mu_sup); kp_mu=numeric(t_mu)
+
+for(i in 1:t_mu) {
+	kp_mu[i] = exp(logkpost(X=sam,
+	mu=mu_sup[i], sigma2=s2, nu=nu, m=m, V=V, a=a, d=d))
+	}
+plot(mu_sup, kp_mu, type="l", main="",
+     xlab=expression(paste(mu)), ylab="")
+
+s2_sup=seq(0.4, 0.8, 0.001); t_s2=length(s2_sup); kp_s2=numeric(t_s2)
+
+for(i in 1:t_s2) {
+	kp_s2[i] = exp(logkpost(X=sam,
+	mu=mu, sigma2=s2_sup[i], nu=nu, m=m, V=V, a=a, d=d))
+	}
+plot(s2_sup, kp_s2, type="l", main="",
+	 xlab=expression(paste(sigma^2)), ylab="")
+
+nu_sup=seq(0.1, 0.3, 0.001); t_nu=length(nu_sup); kp_nu=numeric(t_nu)
+
+for(i in 1:t_nu) {
+	kp_nu[i] = exp(logkpost(X=sam,
+	mu=mu, sigma2=s2, nu=nu_sup[i], m=m, V=V, a=a, d=d))
+	}
+plot(nu_sup, kp_nu, type="l", main="",
+     xlab=expression(paste(nu)), ylab="")
+\end{verbatim}
+
+\subsection*{O Método da Quadratura de Riemann}
+
+\begin{verbatim}
+
+# Cenários considerados, variando no número de subintervalos utilizados:
+
+L1 = 15; L2 = 50; L3 = 100
+
+# Tamanhos dos subintervalos, dada a combinação de cenário e parâmetro, e
+# grades definidas pelos mesmos:
+
+mu_step1 = (11.13 - 10.85)/L1; mu_gr1 = seq(10.85, 11.13, mu_step1)
+mu_step2 = (11.13 - 10.85)/L2; mu_gr2 = seq(10.85, 11.13, mu_step2)
+mu_step3 = (11.13 - 10.85)/L3; mu_gr3 = seq(10.85, 11.13, mu_step3)
+
+s2_step1 = (0.78 - 0.48)/L1; s2_gr1 = seq(0.48, 0.78, s2_step1)
+s2_step2 = (0.78 - 0.48)/L2; s2_gr2 = seq(0.48, 0.78, s2_step2)
+s2_step3 = (0.78 - 0.48)/L3; s2_gr3 = seq(0.48, 0.78, s2_step3)
+
+nu_step1 = (0.26 - 0.13)/L1; nu_gr1 = seq(0.13, 0.26, nu_step1)
+nu_step2 = (0.26 - 0.13)/L2; nu_gr2 = seq(0.13, 0.26, nu_step2)
+nu_step3 = (0.26 - 0.13)/L3; nu_gr3 = seq(0.13, 0.26, nu_step3)
+
+# Combinando as três grades unidimensionais em cada cenário, todas com
+# número igual de subintervalos e de pontos (nos limites dos interval-
+# os) para integração numérica:
+
+grid_tri1 = cbind(mu_gr1, s2_gr1, nu_gr1); l1 = nrow(grid_tri1)
+grid_tri2 = cbind(mu_gr2, s2_gr2, nu_gr2); l2 = nrow(grid_tri2)
+grid_tri3 = cbind(mu_gr3, s2_gr3, nu_gr3); l3 = nrow(grid_tri3)
+
+# Produto triplo dos tamanhos dos subintervalos em cada cenário:
+
+prod_step1 = mu_step1*s2_step1*nu_step1
+prod_step2 = mu_step2*s2_step2*nu_step2
+prod_step3 = mu_step3*s2_step3*nu_step3
+
+# Cálculo do inverso da constante de proporcionalidade em cada cenário:
+
+cprop = function(l, X, mgr, s2gr, ngr, prst, m, V, a, d){
+	c = 0
+	for (i in 1:l) {
+		for (j in 1:l) {
+			for (k in 1:l) {
+				aux = logkpost(X, mgr[i], s2gr[j], ngr[k], m, V, a, d)
+				c = c + exp(aux)*prst
+			}
+		}
+	}
+	return(c)
+}
+
+c1 = cprop(l=l1, X=sam, mgr=mu_gr1, s2gr=s2_gr1, ngr=nu_gr1,
+		   prst=prod_step1, m=m, V=V, a=a, d=d)
+c2 = cprop(l=l2, X=sam, mgr=mu_gr2, s2gr=s2_gr2, ngr=nu_gr2,
+		   prst=prod_step2, m=m, V=V, a=a, d=d)
+c3 = cprop(l=l3, X=sam, mgr=mu_gr3, s2gr=s2_gr3, ngr=nu_gr3,
+		   prst=prod_step3, m=m, V=V, a=a, d=d)
+c1; c2; c3
+
+
+
+\end{verbatim}
+
+\subsection*{O Método da Reamostragem Por Importância Sequencial (SIR)}
+
+\begin{verbatim}
+a
+\end{verbatim}
+
+\subsection*{O Método de Monte Carlo via Cadeias de Markov (MCMC)}
+
+\begin{verbatim}
+a
+\end{verbatim}
 
 \end{document}
