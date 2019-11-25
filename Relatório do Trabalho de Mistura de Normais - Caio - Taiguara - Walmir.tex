@@ -74,11 +74,18 @@
 \input{sec1introRT.tex}
 \input{sec2qrRT.tex}
 
-\section{O Método da Reamostragem Por Importância Sequencial (SIR)}\label{sir}
+\section{Reamostragem Por Importância Sequencial (SIR)}\label{sir}
+
+Como uma das aproximações estocásticas a serem consideradas, o método da reamostragem por importância sequencial (SIR), ou reamostragem ponderada, foi uma das primeiras alternativas aos métodos de aproximação determinísticos previamente existentes. Se antes a densidade conjunta era aproximada por uma regra de quadratura, nas aproximações estocásticas o objetivo é simular amostras de uma densidade que aproxime a desejada com o menor erro possível. Este erro dependerá de $k$, o tamanho de uma amostra retirada da densidade aproximada, de ordem $\mathcal{O}(k^{-1})$, e não mais do conjunto de dados amostrais do modelo inicial.
+
+Proposto por Gordon \textit{et al.} (1993)\cite{Gordon1993}, o método SIR utiliza uma \textit{função de amostragem por importância} $g$ para aproximar (sem perda de generalidade) uma densidade de interesse $p$. Neste caso, $g$ é uma densidade conhecida e da qual se sabe gerar uma amostra aleatória. Cada ponto selecionado na amostra de $g$ é ponderado para corrigir a probabilidade de amostragem de tal forma que a amostra ponderada aproxime uma outra que seria extraída da densidade de $p$ caso se soubesse gerar da mesma. Os pesos usados para corrigir as probabilidades de amostragem são chamados \textit{pesos de importância padronizados}, dados por
+\begin{equation}
+w_i = 
+\end{equation}
 
 %Texto descrevendo o método e como foi feita neste trabalho a geração de variáveis aleatórias da distribuição de interesse usando este mesmo método.
 
-\section{O Método de Monte Carlo via Cadeias de Markov (MCMC)}\label{mcmc}
+\section{Monte Carlo via Cadeias de Markov (MCMC)}\label{mcmc}
 
 %Texto descrevendo o método e como foi feita neste trabalho a geração de variáveis aleatórias da distribuição de interesse usando este mesmo método, bem como o amostrador selecionado (possivelmente Gibbs ou outro que for de melhor uso para todo o grupo).
 
@@ -341,7 +348,11 @@ pnq3 = postnu_quarie(l=l3, X=sam, mgr=mu_gr3, s2gr=s2_gr3, ngr=nu_gr3,
 plot(nu_gr1,pnq1,type="l",main="",xlab=expression(paste(nu)),ylab="")
 plot(nu_gr2,pnq2,type="l",main="",xlab=expression(paste(nu)),ylab="")
 plot(nu_gr3,pnq3,type="l",main="",xlab=expression(paste(nu)),ylab="")
+\end{verbatim}
 
+\newpage
+
+\begin{verbatim}
 # Cálculo da média, variância, assimetria e curtose "a posteriori" para
 # cada parâmetro:
 
