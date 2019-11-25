@@ -71,98 +71,8 @@
 
 \newpage
 
-\section{Introdução}
-
-O presente trabalho tem como objetivo obter, dada uma densidade \textit{a posteriori} conjunta dos parâmetros de um modelo probabilístico para uma amostra previamente observada, as densidades \textit{a posteriori} marginais de cada parâmetro, bem como as estatísticas de média; variância; assimetria e curtose associadas, a partir da implementação de três métodos numéricos, a saber: (i) integração via quadratura de Riemann; (ii) reamostragem por importância sequencial (em inglês, \textit{Sequential Importance Resampling}, ou SIR); e (iii) integração via Monte Carlo em cadeias de Markov (em inglês, \textit{Markov Chain Monte Carlo}, ou MCMC) com inovações dadas pelo algoritmo de Metropolis-Hastings (MH).
-
-Para o modelo que gerou a amostra observada, será pressuposto que sua especificação é dada por uma mistura finita de normais. Sejam $X_{1}, \ldots, X_{n}$ amostras aleatórias independentes, condicionalmente a um vetor de parâmetros $\bm{\theta} = (\mu, \sigma^2, \nu)$, e identicamente distribuídas com função densidade dada por
-\begin{equation}\label{eq:dist_am}
-f(x | \mu, \sigma^2, \nu) = \nu \phi(x | \mu, 100 \sigma^2) + (1 - \nu) \phi(x | \mu, \sigma^2), \ x \in \mathbb{R},
-\end{equation}
-\noindent onde $\phi(x | \mu, \sigma^2) = (2\pi\sigma^2)^{-1} \exp[-(x - \mu)^2/(2\sigma^2)]$ denota a função densidade da distribuição normal com média $\mu$ e variância $\sigma^2$ avaliada no ponto $x$. Para o suporte de cada parâmetro, tem-se que $\mu \in \mathbb{R}, \sigma^2 \in \mathbb{R}_+$ e $\nu \in (0,1)$.
-
-A mistura finita descrita em \eqref{eq:dist_am} possui duas componentes normais que diferem nas respectivas variâncias: para a primeira componente, o valor é 100 vezes o da segunda. Desta forma, tem-se uma mistura finita de normais com variância \textit{contaminada}.
-
-Para os parâmetros $\mu$, $\sigma^2$ e $\nu$, será pressuposto que cada um segue uma distribuição \textit{a priori} predeterminada: $\mu | \sigma^2 \sim{N} (m, V \sigma^2)$, onde $N(\cdot)$ denota a distribuição normal com média $m \in \mathbb{R}$ e variância $V \sigma^2$, $V > 0$; $\sigma^2 \sim{GI} (a,d)$, onde $GI(\cdot)$ denota a distribuição gama inversa com parâmetros de forma $a > 0$ e de taxa $d > 0$ (inverso da escala); e $\nu \sim{U}(0,1)$, a distribuição uniforme contínua padrão.
-
-Para gerar uma amostra aleatória do modelo em $\eqref{eq:dist_am}$, foi utilizada uma representação hierárquica (Lachos \textit{et al.}, 2013)\cite{Lachos2013} tal que
-\begin{equation}
-X_i | \mu, \sigma^2, U_{i} = u_i \sim{N}(\mu, \sigma^2 u_i^{-1}), \quad U_i | \mu \sim{p_d}(1,100) : P(U_i = 100) = \nu. \label{eq:hier}
-\end{equation}
-\noindent onde $p_d(a,b)$ denota uma função de probabilidade (discreta) que atribui massa probabilística apenas aos pontos $a$ e $b$.
-
-A partir do produto entre a função de verossimilhança $f(\bm{x} | \mu, \sigma^2, \nu)$ para uma amostra $\bm{x} = (x_1, \ldots, x_n)$ gerada através da representação hierárquica em \eqref{eq:hier} e das densidades \textit{a priori} para cada parâmetro do modelo, obtém-se o núcleo (em inglês, \textit{kernel}) da densidade \textit{a posteriori} conjunta $p(\mu, \sigma^2, \nu | \bm{x})$. Como a expressão da densidade \textit{a posteriori} possui uma constante de proporcionalidade $f(x_1, \ldots, x_n) = f(\bm{x})$ não facilmente calculável, mas que não depende dos parâmetros, pode-se usar o núcleo daquela para inferir sobre cada um dos parâmetros. No modelo de mistura finita de duas componentes normais com variância contaminada, temos que
-\begin{align}
-p(\mu, \sigma^2, \nu | \bm{x})
-&= \dfrac{f(\bm{x} | \mu, \sigma^2, \nu) \times p(\mu, \sigma^2, \nu)}{f(\bm{x})} \propto \prod_{i=1}^{n} f(x_i) \times p(\mu | \sigma^2) \times p(\sigma^2) \times p(\nu) \nonumber\\
-&\propto \prod_{i=1}^{n} \left[ \nu \phi(x_i | \mu, 100 \sigma^2) + (1 - \nu) \phi(x_i | \mu, \sigma^2) \right] \times \nonumber \\
-&\times \phi(\mu | m, V \sigma^2) \times \dfrac{d^a}{\Gamma(a)} \left(\dfrac{1}{\sigma^2}\right)^{a + 1} \exp\left(-\dfrac{d}{\sigma^2}\right) \nonumber \\
-&\propto \left(\dfrac{1}{\sigma^2}\right)^{(n + 1)/2 + a + 1} \exp\left\{-\dfrac{\left[(\mu - m)^2 / (2V) + d\right]}{\sigma^2}\right\} \times \textrm{A}(\bm{x} | \mu, \sigma^2, \nu), \label{eq:dist_post}
-\end{align}
-onde
-\begin{equation*}
-\textrm{A}(\bm{x} | \mu, \sigma^2, \nu) = \prod_{i=1}^{n} \left\{  \dfrac{\nu}{10} \exp\left[-\dfrac{(x_i - \mu)^2}{200\sigma^2}\right] + (1 - \nu) \exp\left[-\dfrac{(x_i - \mu)^2}{2\sigma^2}\right] \right\}
-\end{equation*}
-
-Evidentemente, trabalhar diretamente com o lado direito em \eqref{eq:dist_post} não é computacionalmente agradável, uma vez que esta é um produto de várias quantidades sempre menores do que 1, muitas delas próximas de 0, o que pode levar a problemas de aproximação numérica. Desta forma, sempre que for necessário calcular o núcleo da \textit{posteriori}, dada uma amostra, inicialmente será tomada a soma do logaritmo de todos as quantidades que compõem este produto e só depois esta mesma soma será exponenciada. Dependendo do quão negativa for a soma (o logaritmo de termos entre 0 e 1 é sempre negativo), quando exponenciada ela pode ou não ser numericamente igual a 0.
-
-Logo, na geração da amostra $\bm{x}$ deve-se escolher valores de $\mu$, $\sigma^2$ e $\nu$ tais que o núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ não seja numericamente nulo para os verdadeiros valores dos parâmetros. Considerando o uso da linguagem de programação \textit{R} (R Core Team, 2019)\cite{RCoreTeam2019}, esta escolha não é difícil. Na versão 3.5.3, o menor valor que pode ser tomado como argumento da função \verb|exp()| do \textit{R} é $-709$. Desta forma, basta tomar $\mu$, $\sigma^2$ e $\nu$ tais que o logaritmo do lado direito em \eqref{eq:dist_post} seja maior do que $-709$.
-
-Para o presente trabalho, foram considerados uma amostra de tamanho $n=500$ (Figura \ref{fig:sample_n}) da mistura finita de normais com variância contaminada parametrizada de tal forma que $\mu = 11$; $\sigma^2 = 0.64$ e $\nu = 0.2$, com hiperparâmetros $m = 11$; $V = 1$; $a = 7$ e $d = 4$ nas distribuições \textit{a priori}. Fixada uma semente aleatória, para a amostra gerada a partir dos valores citados, o logaritmo do núcleo da densidade \textit{a posteriori} foi igual a $-518.9061$, cuja exponencial é aproximadamente igual a $4.385 \times 10^{-226}$.
-
-\begin{figure}[htb]
-	\centering
-	\includegraphics[scale=0.8]{figuras/amostra_n.pdf}
-	\caption{Histograma da amostra gerada do modelo}
-	\label{fig:sample_n}
-\end{figure}
-
-Como não se tem uma expressão fechada para $p(\mu, \sigma^2, \nu | \bm{x})$, mas apenas de seu núcleo, para obter as densidades \textit{a posteriori} marginais de $\mu$, $\sigma^2$ e $\nu$ dado $\bm{x}$, bem como as estatísticas associadas a cada uma delas, é necessário aproximá-las por algum método numérico. Na seções \ref{quarie}, é apresentado o primeiro dos três métodos considerados: a integração via quadratura de Riemann. Por sua vez, na seção \ref{sir} é descrito o método SIR. Por fim, na seção \ref{mcmc}, é retratada a integração via MCMC com inovações MH. Todos os métodos serão testados e comparados no contexto do modelo exposto acima. Na seção \ref{consfin}, são resumidos os resultados obtidos para os três métodos, bem como é feita uma avaliação comparativa da qualidade de sua convergência.
-
-Antes de implementar cada um dos métodos numéricos, foram feitos três gráficos (Figuras \ref{fig:maspro_mu} a \ref{fig:maspro_nu}) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ quando se varia um dos três parâmetros e os outros dois são mantidos fixos nos respectivos valores verdadeiros pressupostos para o modelo que gerou a amostra. Tais gráficos permitem dizer, para cada parâmetro, quais são os intervalos do suporte correspondente que concentram praticamente toda a massa probabilística da densidade \textit{a posteriori} marginal associada, ainda que as densidades calculadas sejam válidas apenas quando os outros dois parâmetros são fixados em valores arbitrários. Esta informação será útil para definir os intervalos de integração na quadratura de Riemann e a matriz de covariância da distribuição proposta nos métodos SIR e MCMC-MH para aproximação das densidades \textit{a posteriori} marginais verdadeiras.
-
-\begin{figure}[htb]%
-	\centering
-	\subfloat[$I_{\mu} = (10.85,11.13)$, dados $\sigma^2 = 0.64, \nu = 0.2$]{
-		{
-			\label{fig:maspro_mu}
-			\includegraphics[scale=0.4]{figuras/maspro_mu.pdf}}}%
-	\qquad
-	\subfloat[$I_{\sigma^2} = (0.48, 0.78)$, dados $\mu = 11, \nu = 0.2$]{
-		{
-			\label{fig:maspro_s2}
-			\includegraphics[scale=0.4]{figuras/maspro_s2.pdf}}}%
-	\subfloat[$I_{\nu} = (0.13, 0.26)$ dados $\mu = 11, \sigma^2 = 0.64$]{
-		{
-			\label{fig:maspro_nu}
-			\includegraphics[scale=0.4]{figuras/maspro_nu.pdf}}}%
-	\caption{Intervalos de massa probabilística para cada parâmetro (variável aleatória) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$}%
-\end{figure}
-
-\newpage
-
-\section{O Método da Quadratura de Riemann}\label{quarie}
-
-Em problemas multidimensionais, a densidade marginal correspondente a cada variável aleatória para a qual se deseja fazer inferência é obtida integrando a densidade conjunta sobre as demais. Frequentemente, o cálculo das integrais pode ser difícil ou mesmo impossível analiticamente. No caso de uma densidade \textit{a posteriori} conjunta deve-se aproximar algumas das, ou todas as, integrais associadas a cada densidade \textit{a posteriori} marginal de interesse por métodos numéricos, os quais podem ser determinísticos ou estocásticos. Neste presente trabalho, isto será feito para todos os 3 parâmetros do modelo de mistura finita de normais com variância contaminada.
-
-Dentre os métodos determinísticos mais usuais, para a aproximação das integrais correspondentes às densidades \textit{a posteriori} marginais de $\mu$, $\sigma^2$ e $\nu$, será utilizado o método da quadratura de Riemann, um caso particular e o mais simples da família das \textit{fórmulas de Newton-Cotes} (Chapra, 2015)\cite{Chapra2015}, as quais substituem o verdadeiro integrando por uma aproximação polinomial dentro de cada subintervalo contido no intervalo de integração. Na quadratura de Riemann, o integrando avaliado em cada subintervalo é aproximado por uma função constante avaliada no limite inferior (ou superior) do mesmo subintervalo.
-
-Aproximações polinomiais com nós igualmente espaçados a cada subintervalo, como as regras de quadratura do Trapézio (grau 1) ou de Simpson (grau 2), obtém resultados com menor erro do que a quadratura de Riemann. Quando o grau da aproximação polinomial tende ao infinito, a quadratura converge para o verdadeiro valor da integral. Porém, em problemas de dimensão igual a 2 ou superior, usar aproximações polinomiais com nós torna-se muito custoso computacionalmente, uma vez que temos três ou mais termos na soma que aproximará a integral para cada dimensão. Por esta razão, escolheu-se a quadratura de Riemann para obter densidades \textit{a posteriori} marginais de $\mu$, $\sigma^2$ e $\nu$, pois esta regra possui um único termo na soma aproximadora, facilitando a programação das rotinas iterativas associadas. Em uma dada aproximação, o mesmo número de intervalos será usado para todas as dimensões.
-
-Antes de aproximar as densidades \textit{a posteriori} marginais de cada parâmetro, é necessário aproximar o inverso da constante de proporcionalidade. Dados três parâmetros $(\alpha_1, \alpha_2, \alpha_3)$ e uma amostra dos dados $\bm{y}$ quaisquer, suponha que se deseja aproximar a densidade \textit{a posteriori} marginal de $\alpha_3$ dados os pontos $r_i, s_j, t_k$ da grade formada por todos os subintervalos de integração, $i, j, k \in \{1, \ldots, L\}$. Temos pela quadratura de Riemann que
-\begin{align}
-p(\alpha_3 | \bm{y})
-&= \iint p(\alpha_1, \alpha_2, \alpha_3 | \bm{y}) d\alpha_1 d\alpha_2 \nonumber \\
-\Rightarrow p(t_k | \bm{y})
-&= \iint p(\alpha_1, \alpha_2, t_k | \bm{y}) d\alpha_1 d\alpha_2 \approx \sum_{i=1}^{L} \sum_{j=1}^{L} p(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j \nonumber \\
-&= \sum_{i=1}^{L} \sum_{j=1}^{L} c \cdot h(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j \label{eq:dpm_riem}
-\end{align}
-
-Como o inverso de $c$, a constante de proporcionalidade, é dado pela densidade \textit{a priori} preditiva $f(\bm{y})$, a qual é obtida integrando-se o núcleo resultante do produto entre a função de verossimilhança $f(\bm{y} | \alpha_1, \alpha_2, \alpha_3)$ e as densidades (ou funções de probabilidade) \textit{a priori} para $\alpha_1$, $\alpha_2$ e $\alpha_3$, também é possível aproximar $c^{-1}$ pela quadratura de Riemann. Neste caso, $c^{-1} = \sum_{i=1}^{L} \sum_{j=1}^{L} \sum_{k=1}^{L} h(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j \Delta_k$. Com o valor aproximado para $c$, é possível calcular \eqref{eq:dpm_riem} nos limites superior e inferior de todos os subintervalos de um dado parâmetro e enfim obter uma aproximação da densidade \emph{a posteriori} marginal deste mesmo parâmetro através de uma curva gráfica que liga todos os valores calculados. Evidentemente, quanto menor o tamanho de cada subintervalo, melhor a curva traçada aproximará a verdadeira densidade.
-
-Para o modelo de mistura finita de normais com variância contaminada, 
-
-%Texto descrevendo o método e como foi feita neste trabalho a aproximação via quadratura de Riemann.
+\input{sec1introRT.tex}
+\input{sec2qrRT.tex}
 
 \section{O Método da Reamostragem Por Importância Sequencial (SIR)}\label{sir}
 
@@ -306,7 +216,7 @@ prod_step3 = mu_step3*s2_step3*nu_step3
 
 # Cálculo do inverso da constante de proporcionalidade em cada cenário:
 
-cprop = function(l, X, mgr, s2gr, ngr, prst, m, V, a, d){
+cprop = function(l, X, mgr, s2gr, ngr, prst, m, V, a, d) {
 	c = 0
 	for (i in 1:l) {
 		for (j in 1:l) {
@@ -327,7 +237,144 @@ c3 = cprop(l=l3, X=sam, mgr=mu_gr3, s2gr=s2_gr3, ngr=nu_gr3,
 		   prst=prod_step3, m=m, V=V, a=a, d=d)
 c1; c2; c3
 
+# Cálculo das densidades "a posteriori" marginais em cada cenário, com
+# uso do produto duplo dos tamanhos dos subintervalos em cada cenário:
 
+pr1_dup12 = mu_step1*s2_step1
+pr1_dup13 = mu_step1*nu_step1
+pr1_dup23 = s2_step1*nu_step1
+\end{verbatim}
+
+\newpage
+
+\begin{verbatim}
+pr2_dup12 = mu_step2*s2_step2
+pr2_dup13 = mu_step2*nu_step2
+pr2_dup23 = s2_step2*nu_step2
+
+pr3_dup12 = mu_step3*s2_step3
+pr3_dup13 = mu_step3*nu_step3
+pr3_dup23 = s2_step3*nu_step3
+
+postmu_quarie = function(l, X, mgr, s2gr, ngr, prst, m, V, a, d, c) {
+	postmu = numeric(l)
+	for (i in 1:l) {
+		postconj = 0
+		for (j in 1:l) {
+			for(k in 1:l) {
+				aux = logkpost(X, mgr[i], s2gr[j], ngr[k], m, V, a, d)
+				postconj = postconj + exp(aux)*prst
+			}
+		}
+		postmu[i] = postconj/c
+	}
+	return(postmu)
+}
+
+pmq1 = postmu_quarie(l=l1, X=sam, mgr=mu_gr1, s2gr=s2_gr1, ngr=nu_gr1,
+					 prst=pr1_dup23, m=m, V=V, a=a, d=d, c=c1)
+pmq2 = postmu_quarie(l=l2, X=sam, mgr=mu_gr2, s2gr=s2_gr2, ngr=nu_gr2,
+					 prst=pr2_dup23, m=m, V=V, a=a, d=d, c=c2)
+pmq3 = postmu_quarie(l=l3, X=sam, mgr=mu_gr3, s2gr=s2_gr3, ngr=nu_gr3,
+					 prst=pr3_dup23, m=m, V=V, a=a, d=d, c=c3)
+
+plot(mu_gr1,pmq1,type="l",main="",xlab=expression(paste(mu)),ylab="")
+plot(mu_gr2,pmq2,type="l",main="",xlab=expression(paste(mu)),ylab="")
+plot(mu_gr3,pmq3,type="l",main="",xlab=expression(paste(mu)),ylab="")
+
+posts2_quarie = function(l, X, mgr, s2gr, ngr, prst, m, V, a, d, c) {
+	posts2 = numeric(l)
+	for (i in 1:l) {
+		postconj = 0
+		for (j in 1:l) {
+			for(k in 1:l) {
+				aux = logkpost(X, mgr[j], s2gr[i], ngr[k], m, V, a, d)
+				postconj = postconj + exp(aux)*prst
+			}
+		}
+		posts2[i] = postconj/c
+	}
+	return(posts2)
+}
+
+\end{verbatim}
+
+\newpage
+
+\begin{verbatim}
+psq1 = posts2_quarie(l=l1, X=sam, mgr=mu_gr1, s2gr=s2_gr1, ngr=nu_gr1,
+					 prst=pr1_dup13, m=m, V=V, a=a, d=d, c=c1)
+psq2 = posts2_quarie(l=l2, X=sam, mgr=mu_gr2, s2gr=s2_gr2, ngr=nu_gr2,
+					 prst=pr2_dup13, m=m, V=V, a=a, d=d, c=c2)
+psq3 = posts2_quarie(l=l3, X=sam, mgr=mu_gr3, s2gr=s2_gr3, ngr=nu_gr3,
+					 prst=pr3_dup13, m=m, V=V, a=a, d=d, c=c3)
+
+plot(s2_gr1, psq1, type="l", main="", xlab=expression(paste(sigma^2)),
+	 ylab="")
+plot(s2_gr2, psq2, type="l", main="", xlab=expression(paste(sigma^2)),
+	 ylab="")
+plot(s2_gr3, psq3, type="l", main="", xlab=expression(paste(sigma^2)), 
+	 ylab="")
+
+postnu_quarie = function(l, X, mgr, s2gr, ngr, prst, m, V, a, d, c) {
+	postnu = numeric(l)
+	for (i in 1:l) {
+		postconj = 0
+		for (j in 1:l) {
+			for(k in 1:l) {
+				aux = logkpost(X, mgr[j], s2gr[k], ngr[i], m, V, a, d)
+				postconj = postconj + exp(aux)*prst
+			}
+		}
+		postnu[i] = postconj/c
+	}
+	return(postnu)
+}
+
+pnq1 = postnu_quarie(l=l1, X=sam, mgr=mu_gr1, s2gr=s2_gr1, ngr=nu_gr1,
+					 prst=pr1_dup12, m=m, V=V, a=a, d=d, c=c1)
+pnq2 = postnu_quarie(l=l2, X=sam, mgr=mu_gr2, s2gr=s2_gr2, ngr=nu_gr2,
+					 prst=pr2_dup12, m=m, V=V, a=a, d=d, c=c2)
+pnq3 = postnu_quarie(l=l3, X=sam, mgr=mu_gr3, s2gr=s2_gr3, ngr=nu_gr3,
+					 prst=pr3_dup12, m=m, V=V, a=a, d=d, c=c3)
+
+plot(nu_gr1,pnq1,type="l",main="",xlab=expression(paste(nu)),ylab="")
+plot(nu_gr2,pnq2,type="l",main="",xlab=expression(paste(nu)),ylab="")
+plot(nu_gr3,pnq3,type="l",main="",xlab=expression(paste(nu)),ylab="")
+
+# Cálculo da média, variância, assimetria e curtose "a posteriori" para
+# cada parâmetro:
+
+stat_post = function(gr, marg, prst) {
+	media = 0
+	var = 0
+	assim = 0
+	cur = 0
+	l = length(gr)
+	
+	aux1 = sum(gr*marg*prst)     # Aproxima 1º momento.
+	aux2 = sum((gr^2)*marg*prst) # Aproxima 2º momento.
+	aux3 = sum((gr^3)*marg*prst) # Aproxima 3º momento.
+	aux4 = sum((gr^4)*marg*prst) # Aproxima 4º momento.
+	
+	media = aux1
+	var = aux2 - (media)^2
+	assim = (aux3 - 3*media*var - media^3)/(var^(3/2))
+	cur = (aux4 - 4*media*aux3 + 6*media^2*aux2 - 3*(media^4))/(var^2)
+	return(list(media, var, assim, cur))
+}
+
+stat_post(mu_gr1, pmq1, mu_step1)
+stat_post(mu_gr2, pmq2, mu_step2)
+stat_post(mu_gr3, pmq3, mu_step3)
+
+stat_post(s2_gr1, psq1, s2_step1)
+stat_post(s2_gr2, psq2, s2_step2)
+stat_post(s2_gr3, psq3, s2_step3)
+
+stat_post(nu_gr1, pnq1, nu_step1)
+stat_post(nu_gr2, pnq2, nu_step2)
+stat_post(nu_gr3, pnq3, nu_step3)
 
 \end{verbatim}
 
