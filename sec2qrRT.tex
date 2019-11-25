@@ -12,7 +12,7 @@ p(\alpha_3 | \bm{y})
 &= \iint p(\alpha_1, \alpha_2, \alpha_3 | \bm{y}) d\alpha_1 d\alpha_2 \nonumber \\
 \Rightarrow p(t_k | \bm{y})
 &= \iint p(\alpha_1, \alpha_2, t_k | \bm{y}) d\alpha_1 d\alpha_2 \approx \sum_{i=1}^{L} \sum_{j=1}^{L} p(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j \nonumber \\
-&= \sum_{i=1}^{L} \sum_{j=1}^{L} c \cdot h(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j \label{eq:dpm_riem}
+&= \sum_{i=1}^{L} \sum_{j=1}^{L} c \cdot h(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j. \label{eq:dpm_riem}
 \end{align}
 
 Como $c$, a constante de proporcionalidade, é dada pelo inverso da densidade \textit{a priori} preditiva $f(\bm{y})$, a qual é obtida integrando-se em todo o espaço paramétrico o produto entre a função de verossimilhança $f(\bm{y} | \alpha_1, \alpha_2, \alpha_3)$ e as densidades (ou funções de probabilidade) \textit{a priori} para $\alpha_1$, $\alpha_2$ e $\alpha_3$, também é possível aproximar $c$ pela quadratura de Riemann. Neste caso, $c^{-1} \approx \sum_{i=1}^{L} \sum_{j=1}^{L} \sum_{k=1}^{L} h(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j \Delta_k$. Com o valor aproximado para $c$, é possível calcular \eqref{eq:dpm_riem} nos limites superior e inferior de todos os subintervalos de um dado parâmetro e enfim obter uma aproximação da densidade \emph{a posteriori} marginal deste mesmo parâmetro através de uma curva gráfica que liga todos os valores calculados. Evidentemente, quanto menor o tamanho de cada subintervalo, melhor a curva traçada aproximará a verdadeira densidade.
@@ -68,13 +68,13 @@ Para $L=15$, a aproximação não é muito suave, mas começa a indicar como cad
 
 Para $L=50$, a aproximação é bem suave. Além do comportamento com relação à locação e à dispersão, é possível dizer também como é o comportamento com relação à simetria da densidade \textit{a posteriori} marginal de cada parâmetro. Aparentemente, as densidades para $\sigma^2$ e $\nu$ são fracamente assimétricas à direita.
 
-Para $L=100$, o gráfico confirma a tendência apresentada pelos dois cenários anteriores, com uma suavização ainda melhor. Porém, computacionalmente a integração numérica é bem mais demorada, uma vez que o número de pontos para cálculo das densidades \textit{a posteriori} marginais cresce a um fator de ordem $\mathcal{O}(L^3)$.
+Para $L=100$, os gráficos confirma a tendência apresentada pelos dois cenários anteriores, mas com uma suavização ainda melhor. Porém, computacionalmente a integração numérica é bem mais demorada, uma vez que o número de pontos para cálculo das densidades \textit{a posteriori} marginais cresce a um fator de ordem $\mathcal{O}(L^3)$.
 
 Obtidas as densidades \textit{a posteriori} marginais, é possível ainda estimar pela quadratura de Riemann os momentos \textit{a posteriori} de ordem $m$ para cada parâmetro e com os mesmos aproximar as estatísticas de média, variância, assimetria e curtose. Sem perda de generalidade, suponha que se deseja obter as estatísticas \textit{a posteriori} para $\alpha_1$. A aproximação pela quadratura de Riemann para um momento $m$ é dada por
 \begin{align}
 \mathbb{E}(\alpha_1^m | \bm{y}) &= \iint \alpha_1^m p(\alpha_1, \alpha_2, \alpha_3 | \bm{y}) d\alpha_1 d\alpha_2 d\alpha_3 \approx \sum_{i=1}^{L} \sum_{j=1}^{L} \sum_{k=1}^{L} r_i^m p(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j \Delta_k \nonumber \\
 &= \sum_{i=1}^{L} r_i^m \Delta_i \left[\sum_{j=1}^{L} \sum_{k=1}^{L} p(r_i, s_j, t_k | \bm{y}) \Delta_j \Delta_k\right] \nonumber \\
-&= \sum_{i=1}^{L} r_i^m \Delta_i p(r_i | \bm{y}) \label{eq:mom_qr}
+&= \sum_{i=1}^{L} r_i^m \Delta_i p(r_i | \bm{y}). \label{eq:mom_qr}
 \end{align}
 
 Como todas as estatísticas de interesse são funções dos quatro primeiros momentos, basta substituir $m = \{1, 2, 3, 4\}$ em \eqref{eq:mom_qr} para obter as respectivas aproximações. Na Tabela \ref{tab1}, são apresentados os valores aproximados para tais estatísticas em cada um dos três cenários.
