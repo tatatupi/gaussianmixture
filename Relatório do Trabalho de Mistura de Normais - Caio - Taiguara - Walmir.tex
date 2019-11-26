@@ -404,7 +404,7 @@ return(lkrp)
 
 logkpost_re(sam, mu, s2, nu, m, V, a, d)
 
-# Cenários de tamanhos para amostragem da posteriori via SIR:
+# Cenários de tamanhos para amostragem da "posteriori" via SIR:
 
 am1 = 500; am2 = 5000; am3 = 50000
 
@@ -434,7 +434,11 @@ r3_q = rmvnorm(am3, mean=c(11, log(0.64), log(0.2/0.8)),
 d1_q = dmvnorm(r1_q, mean=c(11, log(0.64), log(0.2/0.8)), sigma=diag(3))
 d2_q = dmvnorm(r2_q, mean=c(11, log(0.64), log(0.2/0.8)), sigma=diag(3))
 d3_q = dmvnorm(r3_q, mean=c(11, log(0.64), log(0.2/0.8)), sigma=diag(3))
+\end{verbatim}
 
+\newpage
+
+\begin{verbatim}
 # Cálculo dos pesos de reamostragem:
 
 weiSIR = function(X, r_q, m, V, a, d, d_q) {
@@ -477,7 +481,11 @@ set.seed(122019)
 am3_s2_p = sample(x=exp(r3_q[,2]), size=am3, replace=T, prob=w3)
 set.seed(122019)
 am3_nu_p = sample(x=1/(1+exp(-r3_q[,3])), size=am3, replace=T, prob=w3)
+\end{verbatim}
 
+\newpage
+
+\begin{verbatim}
 # Média; variância; assimetria; curtose e histogramas das amostras geradas:
 
 library(moments)
@@ -487,14 +495,9 @@ st_sam_post = function(Xpar) {
 	vari = var(Xpar)
 	assi = skewness(Xpar)
 	curt = kurtosis(Xpar)
-	return(list(media=medi, variancia=vari, assimetria=assi,
-				curtose=curt))
+	return(list(media=medi, variancia=vari, assimetria=assi, curtose=curt))
 }
-\end{verbatim}
 
-\newpage
-
-\begin{verbatim}
 st_sam_post(am1_mu_p)
 hist(am1_mu_p, breaks=50, prob=T, main="",
 	 xlab=expression(paste(mu)), ylab="")
@@ -526,10 +529,135 @@ hist(am3_nu_p, breaks=50, prob=T, main="",
 	 xlab=expression(paste(nu)), ylab="")
 \end{verbatim}
 
+\newpage
+
 \subsection*{O Método de Monte Carlo via Cadeias de Markov (MCMC)}
 
 \begin{verbatim}
-a
+# Cenários de tamanhos para amostragem da "posteriori" via MCMC com passos MH:
+
+am1 = 500; am2 = 5000; am3 = 50000
+
+# Geração de 3 amostras de uma uniforme padrão para o critério de aceitação no
+# algoritmo de Metropolis-Hastings:
+
+set.seed(122019); up1 = runif(am1)
+set.seed(122019); up2 = runif(am2)
+set.seed(122019); up3 = runif(am3)
+
+# Ponto inicial da cadeia:
+
+x = c(10.86, log(0.50), log(0.14/0.86))
+
+# Vetores para receber amostras "a posteriori" da distribuição desejada:
+
+am1_mu_p = am1_s2_p = am1_nu_p = numeric(am1)
+am2_mu_p = am2_s2_p = am2_nu_p = numeric(am2)
+am3_mu_p = am3_s2_p = am3_nu_p = numeric(am3)
+
+# Geração das amostras "a posteriori" via com passos MH:
+
+XparMH = function(X, m, V, a, d, x, var_d, up, seed) {
+	k = length(up)
+	am_mu_p = am_s2_p = am_nu_p = numeric(k)
+	cont=0
+	set.seed(122019)
+	for(i in 1:k) {
+		y = rmvnorm(1,mean=c(x[1],x[2],x[3]),sigma=diag(var_d))
+		auy = exp(logkpost_re(sam,y[1],exp(y[2]),1/(1+exp(-y[3])),m,V,a,d))
+		aux = exp(logkpost_re(sam,x[1],exp(x[2]),1/(1+exp(-x[3])),m,V,a,d))
+		acep = min(c(1, auy/aux))
+		if(up[i] <= acep) {
+			am_mu_p[i] = y[1]
+			am_s2_p[i] = exp(y[2])
+			am_nu_p[i] = 1/(1+exp(-y[3]))
+			x = y; cont = cont + 1
+		}
+		else {
+			am_mu_p[i] = x[1]
+			am_s2_p[i] = exp(x[2])
+			am_nu_p[i] = 1/(1+exp(-x[3]))
+		}
+	}
+	return(list(XparMH_mu=am_mu_p[(0.2*k + 1):k],
+				XparMH_s2=am_s2_p[(0.2*k + 1):k],
+				XparMH_nu=am_nu_p[(0.2*k + 1):k], taxa_acep=cont/k))
+}
+\end{verbatim}
+
+\begin{verbatim}
+am1_p = XparMH(X=sam, m=m, V=V, a=a, d=d,
+			   x=x, var_d=c(0.0022, 0.0065, 0.0203), up=up1, seed=122019)
+am2_p = XparMH(X=sam, m=m, V=V, a=a, d=d,
+			   x=x, var_d=c(0.0022, 0.0065, 0.0203), up=up2, seed=122019)
+am3_p = XparMH(X=sam, m=m, V=V, a=a, d=d,
+			   x=x, var_d=c(0.0022, 0.0065, 0.0203), up=up3, seed=122019)
+
+# Taxa de aceitação do algoritmo em cada cenário de tamanho amostral:
+
+am1_p$taxa_acep; am2_p$taxa_acep; am3_p$taxa_acep
+
+# Média; variância; assimetria; curtose e histogramas das amostras geradas:
+
+st_sam_post(am1_p$XparMH_mu)
+hist(am1_p$XparMH_mu, breaks=50, prob=T, main="",
+	 xlab=expression(paste(mu)), ylab="")
+st_sam_post(am2_p$XparMH_mu)
+hist(am2_p$XparMH_mu, breaks=50, prob=T, main="",
+	 xlab=expression(paste(mu)), ylab="")
+st_sam_post(am3_p$XparMH_mu)
+hist(am3_p$XparMH_mu, breaks=50, prob=T, main="",
+	 xlab=expression(paste(mu)), ylab="")
+
+st_sam_post(am1_p$XparMH_s2)
+hist(am1_p$XparMH_s2, breaks=50, prob=T, main="",
+	 xlab=expression(paste(sigma^2)), ylab="")
+st_sam_post(am2_p$XparMH_s2)
+hist(am2_p$XparMH_s2, breaks=50, prob=T, main="",
+	 xlab=expression(paste(sigma^2)), ylab="")
+st_sam_post(am3_p$XparMH_s2)
+hist(am3_p$XparMH_s2, breaks=50, prob=T, main="",
+	 xlab=expression(paste(sigma^2)), ylab="")
+
+st_sam_post(am1_p$XparMH_nu)
+hist(am1_p$XparMH_nu, breaks=50, prob=T, main="",
+	 xlab=expression(paste(nu)), ylab="")
+st_sam_post(am2_p$XparMH_nu)
+hist(am2_p$XparMH_nu, breaks=50, prob=T, main="",
+	 xlab=expression(paste(nu)), ylab="")
+st_sam_post(am3_p$XparMH_nu)
+hist(am3_p$XparMH_nu, breaks=50, prob=T, main="",
+	 xlab=expression(paste(nu)), ylab="")
+\end{verbatim}
+
+\newpage
+
+\begin{verbatim}
+# Gráficos de convergência e de autocorrelação das cadeias geradas:
+
+library(coda)
+
+par(mar = c(5,5,3,2))
+traceplot(mcmc(am1_p$XparMH_mu), ylab=expression(paste(mu)))
+plot(acf(am1_p$XparMH_mu), main="")
+traceplot(mcmc(am2_p$XparMH_mu), ylab=expression(paste(mu)))
+plot(acf(am2_p$XparMH_mu), main="")
+traceplot(mcmc(am3_p$XparMH_mu), ylab=expression(paste(mu)))
+plot(acf(am3_p$XparMH_mu), main="")
+
+traceplot(mcmc(am1_p$XparMH_s2), ylab=expression(paste(sigma^2)))
+plot(acf(am1_p$XparMH_s2), main="")
+traceplot(mcmc(am2_p$XparMH_s2), ylab=expression(paste(sigma^2)))
+plot(acf(am2_p$XparMH_s2), main="")
+traceplot(mcmc(am3_p$XparMH_s2), ylab=expression(paste(sigma^2)))
+plot(acf(am3_p$XparMH_s2), main="")
+
+traceplot(mcmc(am1_p$XparMH_nu), ylab=expression(paste(nu)))
+plot(acf(am1_p$XparMH_nu), main="")
+traceplot(mcmc(am2_p$XparMH_nu), ylab=expression(paste(nu)))
+plot(acf(am2_p$XparMH_nu), main="")
+traceplot(mcmc(am3_p$XparMH_nu), ylab=expression(paste(nu)))
+plot(acf(am3_p$XparMH_nu), main="")
 \end{verbatim}
 
 \end{document}

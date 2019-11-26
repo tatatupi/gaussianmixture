@@ -149,6 +149,7 @@ XparMH = function(X, m, V, a, d, x, var_d,
                   up, seed) {
   k = length(up)
   am_mu_p = am_s2_p = am_nu_p = numeric(k)
+  cont=0
   set.seed(122019)
   for(i in 1:k) {
     y = rmvnorm(1, mean=c(x[1], x[2], x[3]),
@@ -163,6 +164,7 @@ XparMH = function(X, m, V, a, d, x, var_d,
       am_s2_p[i] = exp(y[2])
       am_nu_p[i] = 1/(1+exp(-y[3]))
       x = y
+      cont = cont + 1
     }
     else {
       am_mu_p[i] = x[1]
@@ -171,9 +173,10 @@ XparMH = function(X, m, V, a, d, x, var_d,
     }
   }
   
-  return(list(XparMH_mu=am_mu_p,
-              XparMH_s2=am_s2_p,
-              XparMH_nu=am_nu_p))
+  return(list(XparMH_mu=am_mu_p[(0.2*k + 1):k],
+              XparMH_s2=am_s2_p[(0.2*k + 1):k],
+              XparMH_nu=am_nu_p[(0.2*k + 1):k],
+              taxa_acep=cont/k))
 }
 
 am1_p = XparMH(X=sam, m=m, V=V, a=a, d=d, x=x,
@@ -186,8 +189,10 @@ am3_p = XparMH(X=sam, m=m, V=V, a=a, d=d, x=x,
                var_d=c(0.0022, 0.0065, 0.0203),
                up=up3, seed=122019)
 
+am1_p$taxa_acep; am2_p$taxa_acep; am3_p$taxa_acep
+
 library(moments) # Contém funções para extrair assimetri-
-# a e curtose amostrais.
+                 # a e curtose amostrais.
 
 st_sam_post = function(Xpar) {
   medi = mean(Xpar)
@@ -199,37 +204,67 @@ st_sam_post = function(Xpar) {
 }
 
 st_sam_post(am1_p$XparMH_mu)
-hist(am1_p$XparMH_mu, breaks=50, prob=T)
+hist(am1_p$XparMH_mu, breaks=50, prob=T, main="",
+     xlab=expression(paste(mu)), ylab="")
 st_sam_post(am2_p$XparMH_mu)
-hist(am2_p$XparMH_mu, breaks=50, prob=T)
+hist(am2_p$XparMH_mu, breaks=50, prob=T, main="",
+     xlab=expression(paste(mu)), ylab="")
 st_sam_post(am3_p$XparMH_mu)
-hist(am3_p$XparMH_mu, breaks=50, prob=T)
+hist(am3_p$XparMH_mu, breaks=50, prob=T, main="",
+     xlab=expression(paste(mu)), ylab="")
 
 st_sam_post(am1_p$XparMH_s2)
-hist(am1_p$XparMH_s2, breaks=50, prob=T)
+hist(am1_p$XparMH_s2, breaks=50, prob=T, main="",
+     xlab=expression(paste(sigma^2)), ylab="")
 st_sam_post(am2_p$XparMH_s2)
-hist(am2_p$XparMH_s2, breaks=50, prob=T)
+hist(am2_p$XparMH_s2, breaks=50, prob=T, main="",
+     xlab=expression(paste(sigma^2)), ylab="")
 st_sam_post(am3_p$XparMH_s2)
-hist(am3_p$XparMH_s2, breaks=50, prob=T)
+hist(am3_p$XparMH_s2, breaks=50, prob=T, main="",
+     xlab=expression(paste(sigma^2)), ylab="")
 
 st_sam_post(am1_p$XparMH_nu)
-hist(am1_p$XparMH_nu, breaks=50, prob=T)
+hist(am1_p$XparMH_nu, breaks=50, prob=T, main="",
+     xlab=expression(paste(nu)), ylab="")
 st_sam_post(am2_p$XparMH_nu)
-hist(am2_p$XparMH_nu, breaks=50, prob=T)
+hist(am2_p$XparMH_nu, breaks=50, prob=T, main="",
+     xlab=expression(paste(nu)), ylab="")
 st_sam_post(am3_p$XparMH_nu)
-hist(am3_p$XparMH_nu, breaks=50, prob=T)
+hist(am3_p$XparMH_nu, breaks=50, prob=T, main="",
+     xlab=expression(paste(nu)), ylab="")
 
-# Verificando a autocorrelação das cadeias geradas em ca-
-# da parâmetro:
+# Checando a convergência das cadeias geradas em cada pa-
+# râmetro, bem como a autocorrelação:
 
-acf(am1_p$XparMH_mu)
-acf(am2_p$XparMH_mu)
-acf(am3_p$XparMH_mu)
+library(coda)
 
-acf(am1_p$XparMH_s2)
-acf(am2_p$XparMH_s2)
-acf(am3_p$XparMH_s2)
+par(mar = c(5,5,3,2))
+traceplot(mcmc(am1_p$XparMH_mu),
+          ylab=expression(paste(mu)))
+plot(acf(am1_p$XparMH_mu), main="")
+traceplot(mcmc(am2_p$XparMH_mu),
+          ylab=expression(paste(mu)))
+plot(acf(am2_p$XparMH_mu), main="")
+traceplot(mcmc(am3_p$XparMH_mu),
+          ylab=expression(paste(mu)))
+plot(acf(am3_p$XparMH_mu), main="")
 
-acf(am1_p$XparMH_nu)
-acf(am2_p$XparMH_nu)
-acf(am3_p$XparMH_nu)
+traceplot(mcmc(am1_p$XparMH_s2),
+          ylab=expression(paste(sigma^2)))
+plot(acf(am1_p$XparMH_s2), main="")
+traceplot(mcmc(am2_p$XparMH_s2),
+          ylab=expression(paste(sigma^2)))
+plot(acf(am2_p$XparMH_s2), main="")
+traceplot(mcmc(am3_p$XparMH_s2),
+          ylab=expression(paste(sigma^2)))
+plot(acf(am3_p$XparMH_s2), main="")
+
+traceplot(mcmc(am1_p$XparMH_nu),
+          ylab=expression(paste(nu)))
+plot(acf(am1_p$XparMH_nu), main="")
+traceplot(mcmc(am2_p$XparMH_nu),
+          ylab=expression(paste(nu)))
+plot(acf(am2_p$XparMH_nu), main="")
+traceplot(mcmc(am3_p$XparMH_nu),
+          ylab=expression(paste(nu)))
+plot(acf(am3_p$XparMH_nu), main="")
