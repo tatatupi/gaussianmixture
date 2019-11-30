@@ -2,7 +2,7 @@
 \usepackage{natbib}
 \usetheme{CambridgeUS}
 \usepackage{amsfonts, amsmath,
-	amssymb, amsthm}  % Fontes e símbolos matemáticos da AMS.
+			amssymb, amsthm}  % Fontes e símbolos matemáticos da AMS.
 \usepackage{graphicx}         % Importação de gráficos.
 \usepackage{subfig}
 \usepackage[brazil]{babel}    % Idioma português (Brasil) como padrão.
@@ -22,29 +22,65 @@
 \usepackage{ragged2e}   
 \setlength{\parindent}{1.2 cm} % margem
 \usepackage{setspace}
-\renewcommand\baselinestretch{1.4}  % DistÃÂ¢ncia entre linhas
 
-\theoremstyle{definition}
+\usepackage{etoolbox}
+\apptocmd{\thebibliography}{\justifying}{}{} %Justify the references.
 
+\renewcommand\baselinestretch{1.4}  % Distância entre linhas
 
-\theoremstyle{remark}
-\newtheorem*{remark}{Remark}
+\setbeamersize{text margin left=8mm,     %Controls left and right margins.
+			   text margin right=8mm}
+\setbeamertemplate{caption}[numbered]    %Numbers figures and table.
+\captionsetup{justification = centering} %Centers the table title.
 
+% Avoiding paragraph breaks on references:
 
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
 
-\institute[Misturas de Normais]{\normalsize Programa de Pós-Graduação em Estatística\\ Departamento de Estatística - UFMG }
-	
- \title[Bayesiana]{Mistura de Normais com Variância Contaminada}
-\author[]{\normalsize Caio Gabriel Barreto Balieiro \textsuperscript{1}\\ Taiguara Melo Tupinambás \textsuperscript{1}\\ Walmir dos Reis Miranda Filho\textsuperscript{1}  }
+% Changing references left symbol for an ordered sequence:
 
-\date{02 de dezembro de 2019}
+\setbeamertemplate{bibliography item}[text]
+
+% Title page:
+
+\setbeamertemplate{footline}{  %Settings for the footline.
+	\leavevmode%
+	\hbox{%
+		\begin{beamercolorbox}[wd=.25\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+			\usebeamerfont{author in head/foot}\insertshortauthor
+		\end{beamercolorbox}%
+		
+		\begin{beamercolorbox}[wd=.50\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+			\usebeamerfont{title in head/foot}\insertshorttitle
+		\end{beamercolorbox}%
+		
+		\begin{beamercolorbox}[wd=.25\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+			\usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+			\insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+	\end{beamercolorbox}}%
+	\vskip0pt%
+}
+
+\title[Mistura de Normais com Variância Contaminada]{Mistura de Normais com Variância Contaminada}
+
+\author[Caio, Taiguara e Walmir]{\normalsize Caio Gabriel Barreto Balieiro\\ Taiguara Melo Tupinambás\\ Walmir dos Reis Miranda Filho}
+
+\institute[]{\normalsize Programa de Pós-Graduação em Estatística\\ Departamento de Estatística - UFMG }
+
+\date[06/12/2019]{02 de dezembro de 2019}
 
 
 % ======================================================== %
 \begin{document}
-\maketitle
-\begin{frame}
-\frametitle{Conteúdo}
+
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+\begin{frame}[plain]
+\frametitle{Sumário}
 \tableofcontents
 \end{frame}
 % =====================================================
@@ -123,7 +159,7 @@ onde
 \begin{frame}
 \begin{figure}[htb]
 	\centering
-	\includegraphics[scale=0.5]{amostra_n.pdf}
+	\includegraphics[scale=0.5]{figuras/amostra_n.pdf}
 	\caption{Histograma da amostra gerada do modelo}
 	\label{fig:sample_n.pdf}
 \end{figure}
@@ -136,7 +172,7 @@ onde
 	\subfloat[$I_{\mu} = (10.85,11.13)$, dados $\sigma^2 = 0.64, \nu = 0.2$]{
 		{
 			\label{fig:maspro_mu}
-			\includegraphics[scale=0.4]{maspro_mu.pdf}}}%
+			\includegraphics[scale=0.4]{figuras/maspro_mu.pdf}}}%
 \caption{Intervalos de massa probabilística para cada parâmetro (variável aleatória) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$}%
 \end{figure}
 \end{frame}
@@ -146,12 +182,12 @@ onde
 \begin{figure}[htb]\footnotesize
 	\subfloat[$I_{\sigma^2} = (0.48, 0.78)$, dados $\mu = 11, \nu = 0.2$]{
 	{
-		\label{fig:maspro_s2}
-		\includegraphics[scale=0.3]{maspro_s2.pdf}}}%
+	\label{fig:maspro_s2}
+		\includegraphics[scale=0.3]{figuras/maspro_s2.pdf}}}%
 \subfloat[$I_{\nu} = (0.13, 0.26)$ dados $\mu = 11, \sigma^2 = 0.64$]{
 	{
 		\label{fig:maspro_nu}
-		\includegraphics[scale=0.3]{maspro_nu.pdf}}}%
+		\includegraphics[scale=0.3]{figuras/maspro_nu.pdf}}}%
 \caption{Intervalos de massa probabilística para cada parâmetro (variável aleatória) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$}%
 \end{figure}
 \end{frame}
@@ -209,7 +245,7 @@ p(\alpha_3 | \bm{y})
 \end{frame}
 % ==================================================
 % ==================================================
-\section{Reamostragem por importância sequêncial(SIR) }
+\section{Reamostragem por importância sequêncial(SIR)}
 \begin{frame}
 \begin{itemize}
 \justifying	
@@ -265,17 +301,17 @@ p(\theta_1, \theta_2, \theta_3 | \bm{x})
 	\toprule
 		Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
 		\midrule
-		$k = 500$ & $\mu$      & 10.9956 & 0.0024 & 0.1394 & 3.0639 \\
-		& $\sigma^2$ &  0.6423 & 0.0030 & 0.4046 & 4.0116 \\
-		& $\nu$      &  0.2010 & 0.0005 & 0.3050 & 3.5598 \\
+		$k = 500$ & $\mu$      & 11.0003 & 0.0023 & -0.0610 & 3.0351 \\
+		& $\sigma^2$ &  0.6422 & 0.0026 &  0.1261 & 3.1453 \\
+		& $\nu$      &  0.2028 & 0.0006 &  0.3510 & 3.5475 \\
 		\midrule
-		$k = 5000$ & $\mu$      & 11.0001 & 0.0023 & -0.0244 & 2.9656 \\
-		& $\sigma^2$ &  0.6428 & 0.0027 &  0.2869 & 3.1554 \\
-		& $\nu$      &  0.2010 & 0.0006 &  0.3157 & 3.0594 \\
+		$k = 5000$ & $\mu$      & 11.0006 & 0.0022 &  0.0216 & 3.0234 \\
+		& $\sigma^2$ &  0.6418 & 0.0027 &  0.2349 & 3.0118 \\
+		& $\nu$      &  0.2013 & 0.0005 &  0.2485 & 3.1646 \\
 		\midrule
-		$k = 50000$ & $\mu$      & 11.0001 & 0.0022 & 0.0266 & 3.0106 \\
-		& $\sigma^2$ &  0.6422 & 0.0027 & 0.2529 & 3.1077 \\
-		& $\nu$      &  0.2012 & 0.0005 & 0.2654 & 3.1680 \\
+		$k = 50000$ & $\mu$      & 11.0002 & 0.0022 & -0.0081 & 3.0451 \\
+		& $\sigma^2$ &  0.6420 & 0.0027 &  0.2353 & 3.1153 \\
+		& $\nu$      &  0.2009 & 0.0005 &  0.2608 & 3.0849 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
