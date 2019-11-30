@@ -314,9 +314,10 @@ return(lkrp)
 
 logkpost_re(sam, mu, s2, nu, m, V, a, d)
 
-# Cenários de tamanhos para amostragem da "posteriori" via SIR:
+# Cenários de tamanhos do vetor de pesos e de amostras "a posteriori" via SIR:
 
-am1 = 500; am2 = 5000; am3 = 50000
+aw1 = 5000; aw2 = 50000; aw3 = 500000
+am1 = aw1/10; am2 = aw2/10; am3 = aw3/10
 
 # Valores reparametrizados da diagonal principal da matriz de covariâncias
 # da distribuição normal trivariada:
@@ -330,13 +331,13 @@ am1 = 500; am2 = 5000; am3 = 50000
 library(mvtnorm)
 
 set.seed(122019)
-r1_q = rmvnorm(am1, mean=c(11, log(0.64), log(0.2/0.8)),
+r1_q = rmvnorm(aw1, mean=c(11, log(0.64), log(0.2/0.8)),
 			   sigma=diag(c(0.0022, 0.0065, 0.0203)))
 set.seed(122019)
-r2_q = rmvnorm(am2, mean=c(11, log(0.64), log(0.2/0.8)),
+r2_q = rmvnorm(aw2, mean=c(11, log(0.64), log(0.2/0.8)),
 			   sigma=diag(c(0.0022, 0.0065, 0.0203)))
 set.seed(122019)
-r3_q = rmvnorm(am3, mean=c(11, log(0.64), log(0.2/0.8)),
+r3_q = rmvnorm(aw3, mean=c(11, log(0.64), log(0.2/0.8)),
 			   sigma=diag(c(0.0022, 0.0065, 0.0203)))
 
 # Cálculo da densidade para cada ponto das amostras geradas:
