@@ -305,9 +305,9 @@ p(\alpha_3 | \bm{y})
 \justifying	
 \item Proposto por Gordon \textit{et al.} (1993), o método SIR utiliza uma \textit{função de amostragem por importância} $g$ para aproximar (sem perda de generalidade) uma densidade de interesse $p$.
 
-\item Sejam $\theta_1, \ldots, \theta_k$ uma amostra aleatória de $g$ e $\bm{y} = (y_1, \ldots, y_n)$ uma amostra do modelo para os dados observados. Para cada ponto $\theta_j$, $j = 1, \ldots, k$, os pesos são dados por
+\item Sejam $\theta_1, \ldots, \theta_t$ uma amostra aleatória de $g$ e $\bm{y} = (y_1, \ldots, y_n)$ uma amostra do modelo para os dados observados. Para cada ponto $\theta_j$, $j = 1, \ldots, t$, os pesos são dados por
 \begin{equation}\label{eq:sir_wei}
-w_j(\theta_j) = \dfrac{p(\theta_j | \bm{y}) / q(\theta_j)}{\sum_{j=1}^{k} p(\theta_j | \bm{y}) / q(\theta_j)}.
+w_j(\theta_j) = \dfrac{p(\theta_j | \bm{y}) / g(\theta_j)}{\sum_{j=1}^{k} p(\theta_j | \bm{y}) / g(\theta_j)}.
 \end{equation}
 em que $g$  é uma densidade conhecida e da qual se sabe gerar uma amostra aleatória. 
 \item Como feito em muitos trabalhos, para $g$ será escolhida uma densidade normal trivariada $N_3(\bm{\mu}, \bm{\Sigma})$, cujas componentes têm, cada uma, suporte em toda a reta real.
@@ -434,8 +434,8 @@ p(\theta_1, \theta_2, \theta_3 | \bm{x})
 \justifying	
 \item Neste trabalho, será usado o algoritmo de Metropolis-Hastings (Metropolis \textit{et al.}, 1953; Hastings, 1970), aqui abreviado por MH.
 \item Assim como o método SIR, o algoritmo MH também é baseado no uso de uma distribuição auxiliar ou proposta, aqui denotada por $q(\bm{y}, \bm{z})$. Assumindo-se que na interação $j$, $j = 1, \ldots, k$ a cadeia está no estado $\bm{y}^{(j)}$, a posição da mesma na iteração $j + 1$, denotada por $\bm{y}^{(j + 1)}$, será dada após:
-\item Passo 1: Propor uma transição ou movimento para $\bm{y}^*$, onde $\bm{y}^*$ é gerada de $q(\bm{y}^{(j)}, \cdot)$, a distribuição proposta, e, o valor inicial $\mathbf{y}^{(1)}$;
-\item Passo 2: Aceitar a transição proposta com probabilidade
+\item Propor uma transição ou movimento para $\bm{y}^*$, onde $\bm{y}^*$ é gerada de $q(\bm{y}^{(j)}, \cdot)$, a distribuição proposta, e, o valor inicial da cadeia $\mathbf{y}^{(1)}$;
+\item Aceitar a transição proposta com probabilidade
 \begin{equation}\label{eq:mh_tranprob}
 \rho(\bm{y}^{(j)}, \bm{y}^*) = \min\left(1, \dfrac{p(\bm{y}^*) / q(\bm{y}^{(j)}, \bm{y}^*)}{p(\bm{y}^{(j)}) / q(\bm{y}^*, \bm{y}^{(j)})}\right)
 \end{equation}
@@ -582,8 +582,41 @@ e neste caso atribuir $\bm{y}^{(j + 1)} = \bm{y}^*$ ou rejeitar a transição pr
 % ==================================================
 \section{Considerações finais}
 \begin{frame}
+\begin{itemize}
+\justifying	
+\item Neste trabalho, as densidades marginais \textit{a posteriori} dos parâmetros de interesse ($\mu, \sigma^2, \nu$) foram aproximadas por três métodos numéricos, para uma amostra observada de tamanho 500.
+\item Para os três métodos implementados, foram desenvolvidos 3 cenários diferentes, para análise
+de convergência e complexidade computacional.
+\item No primeiro caso, do método de quadratura,
+três quantidades diferentes de intervalos de integração L foram escolhidos: 15, 50 e 100. O
+primeiro resultado não é muito satisfatório, apesar de aproximar bem os dois primeiros mo-
+mentos.	
+\item Para 50 e 100 subintervalos, a aproximação é bem melhor, às custas de um custo
+computacional maior, crescendo exponencialmente em relação a dimensão do espaço paramétrico (O($L^n$)), com n igual a 3.
+\end{itemize}	
 \end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
+\begin{itemize}
+\justifying	
+\item Para os métodos estocásticos SIR e MCMC, foram considerados,
+respectivamente, quantidade de iterações k iguais a 500, 5000 e 50000.
 
+\item Em ambos os casos, para k igual a 500, as distribuições a posteriori aproximadas não foram
+muito satisfatórias, apresentando muitos outliers e modas locais.
+
+\item Para o SIR, a partir de 5000
+amostras, as distribuições são bem mais suaves, sendo possível observar o comportamentos de
+momentos de ordem superior.
+
+\item No MCMC, ainda se observa uma melhoria considerável de k
+igual a 5000 para k igual a 50000 passos de integração, quando o método parece convergir.
+
+\item Por fim, podemos concluir que, para o modelo probabilístico estudado, todos os três métodos
+desempenham bem a tarefa de aproximar a distribuição a posteriori, se escolhidos hiperparâmetros de convergência adequados.
+\end{itemize}	
+\end{frame}
 %\section{Referências}
 %\begin{frame}[allowframebreaks]
 %\frametitle{Referências}
