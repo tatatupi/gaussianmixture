@@ -115,7 +115,7 @@ f(x | \mu, \sigma^2, \nu) = \nu \phi(x | \mu, 100 \sigma^2) + (1 - \nu) \phi(x |
 \begin{frame}
 \begin{itemize}
 \justifying	
-\item E então, será propôs-se independência entre as prioris, portanto assumem a forma dada por
+\item E então, propôs-se independência entre as prioris, portanto assumem a forma dada por
 \begin{equation}
 p(\boldsymbol{\theta}) = p(\mu|\sigma^2) p(\sigma^2)p(\nu).
 \end{equation}
@@ -159,7 +159,7 @@ onde
 \begin{frame}
 \begin{figure}[htb]
 	\centering
-	\includegraphics[scale=0.5]{figuras/amostra_n.pdf}
+	\includegraphics[scale=0.5]{amostra_n.pdf}
 	\caption{Histograma da amostra gerada do modelo}
 	\label{fig:sample_n.pdf}
 \end{figure}
@@ -172,7 +172,7 @@ onde
 	\subfloat[$I_{\mu} = (10.85,11.13)$, dados $\sigma^2 = 0.64, \nu = 0.2$]{
 		{
 			\label{fig:maspro_mu}
-			\includegraphics[scale=0.4]{figuras/maspro_mu.pdf}}}%
+			\includegraphics[scale=0.4]{maspro_mu.pdf}}}%
 \caption{Intervalos de massa probabilística para cada parâmetro (variável aleatória) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$}%
 \end{figure}
 \end{frame}
@@ -183,11 +183,11 @@ onde
 	\subfloat[$I_{\sigma^2} = (0.48, 0.78)$, dados $\mu = 11, \nu = 0.2$]{
 	{
 	\label{fig:maspro_s2}
-		\includegraphics[scale=0.3]{figuras/maspro_s2.pdf}}}%
+		\includegraphics[scale=0.28]{maspro_s2.pdf}}}%
 \subfloat[$I_{\nu} = (0.13, 0.26)$ dados $\mu = 11, \sigma^2 = 0.64$]{
 	{
 		\label{fig:maspro_nu}
-		\includegraphics[scale=0.3]{figuras/maspro_nu.pdf}}}%
+		\includegraphics[scale=0.28]{maspro_nu.pdf}}}%
 \caption{Intervalos de massa probabilística para cada parâmetro (variável aleatória) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$}%
 \end{figure}
 \end{frame}
@@ -220,11 +220,65 @@ p(\alpha_3 | \bm{y})
 % ==================================================
 % ==================================================
 \begin{frame}
+\begin{figure}[t]%
+	\centering
+	\subfloat[Densidade \textit{a posteriori} de $\mu$]{{
+			\label{fig:dpm_mu_qr_15}
+			\includegraphics[scale=0.2]{dpm_mu_qr_15.pdf}}}%
+	\qquad
+	\subfloat[Densidade \textit{a posteriori} de $\sigma^2$]{{
+			\label{fig:dpm_s2_qr_15}
+			\includegraphics[scale=0.2]{dpm_s2_qr_15.pdf}}}%
+	\subfloat[Densidade \textit{a posteriori} de $\nu$]{{
+			\label{fig:dpm_nu_qr_15}
+			\includegraphics[scale=0.2]{dpm_nu_qr_15.pdf}}}%
+	\caption{Densidades \textit{a posteriori} marginais pela quadratura de Riemann com $L = 15$}%
+\end{figure}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
+\begin{figure}[t]%
+	\centering
+	\subfloat[Densidade \textit{a posteriori} de $\mu$]{{
+			\label{fig:dpm_mu_qr_50}
+			\includegraphics[scale=0.2]{dpm_mu_qr_50.pdf}}}%
+	\qquad
+	\subfloat[Densidade \textit{a posteriori} de $\sigma^2$]{{
+			\label{fig:dpm_s2_qr_50}
+			\includegraphics[scale=0.2]{dpm_s2_qr_50.pdf}}}%
+	\subfloat[Densidade \textit{a posteriori} de $\nu$]{{
+			\label{fig:dpm_nu_qr_50}
+			\includegraphics[scale=0.2]{dpm_nu_qr_50.pdf}}}%
+	\caption{Densidades \textit{a posteriori} marginais pela quadratura de Riemann com $L = 50$}%
+\end{figure}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
+\begin{figure}[t]%
+	\centering
+	\subfloat[Densidade \textit{a posteriori} de $\mu$]{{
+			\label{fig:dpm_mu_qr_100}
+			\includegraphics[scale=0.2]{dpm_mu_qr_100.pdf}}}%
+	\qquad
+	\subfloat[Densidade \textit{a posteriori} de $\sigma^2$]{{
+			\label{fig:dpm_s2_qr_100}
+			\includegraphics[scale=0.2]{dpm_s2_qr_100.pdf}}}%
+	\subfloat[Densidade \textit{a posteriori} de $\nu$]{{
+			\label{fig:dpm_nu_qr_100}
+			\includegraphics[scale=0.2]{dpm_nu_qr_100.pdf}}}%
+	\caption{Densidades \textit{a posteriori} marginais pela quadratura de Riemann com $L = 100$}%
+\end{figure}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
 \begin{table}[htb]
-\caption{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pela quadratura de Riemann}
-\label{tab1}
-\centering
-\begin{tabular}{cccccc}
+	\caption{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pela quadratura de Riemann}
+	\label{tab1}
+	\centering
+	\begin{tabular}{cccccc}
 		\toprule
 		Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
 		\midrule
@@ -271,7 +325,7 @@ p(\theta_1, \theta_2, \theta_3 | \bm{x})
 &= p(\theta_1 = \mu, \theta_2 = \log(\sigma^2), \theta_3 = \log[\nu/(1-\nu)] | \bm{x}) \nonumber \\
 &= p(\mu = \theta_1, \sigma^2 = \exp(\theta_2), \nu = 1/[1 + \exp(-\theta_3)] | \bm{x}) \times |J(\theta_1, \theta_2, \theta_3)| \nonumber \\
 &\propto \left[\exp(\theta_2)\right]^{-[(n + 1)/2 + a + 1]} \times \exp\left\{-\dfrac{\left[(\theta_1 - m)^2 / (2V) + d\right]}{\exp(\theta_2)}\right\} \nonumber \\
-&\times A^*(\bm{x} | \theta_1, \theta_2, \theta_3) \times  \dfrac{\exp(\theta_2) \exp(\theta_3)}{\left[1 + \exp(-\theta_3)\right]^{-2}} \nonumber \\	&\propto \left(\dfrac{1}{\sigma^2}\right)^{(n + 1)/2 + a + 1} \times \exp\left\{-\dfrac{\left[(\mu - m)^2 / (2V) + d\right]}{\sigma^2}\right\} \times A(\bm{x} | \mu, \sigma^2, \nu) \nonumber \\
+&\times A^*(\bm{x} | \theta_1, \theta_2, \theta_3) \times  \dfrac{\exp(\theta_2) \exp(\theta_3)}{\left[1 + \exp(-\theta_3)\right]^{-2}} \nonumber \\	&\propto \left(\dfrac{1}{\sigma^2}\right)^{\frac{n + 1}{2 + a + 1}} \times \exp\left\{-\dfrac{\left[(\mu - m)^2 / (2V) + d\right]}{\sigma^2}\right\} \times A(\bm{x} | \mu, \sigma^2, \nu) \nonumber \\
 &\times \sigma^2 \nu^3(1-\nu)^{-1}, \label{eq:sir_dpre}
 \end{align}
 \end{itemize}
@@ -293,12 +347,66 @@ p(\theta_1, \theta_2, \theta_3 | \bm{x})
 % ==================================================
 % ==================================================
 \begin{frame}
+\begin{figure}[t]%
+	\centering
+	\subfloat[Histograma de $\mu$]{{
+			\label{fig:mu_sir_500}
+			\includegraphics[scale=0.2]{mu_sir_500.pdf}}}%
+	\qquad
+	\subfloat[Histograma de $\sigma^2$]{{
+			\label{fig:s2_sir_500}
+			\includegraphics[scale=0.2]{s2_sir_500.pdf}}}%
+	\subfloat[Histograma de $\nu$]{{
+			\label{fig:nu_sir_500}
+			\includegraphics[scale=0.2]{nu_sir_500.pdf}}}%
+	\caption{Histograma das densidades \textit{a posteriori} marginais pela método SIR com $k = 500$}%
+\end{figure}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
+\begin{figure}[t]%
+	\centering
+	\subfloat[Histograma de $\mu$]{{
+			\label{fig:mu_sir_5000}
+			\includegraphics[scale=0.2]{mu_sir_5000.pdf}}}%
+	\qquad
+	\subfloat[Histograma de $\sigma^2$]{{
+			\label{fig:s2_sir_5000}
+			\includegraphics[scale=0.2]{s2_sir_5000.pdf}}}%
+	\subfloat[Histograma de $\nu$]{{
+			\label{fig:nu_sir_5000}
+			\includegraphics[scale=0.2]{nu_sir_5000.pdf}}}%
+	\caption{Histograma das densidades \textit{a posteriori} marginais pela método SIR com $k = 5000$}%
+\end{figure}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
+\begin{figure}[t]%
+	\centering
+	\subfloat[Histograma de $\mu$]{{
+			\label{fig:mu_sir_50000}
+			\includegraphics[scale=0.2]{mu_sir_50000.pdf}}}%
+	\qquad
+	\subfloat[Histograma de $\sigma^2$]{{
+			\label{fig:s2_sir_50000}
+			\includegraphics[scale=0.2]{s2_sir_50000.pdf}}}%
+	\subfloat[Histograma de $\nu$]{{
+			\label{fig:nu_sir_50000}
+			\includegraphics[scale=0.2]{nu_sir_50000.pdf}}}%
+	\caption{Histograma das densidades \textit{a posteriori} marginais pela método SIR com $k = 50000$}%
+\end{figure}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
 \begin{table}[htb]
-\caption{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pelo método SIR}
-\label{tab2}
-\centering
-\begin{tabular}{cccccc}
-	\toprule
+	\caption{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pelo método SIR}
+	\label{tab2}
+	\centering
+	\begin{tabular}{cccccc}
+		\toprule
 		Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
 		\midrule
 		$k = 500$ & $\mu$      & 11.0003 & 0.0023 & -0.0610 & 3.0351 \\
@@ -319,11 +427,162 @@ p(\theta_1, \theta_2, \theta_3 | \bm{x})
 % ==================================================
 % ==================================================
 \section{Integração via Monte Carlo em cadeias de Markov}
+% ==================================================
+% ==================================================
 \begin{frame}
+\begin{itemize}
+\justifying	
+\item Neste trabalho, será usado o algoritmo de Metropolis-Hastings (Metropolis \textit{et al.}, 1953; Hastings, 1970), aqui abreviado por MH.
+\item Assim como o método SIR, o algoritmo MH também é baseado no uso de uma distribuição auxiliar ou proposta, aqui denotada por $q(\bm{y}, \bm{z})$. Assumindo-se que na interação $j$, $j = 1, \ldots, k$ a cadeia está no estado $\bm{y}^{(j)}$, a posição da mesma na iteração $j + 1$, denotada por $\bm{y}^{(j + 1)}$, será dada após:
+\item Passo 1: Propor uma transição ou movimento para $\bm{y}^*$, onde $\bm{y}^*$ é gerada de $q(\bm{y}^{(j)}, \cdot)$, a distribuição proposta, e, o valor inicial $\mathbf{y}^{(1)}$;
+\item Passo 2: Aceitar a transição proposta com probabilidade
+\begin{equation}\label{eq:mh_tranprob}
+\rho(\bm{y}^{(j)}, \bm{y}^*) = \min\left(1, \dfrac{p(\bm{y}^*) / q(\bm{y}^{(j)}, \bm{y}^*)}{p(\bm{y}^{(j)}) / q(\bm{y}^*, \bm{y}^{(j)})}\right)
+\end{equation}
+e neste caso atribuir $\bm{y}^{(j + 1)} = \bm{y}^*$ ou rejeitar a transição proposta e atribuir $\bm{y}^{(j + 1)} = \bm{y}^{(j)}$, com probabilidade $1 - \rho(\bm{y}^{(j)}, \bm{y}^*)$.
+\end{itemize}
 \end{frame}
 % ==================================================
 % ==================================================
-\section{Conclusão}
+\begin{frame}
+\begin{itemize}
+\justifying	
+\item Para decidir sobre a aceitação ou não de $\bm{y}^*$ quando amostrada a cada passo $j$, gere uma amostra $u_1, \ldots, u_k$, onde $k$ é o total de iterações prefixadas, da distribuição uniforme padrão $U(0,1)$, independentemente de $\bm{y}^*$.
+\item Se a probabilidade de aceitação $\rho(\bm{y}^{(j)}, \bm{y}^*)$ for maior do que ou igual a $u_j$, então a transição proposta é aceita. Do contrário, ela é rejeitada.
+\item Para a distribuição proposta $q(\cdot)$ também será escolhida uma normal trivariada $N_3(\bm{\mu}, \bm{\Sigma})$, com valores do vetor de médias, e será reutilizado a reparametrização $\bm{\mu} = (\mu, \log(\sigma^2), \log[\nu/(1-\nu)]) = (11, \log(0.64), \log[0.2/0.8])$ e da matriz de covariância $\bm{\Sigma} = \textrm{diag}\{0.0022, 0.0065, 0.0203\}$.
+\item É necessário definir um estado inicial da cadeia, em geral com densidade conjunta muito baixa, escolheu-se o ponto $y^{(1)} = (10.86, \log(0.50),\log(0.14/0.86))$. 
+\end{itemize}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
+\begin{figure}[t]%
+	\centering
+	\subfloat[Histograma de $\mu$]{{
+			\label{fig:mu_mh_500}
+			\includegraphics[scale=0.2]{mu_mh_500.pdf}}}%
+	\qquad
+	\subfloat[Histograma de $\sigma^2$]{{
+			\label{fig:s2_mh_500}
+			\includegraphics[scale=0.2]{s2_mh_500.pdf}}}%
+	\subfloat[Histograma de $\nu$]{{
+			\label{fig:nu_mh_500}
+			\includegraphics[scale=0.2]{nu_mh_500.pdf}}}%
+	\caption{Histograma das densidades \textit{a posteriori} marginais pelo método MCMC--MH, $k = 500$}%
+\end{figure}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
+\begin{figure}[t]%
+	\centering
+	\subfloat[Histograma de $\mu$]{{
+			\label{fig:mu_mh_5000}
+			\includegraphics[scale=0.2]{mu_mh_5000.pdf}}}%
+	\qquad
+	\subfloat[Histograma de $\sigma^2$]{{
+			\label{fig:s2_mh_5000}
+			\includegraphics[scale=0.2]{s2_mh_5000.pdf}}}%
+	\subfloat[Histograma de $\nu$]{{
+			\label{fig:nu_mh_5000}
+			\includegraphics[scale=0.2]{nu_mh_5000.pdf}}}%
+	\caption{Histograma das densidades \textit{a posteriori} marginais pela método MCMC--MH, $k = 5000$}%
+\end{figure}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
+\begin{figure}[t]%
+	\centering
+	\subfloat[Histograma de $\mu$]{{
+			\label{fig:mu_mh_50000}
+			\includegraphics[scale=0.2]{mu_mh_50000.pdf}}}%
+	\qquad
+	\subfloat[Histograma de $\sigma^2$]{{
+			\label{fig:s2_mh_50000}
+			\includegraphics[scale=0.2]{s2_mh_50000.pdf}}}%
+	\subfloat[Histograma de $\nu$]{{
+			\label{fig:nu_mh_50000}
+			\includegraphics[scale=0.2]{nu_mh_50000.pdf}}}%
+	\caption{Histograma das densidades \textit{a posteriori} marginais pela método MCMC--MH, $k = 50000$}%
+\end{figure}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
+\begin{table}[htb]
+	\caption{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pelo método MCMC--MH}
+	\label{tab3}
+	\centering
+	\begin{tabular}{cccccc}
+		\toprule
+		Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
+		\midrule
+		$k = 500$ & $\mu$ & 10.9672 & 0.0018 & -0.3768 & 3.2193 \\
+		& $\sigma^2$ & 0.6226 & 0.0020 & -0.0684 & 2.6117 \\
+		& $\nu$      & 0.1957 & 0.0006 & -0.3313 & 3.2991 \\
+		\midrule
+		$k = 5000$ & $\mu$ & 10.9818 & 0.0019 & -0.2466 & 2.9894 \\
+		& $\sigma^2$ & 0.6197 & 0.0023 & 0.2372 & 3.0057 \\
+		& $\nu$      & 0.1977 & 0.0005 & 0.3878 & 3.2038 \\
+		\midrule
+		$k = 50000$ & $\mu$ & 10.9852 & 0.0017 & -0.0272 & 2.9451 \\
+		& $\sigma^2$ & 0.6188 & 0.0021 & 0.2472 & 3.1088 \\
+		& $\nu$      & 0.1978 & 0.0005 & 0.1331 & 2.8971 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
+\begin{figure}[htb]
+	\centering
+	\subfloat[Traço de $\mu$]{{
+			\label{fig:trace_mu_mh}
+			\includegraphics[scale=0.32]{trace_mu_mh.pdf}}}%
+	\qquad
+	\subfloat[Autocorrelação de $\mu$]{{
+			\label{fig:acf_mu_mh}
+			\includegraphics[scale=0.32]{acf_mu_mh.pdf}}}%
+	\caption{Traço e autocorrelação da cadeia de $\mu$, $k = \{500, 5000, 50000\}$, respectivamente}%
+\end{figure}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
+\begin{figure}[htb]
+	\centering
+	\subfloat[Traço de $\sigma^2$]{{
+			\label{fig:trace_s2_mh}
+			\includegraphics[scale=0.32]{trace_s2_mh.pdf}}}%
+	\qquad
+	\subfloat[Autocorrelação de $\sigma^2$]{{
+			\label{fig:acf_s2_mh}
+			\includegraphics[scale=0.32]{acf_s2_mh.pdf}}}%
+	\caption{Traço e autocorrelação da cadeia de $\sigma^2$, $k = \{500, 5000, 50000\}$, respectivamente}%
+\end{figure}
+\end{frame}
+% ==================================================
+% ==================================================
+\begin{frame}
+\begin{figure}[htb]
+	\centering
+	\subfloat[Traço de $\nu$]{{
+			\label{fig:trace_nu_mh}
+			\includegraphics[scale=0.32]{trace_nu_mh.pdf}}}%
+	\qquad
+	\subfloat[Autocorrelação de $\nu^2$]{{
+			\label{fig:acf_nu_mh}
+			\includegraphics[scale=0.32]{acf_nu_mh.pdf}}}%
+	\caption{Traço e autocorrelação da cadeia de $\nu^2$, $k = \{500, 5000, 50000\}$, respectivamente}%
+\end{figure}
+\end{frame}
+% ==================================================
+% ==================================================
+\section{Considerações finais}
+\begin{frame}
+\end{frame}
 
 %\section{Referências}
 %\begin{frame}[allowframebreaks]
