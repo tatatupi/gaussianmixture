@@ -4,7 +4,7 @@ Como uma das aproximações estocásticas a serem consideradas, o método da rea
 
 Proposto por Gordon \textit{et al.} (1993)\cite{Gordon1993}, o método SIR utiliza uma \textit{função de amostragem por importância} $g$ para aproximar (sem perda de generalidade) uma densidade de interesse $p$. Neste caso, $g$ é uma densidade conhecida e da qual se sabe gerar uma amostra aleatória. Cada ponto selecionado na amostra de $g$ é ponderado para corrigir a probabilidade de amostragem de tal forma que a amostra ponderada aproxime uma outra que seria extraída da densidade de $p$ caso se soubesse gerar da mesma. Os pesos usados para corrigir as probabilidades de amostragem são chamados \textit{pesos de importância padronizados}. Sejam $\theta_1, \ldots, \theta_t$ uma amostra aleatória de $g$ e $\bm{y}$ uma amostra do modelo para os dados observados. Para cada ponto $\theta_j$, $j = 1, \ldots, t$, os pesos são dados por
 \begin{equation}\label{eq:sir_wei}
-w_j(\theta_j) = \dfrac{p(\theta_j | \bm{y}) / q(\theta_j)}{\sum_{j=1}^{t} p(\theta_j | \bm{y}) / q(\theta_j)}.
+w_j(\theta_j) = \dfrac{p(\theta_j | \bm{y}) / g(\theta_j)}{\sum_{j=1}^{t} p(\theta_j | \bm{y}) / g(\theta_j)}.
 \end{equation}
 
 Após gerar $t$ valores $w_j(\theta_j)$, uma reamostragem de tamanho $k$ é feita do suporte discreto $\theta_1, \ldots, \theta_t$ com probabilidades $w_1(\theta_1), \ldots, w_t(\theta_t)$. A nova amostra resultante terá uma distribuição aproximadamente igual à de $p$, convergindo para esta quando $t \rightarrow \infty$ se $k$ é fixo ou quando $t/m \rightarrow 0$. Em geral, é suficiente que $k/t = 1/10$, razão que será utilizada em todos os cenários ($t$ será $10$ vezes o valor de $k$). Logo, o método SIR gera uma amostra de $p$ assintoticamente. Observe que a densidade $g$ a ser escolhida deve ter o mesmo suporte de $p$ para que o método funcione.
@@ -94,16 +94,16 @@ Obtidas as amostras \textit{a posteriori} marginais de cada parâmetro, para apr
 		Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
 		\midrule
 		$k = 500$ & $\mu$      & 11.0003 & 0.0023 & -0.0610 & 3.0351 \\
-		          & $\sigma^2$ &  0.6422 & 0.0026 &  0.1261 & 3.1453 \\
-		          & $\nu$      &  0.2028 & 0.0006 &  0.3510 & 3.5475 \\
+		& $\sigma^2$ &  0.6422 & 0.0026 &  0.1261 & 3.1453 \\
+		& $\nu$      &  0.2028 & 0.0006 &  0.3510 & 3.5475 \\
 		\midrule
 		$k = 5000$ & $\mu$      & 11.0006 & 0.0022 &  0.0216 & 3.0234 \\
-		           & $\sigma^2$ &  0.6418 & 0.0027 &  0.2349 & 3.0118 \\
-		           & $\nu$      &  0.2013 & 0.0005 &  0.2485 & 3.1646 \\
+		& $\sigma^2$ &  0.6418 & 0.0027 &  0.2349 & 3.0118 \\
+		& $\nu$      &  0.2013 & 0.0005 &  0.2485 & 3.1646 \\
 		\midrule
 		$k = 50000$ & $\mu$      & 11.0002 & 0.0022 & -0.0081 & 3.0451 \\
-		            & $\sigma^2$ &  0.6420 & 0.0027 &  0.2353 & 3.1153 \\
-		            & $\nu$      &  0.2009 & 0.0005 &  0.2608 & 3.0849 \\
+		& $\sigma^2$ &  0.6420 & 0.0027 &  0.2353 & 3.1153 \\
+		& $\nu$      &  0.2009 & 0.0005 &  0.2608 & 3.0849 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
