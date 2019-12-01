@@ -1,7 +1,7 @@
 \documentclass[12pt,reqno,a4paper,oneside]{article}
 
 \usepackage{amsfonts, amsmath,
-	        amssymb, amsthm}  % Fontes e símbolos matemáticos da AMS.
+	amssymb, amsthm}  % Fontes e símbolos matemáticos da AMS.
 \usepackage{graphicx}         % Importação de gráficos.
 \usepackage{subfig}
 \usepackage[brazil]{babel}    % Idioma português (Brasil) como padrão.
@@ -15,7 +15,7 @@
 \usepackage{color}       % Edição de cores.
 \usepackage{indentfirst} % Indentará sempre o 1º parágrafo de cada seção do relatório.
 %\usepackage{enumitem}   % Edição mais elaborada de listas
-                         % Conflito com ambiente "enumerate" no beamer!.
+% Conflito com ambiente "enumerate" no beamer!.
 %\usepackage{hyperref}   % Criação de "hyperlinks".
 \usepackage{multirow}    % Para obter uma célula com uma coluna e várias linhas.
 \usepackage{ragged2e}    % Opções de alinhamento do texto.
@@ -23,7 +23,7 @@
 %\usepackage[FIGTOPCAP]{subfigure} % Acesso a figuras dentro de pastas.
 
 \usepackage[top=2cm, bottom=2cm,
-            left=2cm, right=2cm]{geometry} % Margens do texto.
+left=2cm, right=2cm]{geometry} % Margens do texto.
 
 \captionsetup{justification = centering} % Centraliza os títulos das tabelas.
 
@@ -32,96 +32,96 @@
 \newcommand\indep{\protect\mathpalette{\protect\independenT}{\perp}}\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 
 \begin{document}
+	
+	\title{\huge Relatório do Trabalho de\\
+		Estatística Bayesiana I}
+	\author{\\
+		\\
+		\huge Mistura de Normais\\
+		\huge com Variância Contaminada\\
+		\\
+		\\
+		\\
+		\\
+		\Large Caio Gabriel Barreto Balieiro\\
+		\Large Taiguara Melo Tupinambás\\
+		\Large Walmir dos Reis Miranda Filho\\
+		\\
+		\\
+		\\
+		\\
+		\Large Prof. Dani Gamerman\\
+		\Large Profª Rosangela Helena Loschi\\
+		\\
+		\\
+		\\
+		\\
+		\\
+		Programa de Pós-Graduação em Estatística\\
+		Instituto de Ciências Exatas\\
+		Universidade Federal de Minas Gerais\\
+		\\
+		\\
+		\\
+		\\
+		\\
+		\\}
+	\date{Belo Horizonte, 2 de dezembro de 2019}
+	\maketitle
+	
+	\newpage
+	
+	\input{sec1introRT.tex}
+	\input{sec2qrRT.tex}
+	\input{sec3sirRT.tex}
+	\input{sec4mcmcRT.tex}
+	\input{sec5finais.tex}
+	
+	\bibliographystyle{unsrt}
+	\bibliography{ref}
+	
+	\newpage
+	
+	\input{appendixRT.tex}
+	
+	\newpage
+	
+	\section*{Anexo: Convergência e Autocorrelação no MCMC--MH}
+	
+	\begin{figure}[htb]
+		\centering
+		\subfloat[Traço de $\mu$]{{
+				\label{fig:trace_mu_mh}
+				\includegraphics[scale=0.39]{figuras/trace_mu_mh.pdf}}}%
+		\qquad
+		\subfloat[Autocorrelação de $\mu$]{{
+				\label{fig:acf_mu_mh}
+				\includegraphics[scale=0.39]{figuras/acf_mu_mh.pdf}}}%
+		\caption{Traço e autocorrelação da cadeia de $\mu$, $k = \{500, 5000, 50000\}$, respectivamente}%
+	\end{figure}
 
-\title{\huge Relatório do Trabalho de\\
-	Estatística Bayesiana I}
-\author{\\
-	\\
-	\huge Mistura de Normais\\
-	\huge com Variância Contaminada\\
-	\\
-	\\
-	\\
-	\\
-	\Large Caio Balieiro\\
-	\Large Taiguara Melo Tupinambás\\
-	\Large Walmir dos Reis Miranda Filho\\
-	\\
-	\\
-	\\
-	\\
-	\Large Prof. Dani Gamerman\\
-	\Large Profª Rosangela Helena Loschi\\
-	\\
-	\\
-	\\
-	\\
-	\\
-	Programa de Pós-Graduação em Estatística\\
-	Instituto de Ciências Exatas\\
-	Universidade Federal de Minas Gerais\\
-	\\
-	\\
-	\\
-	\\
-	\\
-	\\}
-\date{Belo Horizonte, 2 de dezembro de 2019}
-\maketitle
+	\begin{figure}[htb]
+		\centering
+		\subfloat[Traço de $\sigma^2$]{{
+				\label{fig:trace_s2_mh}
+				\includegraphics[scale=0.39]{figuras/trace_s2_mh.pdf}}}%
+		\qquad
+		\subfloat[Autocorrelação de $\sigma^2$]{{
+				\label{fig:acf_s2_mh}
+				\includegraphics[scale=0.39]{figuras/acf_s2_mh.pdf}}}%
+		\caption{Traço e autocorrelação da cadeia de $\sigma^2$, $k = \{500, 5000, 50000\}$, respectivamente}%
+	\end{figure}
 
-\newpage
-
-\input{sec1introRT.tex}
-\input{sec2qrRT.tex}
-\input{sec3sirRT.tex}
-\input{sec4mcmcRT.tex}
-\input{sec5finais.tex}
-
-\bibliographystyle{unsrt}
-\bibliography{ref}
-
-\newpage
-
-\input{appendixRT.tex}
-
-\newpage
-
-\section*{Anexo: Convergência e Autocorrelação no MCMC--MH}
-
-\begin{figure}[htb]
-	\centering
-	\subfloat[Traço de $\mu$]{{
-		\label{fig:trace_mu_mh}
-		\includegraphics[scale=0.39]{figuras/trace_mu_mh.pdf}}}%
-	\qquad
-	\subfloat[Autocorrelação de $\mu$]{{
-		\label{fig:acf_mu_mh}
-		\includegraphics[scale=0.39]{figuras/acf_mu_mh.pdf}}}%
-	\caption{Traço e autocorrelação da cadeia de $\mu$, $k = \{500, 5000, 50000\}$, respectivamente}%
-\end{figure}
-
-\begin{figure}[htb]
-	\centering
-	\subfloat[Traço de $\sigma^2$]{{
-			\label{fig:trace_s2_mh}
-			\includegraphics[scale=0.39]{figuras/trace_s2_mh.pdf}}}%
-	\qquad
-	\subfloat[Autocorrelação de $\sigma^2$]{{
-			\label{fig:acf_s2_mh}
-			\includegraphics[scale=0.39]{figuras/acf_s2_mh.pdf}}}%
-	\caption{Traço e autocorrelação da cadeia de $\sigma^2$, $k = \{500, 5000, 50000\}$, respectivamente}%
-\end{figure}
-
-\begin{figure}[htb]
-	\centering
-	\subfloat[Traço de $\nu$]{{
-			\label{fig:trace_nu_mh}
-			\includegraphics[scale=0.39]{figuras/trace_nu_mh.pdf}}}%
-	\qquad
-	\subfloat[Autocorrelação de $\nu^2$]{{
-			\label{fig:acf_nu_mh}
-			\includegraphics[scale=0.39]{figuras/acf_nu_mh.pdf}}}%
-	\caption{Traço e autocorrelação da cadeia de $\nu^2$, $k = \{500, 5000, 50000\}$, respectivamente}%
-\end{figure}
+	\begin{figure}[t]
+		\centering
+		\subfloat[Traço de $\nu$]{{
+				\label{fig:trace_nu_mh}
+				\includegraphics[scale=0.39]{figuras/trace_nu_mh.pdf}}}%
+		\qquad
+		\subfloat[Autocorrelação de $\nu^2$]{{
+				\label{fig:acf_nu_mh}
+				\includegraphics[scale=0.39]{figuras/acf_nu_mh.pdf}}}%
+		\caption{Traço e autocorrelação da cadeia de $\nu^2$, $k = \{500, 5000, 50000\}$, respectivamente}%
+	\end{figure}
 
 \end{document}
