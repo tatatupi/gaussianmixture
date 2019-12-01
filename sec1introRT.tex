@@ -31,7 +31,7 @@ onde
 \textrm{A}(\bm{x} | \mu, \sigma^2, \nu) = \prod_{i=1}^{n} \left\{  \dfrac{\nu}{10} \exp\left[-\dfrac{(x_i - \mu)^2}{200\sigma^2}\right] + (1 - \nu) \exp\left[-\dfrac{(x_i - \mu)^2}{2\sigma^2}\right] \right\}.
 \end{equation*}
 
-Evidentemente, trabalhar diretamente com o lado direito em \eqref{eq:dist_post} não é computacionalmente agradável, uma vez que esta é um produto de várias quantidades sempre menores do que 1, muitas delas próximas de 0, o que pode levar a problemas de aproximação numérica. Desta forma, sempre que for necessário calcular o núcleo da \textit{posteriori}, dada uma amostra, inicialmente será tomada a soma do logaritmo de todos as quantidades que compõem este produto e só depois esta mesma soma será exponenciada. Dependendo do quão negativa for a soma (o logaritmo de termos entre 0 e 1 é sempre negativo), quando exponenciada ela pode ou não ser numericamente igual a 0.
+Evidentemente, trabalhar diretamente com o lado direito em \eqref{eq:dist_post} não é computacionalmente agradável, uma vez que este é um produto de várias quantidades sempre menores do que 1, muitas delas próximas de 0, o que pode levar a problemas de aproximação numérica. Desta forma, sempre que for necessário calcular o núcleo da \textit{posteriori}, dada uma amostra, inicialmente será tomada a soma do logaritmo de todos as quantidades que compõem este produto e só depois esta mesma soma será exponenciada. Dependendo do quão negativa for a soma (o logaritmo de termos entre 0 e 1 é sempre negativo), quando exponenciada ela pode ou não ser se tornar desprezível.
 
 Logo, na geração da amostra $\bm{x}$ deve-se escolher valores de $\mu$, $\sigma^2$ e $\nu$ tais que o núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$ não seja numericamente nulo para os verdadeiros valores dos parâmetros. Considerando o uso da linguagem de programação \textit{R} (R Core Team, 2019)\cite{RCoreTeam2019}, esta escolha não é difícil. Na versão 3.5.3, o menor valor inteiro que pode ser tomado como argumento da função \verb|exp()| do \textit{R} é $-745$. Desta forma, basta tomar $\mu$, $\sigma^2$ e $\nu$ tais que o logaritmo do lado direito em \eqref{eq:dist_post} seja maior do que $-745$.
 
@@ -41,7 +41,7 @@ Para o presente trabalho, foram considerados uma amostra de tamanho $n=500$ (Fig
 	\centering
 	\includegraphics[scale=0.8]{figuras/amostra_n.pdf}
 	\caption{Histograma da amostra gerada do modelo}
-	\label{fig:sample_n.pdf}
+	\label{fig:sample_n}
 \end{figure}
 
 Como não se tem uma expressão fechada para $p(\mu, \sigma^2, \nu | \bm{x})$, mas apenas de seu núcleo, para obter as densidades \textit{a posteriori} marginais de $\mu$, $\sigma^2$ e $\nu$ dado $\bm{x}$, bem como as estatísticas associadas a cada uma delas, é necessário aproximá-las por algum método numérico. Na seções \ref{quarie}, é apresentado o primeiro dos três métodos considerados: a integração via quadratura de Riemann. Por sua vez, na seção \ref{sir} é descrito o método SIR. Por fim, na seção \ref{mcmc}, é retratada a integração via MCMC com inovações MH. Todos os métodos serão testados e comparados no contexto do modelo exposto acima. Na seção \ref{consfin}, são resumidos os resultados obtidos para os três métodos, bem como é feita uma avaliação comparativa da qualidade de sua convergência.
