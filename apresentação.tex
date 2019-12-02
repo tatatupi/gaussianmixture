@@ -75,14 +75,14 @@
 {
 	\begin{frame}<beamer>{Outline}
 	\tableofcontents[currentsection,currentsubsection]
-	\end{frame}
+\end{frame}
 }
 
 % ======================================================== %
 \begin{document}
-	
-	\begin{frame}[plain]
-	\titlepage
+
+\begin{frame}[plain]
+\titlepage
 \end{frame}
 
 \begin{frame}[plain]
@@ -100,10 +100,10 @@
 \item Além disso, deseja-se obter as estatísticas de média; variância; assimetria e curtose associadas as densidades \textit{a posteriori} marginais de cada parâmetro, a partir da implementação de três métodos numéricos:
 \end{itemize}
 \begin{enumerate}
-	\justifying
-	\item Integração via quadratura de Riemann;
-	\item Reamostragem por importância sequencial (em inglês, \textit{Sequential Importance Resampling}, ou SIR);
-	\item Integração via Monte Carlo em cadeias de Markov (em inglês, \textit{Markov Chain Monte Carlo}, ou MCMC) com inovações dadas pelo algoritmo de Metropolis-Hastings (MH).
+\justifying
+\item Integração via quadratura de Riemann;
+\item Reamostragem por importância (em inglês, \textit{Sample Importance Resampling}, ou SIR);
+\item Integração via Monte Carlo em cadeias de Markov (em inglês, \textit{Markov Chain Monte Carlo}, ou MCMC) com inovações dadas pelo algoritmo de Metropolis-Hastings (MH).
 \end{enumerate}
 \end{frame}
 % ====================================================
@@ -120,10 +120,10 @@ f(x | \mu, \sigma^2, \nu) = \nu \phi(x | \mu, 100 \sigma^2) + (1 - \nu) \phi(x |
 \item Para os parâmetros em $\boldsymbol{\theta}$ serão pressupostas as seguintes distribuições \textit{a priori}:
 \end{itemize}
 \begin{enumerate}
-	\justifying
-	\item $\mu | \sigma^2 \sim{N} (m, V \sigma^2)$, onde $N(\cdot)$ denota a distribuição normal com média $m \in \mathbb{R}$ e variância $V \sigma^2$, $V > 0$;
-	\item $\sigma^2 \sim{GI} (a,d)$, onde $GI(\cdot)$ denota a distribuição gama inversa com parâmetros de forma $a > 0$ e de taxa $d > 0$ (inverso da escala);
-	\item $\nu \sim{U}(0,1)$, a distribuição uniforme contínua padrão.
+\justifying
+\item $\mu | \sigma^2 \sim{N} (m, V \sigma^2)$, onde $N(\cdot)$ denota a distribuição normal com média $m \in \mathbb{R}$ e variância $V \sigma^2$, $V > 0$;
+\item $\sigma^2 \sim{GI} (a,d)$, onde $GI(\cdot)$ denota a distribuição gama inversa com parâmetros de forma $a > 0$ e de taxa $d > 0$ (inverso da escala);
+\item $\nu \sim{U}(0,1)$, a distribuição uniforme contínua padrão.
 \end{enumerate}
 \end{frame}
 % ==================================================
@@ -182,7 +182,7 @@ onde
 \begin{figure}[htb]
 \centering
 \includegraphics[scale=0.5]{figuras/amostra_n.pdf}
-\caption{Histograma da amostra gerada do modelo}
+\caption{Histograma da amostra gerada do modelo, com média 11.1252; variância 14.3878; assimetria 0.7328 e curtose 13.7732}
 \label{fig:sample_n.pdf}
 \end{figure}
 \end{frame}
@@ -321,7 +321,7 @@ $L = 100$ & $\mu$      & 10.9848 & 0.0017 & 0.0064 & 2.9284 \\
 \end{frame}
 % ==================================================
 % ==================================================
-\section{Reamostragem por Importância Sequencial (SIR)}
+\section{Reamostragem por Importância (SIR)}
 \begin{frame}
 \begin{itemize}
 \justifying	
@@ -462,13 +462,13 @@ $k = 50000$ & $\mu$      & 11.0002 & 0.0022 & -0.0081 & 3.0451 \\
 \item Assim como o SIR, o algoritmo MH também é baseado no uso de uma distribuição auxiliar ou proposta, aqui denotada por $q(\bm{y}, \bm{z})$. Assumindo-se que na interação $j$, $j = 1, \ldots, k$ a cadeia está no estado $\bm{y}^{(j)}$, a posição da mesma na iteração $j + 1$, denotada por $\bm{y}^{(j + 1)}$, será dada após:
 \end{itemize}
 \begin{enumerate}
-	\justifying
-	\item Propor uma transição ou movimento para $\bm{y}^*$, onde $\bm{y}^*$ é gerada de $q(\bm{y}^{(j)}, \cdot)$, a distribuição proposta, e, o valor inicial da cadeia $\mathbf{y}^{(1)}$;
-	\item Aceitar a transição proposta com probabilidade
-	\begin{equation}\label{eq:mh_tranprob}
-	\rho(\bm{y}^{(j)}, \bm{y}^*) = \min\left(1, \dfrac{p(\bm{y}^*) / q(\bm{y}^{(j)}, \bm{y}^*)}{p(\bm{y}^{(j)}) / q(\bm{y}^*, \bm{y}^{(j)})}\right)
-	\end{equation}
-	e neste caso atribuir $\bm{y}^{(j + 1)} = \bm{y}^*$ ou rejeitar a transição proposta e atribuir $\bm{y}^{(j + 1)} = \bm{y}^{(j)}$, com probabilidade $1 - \rho(\bm{y}^{(j)}, \bm{y}^*)$.
+\justifying
+\item Propor uma transição ou movimento para $\bm{y}^*$, onde $\bm{y}^*$ é gerada de $q(\bm{y}^{(j)}, \cdot)$, a distribuição proposta, e, o valor inicial da cadeia $\mathbf{y}^{(1)}$;
+\item Aceitar a transição proposta com probabilidade
+\begin{equation}\label{eq:mh_tranprob}
+\rho(\bm{y}^{(j)}, \bm{y}^*) = \min\left(1, \dfrac{p(\bm{y}^*) / q(\bm{y}^{(j)}, \bm{y}^*)}{p(\bm{y}^{(j)}) / q(\bm{y}^*, \bm{y}^{(j)})}\right)
+\end{equation}
+e neste caso atribuir $\bm{y}^{(j + 1)} = \bm{y}^*$ ou rejeitar a transição proposta e atribuir $\bm{y}^{(j + 1)} = \bm{y}^{(j)}$, com probabilidade $1 - \rho(\bm{y}^{(j)}, \bm{y}^*)$.
 \end{enumerate}
 \end{frame}
 % ==================================================
@@ -486,18 +486,18 @@ $k = 50000$ & $\mu$      & 11.0002 & 0.0022 & -0.0081 & 3.0451 \\
 % ==================================================
 \begin{frame}
 \begin{figure}[t]%
-	\centering
-	\subfloat[Histograma de $\mu$]{{
-			\label{fig:mu_mh_500}
-			\includegraphics[scale=0.2]{figuras/mu_mh_500.pdf}}}%
-	\qquad
-	\subfloat[Histograma de $\sigma^2$]{{
-			\label{fig:s2_mh_500}
-			\includegraphics[scale=0.2]{figuras/s2_mh_500.pdf}}}%
-	\subfloat[Histograma de $\nu$]{{
-			\label{fig:nu_mh_500}
-			\includegraphics[scale=0.2]{figuras/nu_mh_500.pdf}}}%
-	\caption{Densidades \textit{a posteriori} marginais pelo método MCMC--MH, $k = 500$}%
+\centering
+\subfloat[Histograma de $\mu$]{{
+\label{fig:mu_mh_500}
+\includegraphics[scale=0.2]{figuras/mu_mh_500.pdf}}}%
+\qquad
+\subfloat[Histograma de $\sigma^2$]{{
+\label{fig:s2_mh_500}
+\includegraphics[scale=0.2]{figuras/s2_mh_500.pdf}}}%
+\subfloat[Histograma de $\nu$]{{
+\label{fig:nu_mh_500}
+\includegraphics[scale=0.2]{figuras/nu_mh_500.pdf}}}%
+\caption{Densidades \textit{a posteriori} marginais pelo método MCMC--MH, $k = 500$}%
 \end{figure}
 \end{frame}
 % ==================================================
@@ -506,15 +506,15 @@ $k = 50000$ & $\mu$      & 11.0002 & 0.0022 & -0.0081 & 3.0451 \\
 \begin{figure}[t]%
 \centering
 \subfloat[Histograma de $\mu$]{{
-		\label{fig:mu_mh_5000}
-		\includegraphics[scale=0.2]{figuras/mu_mh_5000.pdf}}}%
+\label{fig:mu_mh_5000}
+\includegraphics[scale=0.2]{figuras/mu_mh_5000.pdf}}}%
 \qquad
 \subfloat[Histograma de $\sigma^2$]{{
-		\label{fig:s2_mh_5000}
-		\includegraphics[scale=0.2]{figuras/s2_mh_5000.pdf}}}%
+\label{fig:s2_mh_5000}
+\includegraphics[scale=0.2]{figuras/s2_mh_5000.pdf}}}%
 \subfloat[Histograma de $\nu$]{{
-		\label{fig:nu_mh_5000}
-		\includegraphics[scale=0.2]{figuras/nu_mh_5000.pdf}}}%
+\label{fig:nu_mh_5000}
+\includegraphics[scale=0.2]{figuras/nu_mh_5000.pdf}}}%
 \caption{Densidades \textit{a posteriori} marginais pela método MCMC--MH, $k = 5000$}%
 \end{figure}
 \end{frame}
@@ -524,15 +524,15 @@ $k = 50000$ & $\mu$      & 11.0002 & 0.0022 & -0.0081 & 3.0451 \\
 \begin{figure}[t]%
 \centering
 \subfloat[Histograma de $\mu$]{{
-	\label{fig:mu_mh_50000}
-	\includegraphics[scale=0.2]{figuras/mu_mh_50000.pdf}}}%
+\label{fig:mu_mh_50000}
+\includegraphics[scale=0.2]{figuras/mu_mh_50000.pdf}}}%
 \qquad
 \subfloat[Histograma de $\sigma^2$]{{
-	\label{fig:s2_mh_50000}
-	\includegraphics[scale=0.2]{figuras/s2_mh_50000.pdf}}}%
+\label{fig:s2_mh_50000}
+\includegraphics[scale=0.2]{figuras/s2_mh_50000.pdf}}}%
 \subfloat[Histograma de $\nu$]{{
-	\label{fig:nu_mh_50000}
-	\includegraphics[scale=0.2]{figuras/nu_mh_50000.pdf}}}%
+\label{fig:nu_mh_50000}
+\includegraphics[scale=0.2]{figuras/nu_mh_50000.pdf}}}%
 \caption{Densidades \textit{a posteriori} marginais pela método MCMC--MH, $k = 50000$}%
 \end{figure}
 \end{frame}
@@ -623,17 +623,17 @@ $k = 50000$ & $\mu$ & 10.9852 & 0.0017 & -0.0272 & 2.9451 \\
 % ==================================================
 \begin{frame}
 \begin{itemize}
-	\justifying	
-	\item Para ambos os métodos estocásticos SIR e MCMC foram considerados tamanhos amostrais \textit{a posteriori} $k$ iguais a 500, 5000 e 50000.
-	
-	\item Nos dois métodos, para $k$ igual a 500, as distribuições marginais aproximadas não foram muito satisfatórias, apresentando muitos \textit{outliers} e modas locais.
-	
-	\item Para o SIR, a partir de 5000 amostras as distribuições marginais ficam bem mais suaves, com assimetria e curtose melhor definidos.
-	
-	\item No MCMC, ainda se observa uma melhoria considerável de k
-	igual a 5000 para $k$ igual a 50000 passos de integração, quando o método parece convergir.
-	
-	\item Por fim, podemos concluir que, para o modelo probabilístico estudado, todos os três métodos desempenham bem a tarefa de aproximar a distribuição \textit{a posteriori}, se escolhidos hiperparâmetros de convergência adequados.
+\justifying	
+\item Para ambos os métodos estocásticos SIR e MCMC foram considerados tamanhos amostrais \textit{a posteriori} $k$ iguais a 500, 5000 e 50000.
+
+\item Nos dois métodos, para $k$ igual a 500, as distribuições marginais aproximadas não foram muito satisfatórias, apresentando muitos \textit{outliers} e modas locais.
+
+\item Para o SIR, a partir de 5000 amostras as distribuições marginais ficam bem mais suaves, com assimetria e curtose melhor definidos.
+
+\item No MCMC, ainda se observa uma melhoria considerável de k
+igual a 5000 para $k$ igual a 50000 passos de integração, quando o método parece convergir.
+
+\item Por fim, podemos concluir que, para o modelo probabilístico estudado, todos os três métodos desempenham bem a tarefa de aproximar a distribuição \textit{a posteriori}, se escolhidos hiperparâmetros de convergência adequados.
 \end{itemize}	
 \end{frame}
 %\section{Referências}
@@ -642,5 +642,4 @@ $k = 50000$ & $\mu$ & 10.9852 & 0.0017 & -0.0272 & 2.9451 \\
 %\justifying 
 %Berkson, J., Gage, R.P., (1952). Survival cure for cancer patients following treatment. \textit{Journal of the American Statistical Association}.
 %\end{frame}	
-
 \end{document}

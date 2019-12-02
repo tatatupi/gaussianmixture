@@ -20,11 +20,12 @@ set.seed(122019)
 u = U_pdf(n, nu)
 sam = rnorm(n, mu, sqrt(s2*u))
 
-# Histograma da amostra gerada do modelo (figura 1):
+# Histograma e estatísticas da amostra gerada do modelo (figura 1):
 
 par(mar = c(5,5,3,2))
 hist(sam, breaks=100, prob=T, main="", xlim = c(-10, 40), ylim = c(0, 0.5),
 	 xlab = "Amostra do modelo", ylab = "Densidade empírica")
+library(moments); mean(sam); var(sam); skewness(sam); kurtosis(sam)
 
 # Cálculo do logaritmo do núcleo da distribuição "a posteriori" original:
 
@@ -48,8 +49,7 @@ logkpost = function(X, mu, sigma2, nu, m, V, a, d) {
 	lA = logA(X, mu, sigma2, nu)
 	lh = logh(n, mu, sigma2, nu, m, V, a, d)
 	lkp = sum(lA) + lh
-	return(lkp)
-}
+	return(lkp)}
 
 # Gráficos dos intervalos de massa probabilística para cada parâmetro do
 # núcleo da distribuição "a posteriori", fixados os demais, após algumas

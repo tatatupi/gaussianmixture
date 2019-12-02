@@ -40,6 +40,9 @@ hist(sam, breaks=100, prob=T, main="",
      xlab = "Amostra do modelo",
      ylab = "Densidade empírica")
 
+library(moments)
+mean(sam); var(sam); skewness(sam); kurtosis(sam)
+
 # Em geral, se trabalha com o logaritmo da verossimilhan-
 # ça, uma vez que o produtório é sempre muito baixo.
 

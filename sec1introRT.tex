@@ -1,6 +1,6 @@
 \section{Introdução}
 
-O presente trabalho tem como objetivo obter, dada uma densidade \textit{a posteriori} conjunta dos parâmetros de um modelo probabilístico para uma amostra previamente observada, as densidades \textit{a posteriori} marginais de cada parâmetro, bem como as estatísticas de média; variância; assimetria e curtose associadas, a partir da implementação de três métodos numéricos, a saber: (i) integração via quadratura de Riemann; (ii) reamostragem por importância sequencial (em inglês, \textit{Sequential Importance Resampling}, ou SIR); e (iii) integração via Monte Carlo em cadeias de Markov (em inglês, \textit{Markov Chain Monte Carlo}, ou MCMC) com inovações dadas pelo algoritmo de Metropolis-Hastings (MH).
+O presente trabalho tem como objetivo obter, dada uma densidade \textit{a posteriori} conjunta dos parâmetros de um modelo probabilístico para uma amostra previamente observada, as densidades \textit{a posteriori} marginais de cada parâmetro, bem como as estatísticas de média; variância; assimetria e curtose associadas, a partir da implementação de três métodos numéricos, a saber: (i) integração via quadratura de Riemann; (ii) reamostragem por importância (em inglês, \textit{Sample Importance Resampling}, ou SIR); e (iii) integração via Monte Carlo em cadeias de Markov (em inglês, \textit{Markov Chain Monte Carlo}, ou MCMC) com inovações dadas pelo algoritmo de Metropolis-Hastings (MH).
 
 Para o modelo que gerou a amostra observada, será pressuposto que sua especificação é dada por uma mistura finita de normais. Sejam $X_{1}, \ldots, X_{n}$ amostras aleatórias independentes, condicionalmente a um vetor de parâmetros $\bm{\theta} = (\mu, \sigma^2, \nu)$, e identicamente distribuídas com função densidade dada por
 \begin{equation}\label{eq:dist_am}
@@ -40,7 +40,7 @@ Para o presente trabalho, foram considerados uma amostra de tamanho $n=500$ (Fig
 \begin{figure}[htb]
 	\centering
 	\includegraphics[scale=0.8]{figuras/amostra_n.pdf}
-	\caption{Histograma da amostra gerada do modelo}
+	\caption{Histograma da amostra gerada do modelo, com média 11.1252; variância 14.3878; assimetria 0.7328 e curtose 13.7732}
 	\label{fig:sample_n}
 \end{figure}
 
@@ -65,5 +65,4 @@ Antes de implementar cada um dos métodos numéricos, foram feitos três gráfic
 			\includegraphics[scale=0.4]{figuras/maspro_nu.pdf}}}%
 	\caption{Intervalos de massa probabilística para cada parâmetro (variável aleatória) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$}%
 \end{figure}
-
 \newpage

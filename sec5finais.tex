@@ -2,7 +2,63 @@
 
 %Texto descrevendo de forma resumida o que foi feito nas seções anteriores, bem como os resultados dos métodos quanto à convergência, à medida que se aumenta o tamanho amostral m da distribuição \textit{a poseteriori}.
 
-Neste trabalho, as densidades marginais \textit{a posteriori} dos parâmetros de interesse ($\mu, \sigma^2, \nu$) foram aproximadas por três métodos numéricos, para uma amostra observada de tamanho 500. A distribuição \textit{a priori} marginal para o parâmetro $\mu$ foi escolhida com a média igual ao valor real (11) e variância igual a $V\sigma^2 = 0.64$. Para $\sigma^2$, a gama inversa escolhida possui uma média igual a $4$/$6$ (aproximadamente 0,67), próxima do valor real de 0.64, com variância aproximadamente igual a 0,089. Por fim, para o parâmetro $\nu$, a distribuição \textit{a priori} uniformemente distribuida entre 0 e 1 foi a única não-informativa, no sentido Bayes-Laplace, para um valor real igual a 0.2. Logo, esperava-se que as médias aproximadas das distribuições marginais \textit{a posteriori} fossem próximas dos valores reais dos parâmetros da distribuição amostral. De fato, os resultados apresentados nas Tabelas \ref{tab1}, \ref{tab2} e \ref{tab3} confirmaram as expectativas para os três métodos.
+Neste trabalho, as densidades marginais \textit{a posteriori} dos parâmetros de interesse ($\mu, \sigma^2, \nu$) foram aproximadas por três métodos numéricos, para uma amostra observada de tamanho 500. A distribuição \textit{a priori} marginal para o parâmetro $\mu$ foi escolhida com a média igual ao valor real (11) e variância igual a $V\sigma^2 = 0.64$. Para $\sigma^2$, a gama inversa escolhida possui uma média igual a $4$/$6$ (aproximadamente 0,67), próxima do valor real de 0.64, com variância aproximadamente igual a 0,089. Por fim, para o parâmetro $\nu$, a distribuição \textit{a priori} uniformemente distribuida entre 0 e 1 foi a única não-informativa, no sentido Bayes-Laplace, para um valor real igual a 0.2. Logo, esperava-se que as médias aproximadas das distribuições marginais \textit{a posteriori} fossem próximas dos valores reais dos parâmetros da distribuição amostral. De fato, os resultados apresentados nas Tabelas \ref{tab1}, \ref{tab2} e \ref{tab3} confirmaram as expectativas para os três métodos, conforme a tabela final na última página.
+
+\begin{table}[htb]
+	\caption{Resultados das estatísticas amostrais para os três métodos implementados}
+	\centering
+	\begin{tabular}{cccccc}
+		\toprule
+		\multicolumn{6}{c}{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pela quadratura de Riemann} \\
+		\midrule
+		Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
+		\midrule
+		$L = 15$ & $\mu$      & 10.9847 & 0.0017 & 0.0022 & 2.9603 \\
+		& $\sigma^2$ &  0.6222 & 0.0022 & 0.2230 & 2.9984 \\
+		& $\nu$      &  0.1918 & 0.0004 & 0.1572 & 2.9348 \\
+		\midrule
+		$L = 50$ & $\mu$      & 10.9848 & 0.0017 & 0.0056 & 2.9346 \\
+		& $\sigma^2$ &  0.6222 & 0.0021 & 0.2149 & 2.9625 \\
+		& $\nu$      &  0.1918 & 0.0004 & 0.1523 & 2.8995 \\
+		\midrule
+		$L = 100$ & $\mu$      & 10.9848 & 0.0017 & 0.0064 & 2.9284 \\
+		& $\sigma^2$ &  0.6222 & 0.0021 & 0.2131 & 2.9542 \\
+		& $\nu$      &  0.1918 & 0.0004 & 0.1512 & 2.8913 \\
+		\midrule
+		\multicolumn{6}{c}{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pelo método SIR} \\
+		\midrule
+		Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
+		\midrule
+		$k = 500$ & $\mu$      & 11.0003 & 0.0023 & -0.0610 & 3.0351 \\
+		& $\sigma^2$ &  0.6422 & 0.0026 &  0.1261 & 3.1453 \\
+		& $\nu$      &  0.2028 & 0.0006 &  0.3510 & 3.5475 \\
+		\midrule
+		$k = 5000$ & $\mu$      & 11.0006 & 0.0022 &  0.0216 & 3.0234 \\
+		& $\sigma^2$ &  0.6418 & 0.0027 &  0.2349 & 3.0118 \\
+		& $\nu$      &  0.2013 & 0.0005 &  0.2485 & 3.1646 \\
+		\midrule
+		$k = 50000$ & $\mu$      & 11.0002 & 0.0022 & -0.0081 & 3.0451 \\
+		& $\sigma^2$ &  0.6420 & 0.0027 &  0.2353 & 3.1153 \\
+		& $\nu$      &  0.2009 & 0.0005 &  0.2608 & 3.0849 \\
+		\midrule
+		\multicolumn{6}{c}{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pelo método MCMC--MH} \\
+		\midrule
+		Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
+		\midrule
+		$k = 500$ & $\mu$ & 10.9672 & 0.0018 & -0.3768 & 3.2193 \\
+		& $\sigma^2$ & 0.6226 & 0.0020 & -0.0684 & 2.6117 \\
+		& $\nu$      & 0.1957 & 0.0006 & -0.3313 & 3.2991 \\
+		\midrule
+		$k = 5000$ & $\mu$ & 10.9818 & 0.0019 & -0.2466 & 2.9894 \\
+		& $\sigma^2$ & 0.6197 & 0.0023 & 0.2372 & 3.0057 \\
+		& $\nu$      & 0.1977 & 0.0005 & 0.3878 & 3.2038 \\
+		\midrule
+		$k = 50000$ & $\mu$ & 10.9852 & 0.0017 & -0.0272 & 2.9451 \\
+		& $\sigma^2$ & 0.6188 & 0.0021 & 0.2472 & 3.1088 \\
+		& $\nu$      & 0.1978 & 0.0005 & 0.1331 & 2.8971 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
 
 Para os três métodos implementados, foram desenvolvidos 3 cenários diferentes, para análise de convergência e complexidade computacional. No primeiro caso, do método de quadratura, três quantidades diferentes de intervalos de integração $L$ foram escolhidos: 15, 50 e 100. O primeiro resultado não é muito satisfatório, apesar de aproximar bem os dois primeiros momentos. Para 50 e 100 subintervalos, a aproximação é bem melhor, às custas de um custo computacional maior, crescendo exponencialmente em relação a dimensão do espaço paramétrico ($O(L^n)$), com $n$ igual a 3. Para os métodos estocásticos SIR e MCMC, foram considerados, respectivamente, tamanhos amostrais e quantidade de iterações $k$ iguais a 500, 5000 e 50000. Em ambos os casos, para $k$ igual a 500, as distribuições \textit{a posteriori} aproximadas não foram muito satisfatórias, apresentando muitos \textit{outliers} e modas locais. Para o SIR, a partir de 5000 amostras, as distribuições são bem mais suaves, sendo possível observar o comportamentos de momentos de ordem superior. No MCMC, ainda se observa uma melhoria considerável de $k$ igual a 5000 para $k$ igual a 50000 passos de integração, quando o método parece convergir.
 
