@@ -42,7 +42,7 @@
 % Changing references left symbol for an ordered sequence:
 
 \setbeamertemplate{bibliography item}[text]
-\setbeamertemplate{navigation symbols}{}
+
 % Title page:
 
 \setbeamertemplate{footline}{  %Settings for the footline.
@@ -75,14 +75,14 @@
 {
 	\begin{frame}<beamer>{Outline}
 	\tableofcontents[currentsection,currentsubsection]
-\end{frame}
+	\end{frame}
 }
 
 % ======================================================== %
 \begin{document}
-
-\begin{frame}[plain]
-\titlepage
+	
+	\begin{frame}[plain]
+	\titlepage
 \end{frame}
 
 \begin{frame}[plain]
@@ -95,40 +95,51 @@
 \begin{frame}
 \begin{itemize}
 \justifying
-\item O presente trabalho tem como objetivo obter, dada uma densidade a posteriori conjunta dos
-parâmetros de um modelo probabilístico para uma amostra previamente observada, as densidades a posteriori marginais de cada parâmetro.
+\item O presente trabalho tem como objetivo obter, dada uma densidade \textit{a posteriori} conjunta dos parâmetros de um modelo probabilístico para uma amostra previamente observada, as densidades a posteriori marginais de cada parâmetro.
 
-\item Obter as estatísticas de média; variância; assimetria e curtose associadas as densidades a posteriori marginais de cada parâmetro, a partir da implementação de três métodos numéricos.
-
-\item Sendo eles: (i) integração via quadratura de Riemann; (ii) reamostragem por importância sequencial (em inglês, \textit{Sequential Importance Resampling}, ou SIR); e (iii) integração via Monte Carlo em cadeias de Markov (em inglês, \textit{Markov Chain Monte Carlo}, ou MCMC) com inovações dadas pelo algoritmo de Metropolis-Hastings (MH).
+\item Além disso, deseja-se obter as estatísticas de média; variância; assimetria e curtose associadas as densidades \textit{a posteriori} marginais de cada parâmetro, a partir da implementação de três métodos numéricos:
 \end{itemize}
+\begin{enumerate}
+	\justifying
+	\item Integração via quadratura de Riemann;
+	\item Reamostragem por importância sequencial (em inglês, \textit{Sequential Importance Resampling}, ou SIR);
+	\item Integração via Monte Carlo em cadeias de Markov (em inglês, \textit{Markov Chain Monte Carlo}, ou MCMC) com inovações dadas pelo algoritmo de Metropolis-Hastings (MH).
+\end{enumerate}
 \end{frame}
 % ====================================================
 % ====================================================
 \begin{frame}
 \begin{itemize}
 \justifying	
-\item Sejam $X_{1}, \ldots, X_{n}$ amostras aleatórias independentes, condicionalmente a um vetor de parâmetros $\boldsymbol{\theta} = (\mu, \sigma^2, \nu)$, e identicamente distribuídas com função densidade dada por
+\item Sejam $X_{1}, \ldots, X_{n}$ amostras aleatórias iid, condicionalmente a um vetor de parâmetros $\boldsymbol{\theta} = (\mu, \sigma^2, \nu)$, com função densidade dada por
 \begin{equation}\label{eq:dist_am}
 f(x | \mu, \sigma^2, \nu) = \nu \phi(x | \mu, 100 \sigma^2) + (1 - \nu) \phi(x | \mu, \sigma^2), \ x \in \mathbb{R},
 \end{equation}
-\noindent onde $\phi(x | \mu, \sigma^2) = (2\pi\sigma^2)^{-1} \exp[-(x - \mu)^2/(2\sigma^2)]$ denota a função densidade da distribuição normal com média $\mu$ e variância $\sigma^2$ avaliada no ponto $x$. Para o suporte de cada parâmetro, tem-se que $\mu \in \mathbb{R}, \sigma^2 \in \mathbb{R}_+$ e $\nu \in (0,1)$.
-\item Para os parâmetros $\mu$, $\sigma^2$ e $\nu$, será pressuposto que cada um segue uma distribuição \textit{a priori}: $\mu | \sigma^2 \sim{N} (m, V \sigma^2)$, onde $N(\cdot)$ denota a distribuição normal com média $m \in \mathbb{R}$ e variância $V \sigma^2$, $V > 0$; $\sigma^2 \sim{GI} (a,d)$, onde $GI(\cdot)$ denota a distribuição gama inversa com parâmetros de forma $a > 0$ e de taxa $d > 0$ (inverso da escala); e $\nu \sim{U}(0,1)$, a distribuição uniforme contínua padrão.
+\noindent onde $\phi(x | \mu, \sigma^2)$ é a função densidade da distribuição normal com média $\mu$ e variância $\sigma^2$ avaliada no ponto $x$. Para o suporte de cada parâmetro, tem-se que $\mu \in \mathbb{R}, \sigma^2 \in \mathbb{R}_+$ e $\nu \in (0,1)$.
+%$\phi(x | \mu, \sigma^2) = (2\pi\sigma^2)^{-1} \exp[-(x - \mu)^2/(2\sigma^2)]$ 
+\item Para os parâmetros em $\boldsymbol{\theta}$ serão pressupostas as seguintes distribuições \textit{a priori}:
 \end{itemize}
+\begin{enumerate}
+	\justifying
+	\item $\mu | \sigma^2 \sim{N} (m, V \sigma^2)$, onde $N(\cdot)$ denota a distribuição normal com média $m \in \mathbb{R}$ e variância $V \sigma^2$, $V > 0$;
+	\item $\sigma^2 \sim{GI} (a,d)$, onde $GI(\cdot)$ denota a distribuição gama inversa com parâmetros de forma $a > 0$ e de taxa $d > 0$ (inverso da escala);
+	\item $\nu \sim{U}(0,1)$, a distribuição uniforme contínua padrão.
+\end{enumerate}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{itemize}
 \justifying	
-\item E então, propôs-se independência entre as prioris, portanto assumem a forma dada por
+\item Desta forma, a distribuição \textit{a priori} conjunta assume a seguinte forma
 \begin{equation}
 p(\boldsymbol{\theta}) = p(\mu|\sigma^2) p(\sigma^2)p(\nu).
 \end{equation}
 \item Para gerar uma amostra aleatória do modelo em $\eqref{eq:dist_am}$, foi utilizada uma representação hierárquica (Lachos \textit{et al.}, 2013) tal que
-\begin{equation}
-X_i | \mu, \sigma^2, U_{i} = u_i \sim{N}(\mu, \sigma^2 u_i^{-1}), \quad U_i | \mu \sim{p_d}(1,100) : P(U_i = 100) = \nu, \label{eq:hier}
-\end{equation}
+\begin{gather}
+X_i | \mu, \sigma^2, U_{i} = u_i \sim{N}(\mu, \sigma^2 u_i^{-1}), \nonumber \\
+U_i | \mu \sim{p_d}(1,100) : P(U_i = 100) = \nu, \label{eq:hier}
+\end{gather}
 \noindent onde $p_d(a,b)$ denota uma função de probabilidade (discreta) que atribui massa probabilística apenas aos pontos $a$ e $b$.
 \end{itemize}
 \end{frame}
@@ -137,13 +148,18 @@ X_i | \mu, \sigma^2, U_{i} = u_i \sim{N}(\mu, \sigma^2 u_i^{-1}), \quad U_i | \m
 \begin{frame}
 \begin{itemize}
 \justifying	
-\item Com isto, nossa posteriori será defina da seguinte forma
-\begin{align} 
+\item Com isto, nossa distribuição \textit{a posteriori} é definida por
+\small
+\begin{align}
 p(\mu, \sigma^2, \nu | \mathbf{x})
-&= \dfrac{f(\mathbf{x} | \mu, \sigma^2, \nu) \times p(\mu, \sigma^2, \nu)}{f(\mathbf{x})} \propto \prod_{i=1}^{n} f(x_i) \times p(\mu | \sigma^2) \times p(\sigma^2) \times p(\nu) \nonumber\\
+&= \dfrac{f(\mathbf{x} | \mu, \sigma^2, \nu) \times p(\mu, \sigma^2, \nu)}{f(\mathbf{x})} \nonumber \\
+&\propto \prod_{i=1}^{n} f(x_i) \times p(\mu | \sigma^2) \times p(\sigma^2) \times p(\nu) \nonumber\\
 &\propto \prod_{i=1}^{n} \left[ \nu \phi(x_i | \mu, 100 \sigma^2) + (1 - \nu) \phi(x_i | \mu, \sigma^2) \right] \times \nonumber \\
-&\times \phi(\mu | m, V \sigma^2) \times \dfrac{d^a}{\Gamma(a)} \left(\dfrac{1}{\sigma^2}\right)^{a + 1} \exp\left(-\dfrac{d}{\sigma^2}\right) \nonumber \\	&\propto \left(\dfrac{1}{\sigma^2}\right)^{(n + 1)/2 + a + 1} \exp\left\{-\dfrac{\left[(\mu - m)^2 / (2V) + d\right]}{\sigma^2}\right\} \times \textrm{A}(\mathbf{x} | \mu, \sigma^2, \nu), \label{eq:dist_post}
+&\times \phi(\mu | m, V \sigma^2) \times \dfrac{d^a}{\Gamma(a)} \left(\dfrac{1}{\sigma^2}\right)^{a + 1} \exp\left(-\dfrac{d}{\sigma^2}\right) \nonumber \\
+&\propto \left(\dfrac{1}{\sigma^2}\right)^{(n + 1)/2 + a + 1} \exp\left\{-\dfrac{\left[(\mu - m)^2 / (2V) + d\right]}{\sigma^2}\right\} \nonumber \\
+&\times \textrm{A}(\mathbf{x} | \mu, \sigma^2, \nu), \label{eq:dist_post}
 \end{align}
+\normalsize
 onde
 \begin{equation*}
 \textrm{A}(\mathbf{x} | \mu, \sigma^2, \nu) = \prod_{i=1}^{n} \left\{  \dfrac{\nu}{10} \exp\left[-\dfrac{(x_i - \mu)^2}{200\sigma^2}\right] + (1 - \nu) \exp\left[-\dfrac{(x_i - \mu)^2}{2\sigma^2}\right] \right\}.
@@ -219,8 +235,8 @@ p(\alpha_3 | \bm{y})
 \begin{frame}
 \begin{itemize}
 \justifying	
-\item Como $c$, a constante de proporcionalidade, é dada pelo inverso da densidade \textit{a priori} preditiva $f(\bm{y})$, a qual é obtida integrando-se em todo o espaço paramétrico o produto entre a função de verossimilhança $f(\bm{y} | \alpha_1, \alpha_2, \alpha_3)$ e as densidades (ou funções de probabilidade) \textit{a priori} para $\alpha_1$, $\alpha_2$ e $\alpha_3$, também é possível aproximar $c$ pela quadratura de Riemann
-\item Neste caso, $c^{-1} \approx \sum_{i=1}^{L} \sum_{j=1}^{L} \sum_{k=1}^{L} h(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j \Delta_k$. Com o valor aproximado para $c$, é possível calcular \eqref{eq:dpm_riem} nos limites superior e inferior de todos os subintervalos de um dado parâmetro e enfim obter uma aproximação da densidade \emph{a posteriori} marginal deste mesmo parâmetro através de uma curva gráfica que liga todos os valores calculados
+\item Como $c$, a constante de proporcionalidade, é dada pelo inverso da densidade \textit{a priori} preditiva $f(\bm{y})$, a qual é obtida integrando-se em todo o espaço paramétrico o produto entre a função de verossimilhança $f(\bm{y} | \alpha_1, \alpha_2, \alpha_3)$ e as densidades (ou funções de probabilidade) \textit{a priori} para $\alpha_1$, $\alpha_2$ e $\alpha_3$, também é possível aproximar $c$ pela quadratura de Riemann.
+\item Neste caso, $c^{-1} \approx \sum_{i=1}^{L} \sum_{j=1}^{L} \sum_{k=1}^{L} h(r_i, s_j, t_k | \bm{y}) \Delta_i \Delta_j \Delta_k$. Com o valor aproximado para $c$, é possível calcular \eqref{eq:dpm_riem} nos limites superior e inferior de todos os subintervalos de um dado parâmetro e enfim obter uma aproximação da densidade \emph{a posteriori} marginal deste mesmo parâmetro através de uma curva gráfica que liga todos os valores calculados.
 \end{itemize}
 \end{frame}
 % ==================================================
@@ -315,8 +331,8 @@ $L = 100$ & $\mu$      & 10.9848 & 0.0017 & 0.0064 & 2.9284 \\
 \begin{equation}\label{eq:sir_wei}
 w_j(\theta_j) = \dfrac{p(\theta_j | \bm{y}) / g(\theta_j)}{\sum_{j=1}^{k} p(\theta_j | \bm{y}) / g(\theta_j)}.
 \end{equation}
-em que $g$  é uma densidade conhecida e da qual se sabe gerar uma amostra aleatória. 
-\item Como feito em muitos trabalhos, para $g$ será escolhida uma densidade normal trivariada $N_3(\bm{\mu}, \bm{\Sigma})$, cujas componentes têm, cada uma, suporte em toda a reta real.
+onde $g$ é uma densidade conhecida e da qual se sabe gerar uma amostra. 
+\item Como feito em muitos trabalhos, para $g$ será escolhida uma densidade normal trivariada $N_3(\bm{\mu}, \bm{\Sigma})$, onde as componentes de $\bm{\mu}$ têm suporte na reta real.
 \end{itemize}
 \end{frame}
 % ==================================================
@@ -324,33 +340,35 @@ em que $g$  é uma densidade conhecida e da qual se sabe gerar uma amostra aleat
 \begin{frame}
 \begin{itemize}
 \justifying	
-\item Note que para 2 parâmetros, $\sigma^2$ e $\nu$, o respectivo espaço paramétrico não é a reta real ($\Theta_{\sigma^2} = \mathbb{R}_+$ e $\Theta_{\nu} = [0,1]$, respectivamente). logo será feita uma reparametrização.
-\item Para a reparametrização, consideram-se as transformações $\theta_1 = \mu, \theta_2 = \log(\sigma^2)$ e $\theta_3 = \log[\nu/(1-\nu)]$. Logo, a expressão do núcleo reparametrizado é dada por
+\item Note que para 2 parâmetros, $\sigma^2$ e $\nu$, o respectivo espaço paramétrico não é a reta real ($\Theta_{\sigma^2} = \mathbb{R}_+$ e $\Theta_{\nu} = [0,1]$). Logo, será feita uma reparametrização.
+\item Para isso, considere as transformações $\theta_1 = \mu, \theta_2 = \log(\sigma^2)$ e $\theta_3 = \log[\nu/(1-\nu)]$. Assim, a expressão do núcleo reparametrizado é dada por
+\end{itemize}
+\small
 \begin{align}
 p(\theta_1, \theta_2, \theta_3 | \bm{x})
 &= p(\theta_1 = \mu, \theta_2 = \log(\sigma^2), \theta_3 = \log[\nu/(1-\nu)] | \bm{x}) \nonumber \\
 &= p(\mu = \theta_1, \sigma^2 = \exp(\theta_2), \nu = 1/[1 + \exp(-\theta_3)] | \bm{x}) \times |J(\theta_1, \theta_2, \theta_3)| \nonumber \\
 &\propto \left[\exp(\theta_2)\right]^{-[(n + 1)/2 + a + 1]} \times \exp\left\{-\dfrac{\left[(\theta_1 - m)^2 / (2V) + d\right]}{\exp(\theta_2)}\right\} \nonumber \\
 &\times A^*(\bm{x} | \theta_1, \theta_2, \theta_3) \times  \dfrac{\exp(\theta_2) \exp(\theta_3)}{\left[1 + \exp(-\theta_3)\right]^{-2}} \nonumber \\	&\propto \left(\dfrac{1}{\sigma^2}\right)^{\frac{n + 1}{2 + a + 1}} \times \exp\left\{-\dfrac{\left[(\mu - m)^2 / (2V) + d\right]}{\sigma^2}\right\} \times A(\bm{x} | \mu, \sigma^2, \nu) \nonumber \\
-&\times \sigma^2 \nu^3(1-\nu)^{-1}, \label{eq:sir_dpre}
+&\times \sigma^2 \nu^3(1-\nu)^{-1}. \label{eq:sir_dpre}
 \end{align}
-\end{itemize}
 \end{frame}
+%\begin{itemize}
+%	\justifying
+%	\normalsize
+%	\item em que $|J(\theta_1, \theta_2, \theta_3)|$ é o determinante da matriz jacobiana das derivadas parciais de $(\mu, \sigma^2, \nu)$ com respeito a $(\theta_1, \theta_2, \theta_3)$.
+%\end{itemize}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{itemize}
 \justifying	
-\item em que $|J(\theta_1, \theta_2, \theta_3)|$ é o determinante da matriz jacobiana das derivadas parciais de $(\mu, \sigma^2, \nu)$ com respeito a $(\theta_1, \theta_2, \theta_3)$.
+\item Para a amostra de tamanho $n=500$ da mistura finita de normais com variância contaminada tal que $\mu = 11$; $\sigma^2 = 0.64$; $\nu = 0.2$; $m = 11$; $V = 1$; $a = 7$ e $d = 4$ (Figura \ref{fig:sample_n.pdf}).
 
 \item Para as médias das componentes desta distribuição, será fixado $\bm{\mu} = (\theta_1, \theta_2, \theta_3) = (\mu, \log(\sigma^2), \log[\nu/(1-\nu)]) = (11, \log(0.64), \log[0.2/0.8])$.
-
 \item Para a matriz de covariância $\bm{\Sigma}$, cada elemento da diagonal principal será dado pelo quadrado de $1/6$ do intervalo de massa probabilística do parâmetro correspondente.
 
 \item Esta escolha se justifica pelo fato de que as distribuições mostradas de \ref{fig:maspro_mu} a \ref{fig:maspro_nu} têm comportamento próximo à normalidade.
-
-
-\item Foram escolhidos três valores para $k = (500, 5000, 50000)$ e uma razão constante $\frac{k}{t} = \frac{1}{10}$
 \end{itemize}
 \end{frame}
 % ==================================================
@@ -368,7 +386,7 @@ p(\theta_1, \theta_2, \theta_3 | \bm{x})
 \subfloat[Histograma de $\nu$]{{
 \label{fig:nu_sir_500}
 \includegraphics[scale=0.2]{figuras/nu_sir_500.pdf}}}%
-\caption{Histograma das densidades \textit{a posteriori} marginais pela método SIR com $k = 500$}%
+\caption{Densidades \textit{a posteriori} marginais pela método SIR com $k = 500$}%
 \end{figure}
 \end{frame}
 % ==================================================
@@ -386,7 +404,7 @@ p(\theta_1, \theta_2, \theta_3 | \bm{x})
 \subfloat[Histograma de $\nu$]{{
 \label{fig:nu_sir_5000}
 \includegraphics[scale=0.2]{figuras/nu_sir_5000.pdf}}}%
-\caption{Histograma das densidades \textit{a posteriori} marginais pela método SIR com $k = 5000$}%
+\caption{Densidades \textit{a posteriori} marginais pela método SIR com $k = 5000$}%
 \end{figure}
 \end{frame}
 % ==================================================
@@ -404,7 +422,7 @@ p(\theta_1, \theta_2, \theta_3 | \bm{x})
 \subfloat[Histograma de $\nu$]{{
 \label{fig:nu_sir_50000}
 \includegraphics[scale=0.2]{figuras/nu_sir_50000.pdf}}}%
-\caption{Histograma das densidades \textit{a posteriori} marginais pela método SIR com $k = 50000$}%
+\caption{Densidades \textit{a posteriori} marginais pela método SIR com $k = 50000$}%
 \end{figure}
 \end{frame}
 % ==================================================
@@ -441,15 +459,18 @@ $k = 50000$ & $\mu$      & 11.0002 & 0.0022 & -0.0081 & 3.0451 \\
 \begin{frame}
 \begin{itemize}
 \justifying	
-\item Neste trabalho, será usado o algoritmo de Metropolis-Hastings (Metropolis \textit{et al.}, 1953; Hastings, 1970), aqui abreviado por MH.
-\item Assim como o método SIR, o algoritmo MH também é baseado no uso de uma distribuição auxiliar ou proposta, aqui denotada por $q(\bm{y}, \bm{z})$. Assumindo-se que na interação $j$, $j = 1, \ldots, k$ a cadeia está no estado $\bm{y}^{(j)}$, a posição da mesma na iteração $j + 1$, denotada por $\bm{y}^{(j + 1)}$, será dada após:
-\item Propor uma transição ou movimento para $\bm{y}^*$, onde $\bm{y}^*$ é gerada de $q(\bm{y}^{(j)}, \cdot)$, a distribuição proposta, e, o valor inicial da cadeia $\mathbf{y}^{(1)}$;
-\item Aceitar a transição proposta com probabilidade
-\begin{equation}\label{eq:mh_tranprob}
-\rho(\bm{y}^{(j)}, \bm{y}^*) = \min\left(1, \dfrac{p(\bm{y}^*) / q(\bm{y}^{(j)}, \bm{y}^*)}{p(\bm{y}^{(j)}) / q(\bm{y}^*, \bm{y}^{(j)})}\right)
-\end{equation}
-e neste caso atribuir $\bm{y}^{(j + 1)} = \bm{y}^*$ ou rejeitar a transição proposta e atribuir $\bm{y}^{(j + 1)} = \bm{y}^{(j)}$, com probabilidade $1 - \rho(\bm{y}^{(j)}, \bm{y}^*)$.
+\item Por fim, será usado o algoritmo de Metropolis-Hastings (Metropolis \textit{et al.}, 1953; Hastings, 1970), aqui abreviado por MH, no método iterativo MCMC.
+\item Assim como o SIR, o algoritmo MH também é baseado no uso de uma distribuição auxiliar ou proposta, aqui denotada por $q(\bm{y}, \bm{z})$. Assumindo-se que na interação $j$, $j = 1, \ldots, k$ a cadeia está no estado $\bm{y}^{(j)}$, a posição da mesma na iteração $j + 1$, denotada por $\bm{y}^{(j + 1)}$, será dada após:
 \end{itemize}
+\begin{enumerate}
+	\justifying
+	\item Propor uma transição ou movimento para $\bm{y}^*$, onde $\bm{y}^*$ é gerada de $q(\bm{y}^{(j)}, \cdot)$, a distribuição proposta, e, o valor inicial da cadeia $\mathbf{y}^{(1)}$;
+	\item Aceitar a transição proposta com probabilidade
+	\begin{equation}\label{eq:mh_tranprob}
+	\rho(\bm{y}^{(j)}, \bm{y}^*) = \min\left(1, \dfrac{p(\bm{y}^*) / q(\bm{y}^{(j)}, \bm{y}^*)}{p(\bm{y}^{(j)}) / q(\bm{y}^*, \bm{y}^{(j)})}\right)
+	\end{equation}
+	e neste caso atribuir $\bm{y}^{(j + 1)} = \bm{y}^*$ ou rejeitar a transição proposta e atribuir $\bm{y}^{(j + 1)} = \bm{y}^{(j)}$, com probabilidade $1 - \rho(\bm{y}^{(j)}, \bm{y}^*)$.
+\end{enumerate}
 \end{frame}
 % ==================================================
 % ==================================================
@@ -466,18 +487,18 @@ e neste caso atribuir $\bm{y}^{(j + 1)} = \bm{y}^*$ ou rejeitar a transição pr
 % ==================================================
 \begin{frame}
 \begin{figure}[t]%
-\centering
-\subfloat[Histograma de $\mu$]{{
-\label{fig:mu_mh_500}
-\includegraphics[scale=0.2]{figuras/mu_mh_500.pdf}}}%
-\qquad
-\subfloat[Histograma de $\sigma^2$]{{
-\label{fig:s2_mh_500}
-\includegraphics[scale=0.2]{figuras/s2_mh_500.pdf}}}%
-\subfloat[Histograma de $\nu$]{{
-\label{fig:nu_mh_500}
-\includegraphics[scale=0.2]{figuras/nu_mh_500.pdf}}}%
-\caption{Histograma das densidades \textit{a posteriori} marginais pelo método MCMC--MH, $k = 500$}%
+	\centering
+	\subfloat[Histograma de $\mu$]{{
+			\label{fig:mu_mh_500}
+			\includegraphics[scale=0.2]{figuras/mu_mh_500.pdf}}}%
+	\qquad
+	\subfloat[Histograma de $\sigma^2$]{{
+			\label{fig:s2_mh_500}
+			\includegraphics[scale=0.2]{figuras/s2_mh_500.pdf}}}%
+	\subfloat[Histograma de $\nu$]{{
+			\label{fig:nu_mh_500}
+			\includegraphics[scale=0.2]{figuras/nu_mh_500.pdf}}}%
+	\caption{Densidades \textit{a posteriori} marginais pelo método MCMC--MH, $k = 500$}%
 \end{figure}
 \end{frame}
 % ==================================================
@@ -486,16 +507,16 @@ e neste caso atribuir $\bm{y}^{(j + 1)} = \bm{y}^*$ ou rejeitar a transição pr
 \begin{figure}[t]%
 \centering
 \subfloat[Histograma de $\mu$]{{
-\label{fig:mu_mh_5000}
-\includegraphics[scale=0.2]{figuras/mu_mh_5000.pdf}}}%
+		\label{fig:mu_mh_5000}
+		\includegraphics[scale=0.2]{figuras/mu_mh_5000.pdf}}}%
 \qquad
 \subfloat[Histograma de $\sigma^2$]{{
-\label{fig:s2_mh_5000}
-\includegraphics[scale=0.2]{figuras/s2_mh_5000.pdf}}}%
+		\label{fig:s2_mh_5000}
+		\includegraphics[scale=0.2]{figuras/s2_mh_5000.pdf}}}%
 \subfloat[Histograma de $\nu$]{{
-\label{fig:nu_mh_5000}
-\includegraphics[scale=0.2]{figuras/nu_mh_5000.pdf}}}%
-\caption{Histograma das densidades \textit{a posteriori} marginais pela método MCMC--MH, $k = 5000$}%
+		\label{fig:nu_mh_5000}
+		\includegraphics[scale=0.2]{figuras/nu_mh_5000.pdf}}}%
+\caption{Densidades \textit{a posteriori} marginais pela método MCMC--MH, $k = 5000$}%
 \end{figure}
 \end{frame}
 % ==================================================
@@ -504,16 +525,16 @@ e neste caso atribuir $\bm{y}^{(j + 1)} = \bm{y}^*$ ou rejeitar a transição pr
 \begin{figure}[t]%
 \centering
 \subfloat[Histograma de $\mu$]{{
-\label{fig:mu_mh_50000}
-\includegraphics[scale=0.2]{figuras/mu_mh_50000.pdf}}}%
+	\label{fig:mu_mh_50000}
+	\includegraphics[scale=0.2]{figuras/mu_mh_50000.pdf}}}%
 \qquad
 \subfloat[Histograma de $\sigma^2$]{{
-\label{fig:s2_mh_50000}
-\includegraphics[scale=0.2]{figuras/s2_mh_50000.pdf}}}%
+	\label{fig:s2_mh_50000}
+	\includegraphics[scale=0.2]{figuras/s2_mh_50000.pdf}}}%
 \subfloat[Histograma de $\nu$]{{
-\label{fig:nu_mh_50000}
-\includegraphics[scale=0.2]{figuras/nu_mh_50000.pdf}}}%
-\caption{Histograma das densidades \textit{a posteriori} marginais pela método MCMC--MH, $k = 50000$}%
+	\label{fig:nu_mh_50000}
+	\includegraphics[scale=0.2]{figuras/nu_mh_50000.pdf}}}%
+\caption{Densidades \textit{a posteriori} marginais pela método MCMC--MH, $k = 50000$}%
 \end{figure}
 \end{frame}
 % ==================================================
@@ -594,36 +615,26 @@ $k = 50000$ & $\mu$ & 10.9852 & 0.0017 & -0.0272 & 2.9451 \\
 \begin{itemize}
 \justifying	
 \item Neste trabalho, as densidades marginais \textit{a posteriori} dos parâmetros de interesse ($\mu, \sigma^2, \nu$) foram aproximadas por três métodos numéricos, para uma amostra observada de tamanho 500.
-\item Para os três métodos implementados, foram desenvolvidos 3 cenários diferentes, para análise
-de convergência e complexidade computacional.
-\item No primeiro caso, do método de quadratura,
-três quantidades diferentes de intervalos de integração L foram escolhidos: 15, 50 e 100. O
-primeiro resultado não é muito satisfatório, apesar de aproximar bem os dois primeiros mo-
-mentos.	
-\item Para 50 e 100 subintervalos, a aproximação é bem melhor, às custas de um custo
-computacional maior, crescendo exponencialmente em relação a dimensão do espaço paramétrico (O($L^n$)), com n igual a 3.
+\item Para os três métodos implementados, foram desenvolvidos 3 cenários diferentes, para análise de convergência e complexidade computacional.
+\item Na quadratura de Riemann, 3 quantidades diferentes de intervalos de integração L foram escolhidos: 15, 50 e 100. O primeiro resultado não é muito satisfatório, apesar de aproximar bem os dois primeiros momentos.	
+\item Para 50 e 100 subintervalos, a aproximação é bem melhor, mas o custo computacional é bem maior, crescendo exponencialmente em relação à dimensão do espaço paramétrico $\mathcal{O}(L^n)$, com $n$ igual a 3.
 \end{itemize}	
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{itemize}
-\justifying	
-\item Para os métodos estocásticos SIR e MCMC, foram considerados,
-respectivamente, quantidade de iterações k iguais a 500, 5000 e 50000.
-
-\item Em ambos os casos, para k igual a 500, as distribuições a posteriori aproximadas não foram
-muito satisfatórias, apresentando muitos outliers e modas locais.
-
-\item Para o SIR, a partir de 5000
-amostras, as distribuições são bem mais suaves, sendo possível observar o comportamentos de
-momentos de ordem superior.
-
-\item No MCMC, ainda se observa uma melhoria considerável de k
-igual a 5000 para k igual a 50000 passos de integração, quando o método parece convergir.
-
-\item Por fim, podemos concluir que, para o modelo probabilístico estudado, todos os três métodos
-desempenham bem a tarefa de aproximar a distribuição a posteriori, se escolhidos hiperparâmetros de convergência adequados.
+	\justifying	
+	\item Para ambos os métodos estocásticos SIR e MCMC foram considerados tamanhos amostrais \textit{a posteriori} $k$ iguais a 500, 5000 e 50000.
+	
+	\item Nos dois métodos, para $k$ igual a 500, as distribuições marginais aproximadas não foram muito satisfatórias, apresentando muitos \textit{outliers} e modas locais.
+	
+	\item Para o SIR, a partir de 5000 amostras as distribuições marginais ficam bem mais suaves, com assimetria e curtose melhor definidos.
+	
+	\item No MCMC, ainda se observa uma melhoria considerável de k
+	igual a 5000 para $k$ igual a 50000 passos de integração, quando o método parece convergir.
+	
+	\item Por fim, podemos concluir que, para o modelo probabilístico estudado, todos os três métodos desempenham bem a tarefa de aproximar a distribuição \textit{a posteriori}, se escolhidos hiperparâmetros de convergência adequados.
 \end{itemize}	
 \end{frame}
 %\section{Referências}
