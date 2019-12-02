@@ -321,7 +321,7 @@ $L = 100$ & $\mu$      & 10.9848 & 0.0017 & 0.0064 & 2.9284 \\
 \end{frame}
 % ==================================================
 % ==================================================
-\section{Reamostragem por importância sequêncial(SIR)}
+\section{Reamostragem por Importância Sequencial (SIR)}
 \begin{frame}
 \begin{itemize}
 \justifying	
@@ -363,12 +363,11 @@ p(\theta_1, \theta_2, \theta_3 | \bm{x})
 \begin{frame}
 \begin{itemize}
 \justifying	
-\item Para a amostra de tamanho $n=500$ da mistura finita de normais com variância contaminada tal que $\mu = 11$; $\sigma^2 = 0.64$; $\nu = 0.2$; $m = 11$; $V = 1$; $a = 7$ e $d = 4$ (Figura \ref{fig:sample_n.pdf}).
 
 \item Para as médias das componentes desta distribuição, será fixado $\bm{\mu} = (\theta_1, \theta_2, \theta_3) = (\mu, \log(\sigma^2), \log[\nu/(1-\nu)]) = (11, \log(0.64), \log[0.2/0.8])$.
 \item Para a matriz de covariância $\bm{\Sigma}$, cada elemento da diagonal principal será dado pelo quadrado de $1/6$ do intervalo de massa probabilística do parâmetro correspondente.
-
 \item Esta escolha se justifica pelo fato de que as distribuições mostradas de \ref{fig:maspro_mu} a \ref{fig:maspro_nu} têm comportamento próximo à normalidade.
+\item Foram escolhidos três valores para $k = (500, 5000, 50000)$ e uma razão $\frac{k}{t}={1}{10}$
 \end{itemize}
 \end{frame}
 % ==================================================
