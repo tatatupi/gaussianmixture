@@ -50,9 +50,11 @@ logkpost(sam, mu, s2, nu, m, V, a, d) #Soma as log-veros-
 
 logkpost_re(sam, mu, s2, nu, m, V, a, d)
 
-# Tamanhos para a amostragem da posteriori via SIR:
+# Tamanhos para o total de pesos utilizados e de amostras
+# da posteriori via SIR:
 
-am1 = 500; am2 = 5000; am3 = 50000
+aw1 = 5000; aw2 = 50000; aw3 = 500000
+am1 = aw1/10; am2 = aw2/10; am3 = aw3/10
 
 # Na escolha dos parâmetros da distribuição normal multi-
 # variada, o vetor de médias será dado pelos valores ver-
@@ -97,13 +99,13 @@ library(mvtnorm) # Pacote com funções densidade e gerado-
                  # ra da distrib. normal multivariada.
 
 set.seed(122019)
-r1_q = rmvnorm(am1, mean=c(11, log(0.64), log(0.2/0.8)),
+r1_q = rmvnorm(aw1, mean=c(11, log(0.64), log(0.2/0.8)),
                sigma=diag(c(0.0022, 0.0065, 0.0203)))
 set.seed(122019)
-r2_q = rmvnorm(am2, mean=c(11, log(0.64), log(0.2/0.8)),
+r2_q = rmvnorm(aw2, mean=c(11, log(0.64), log(0.2/0.8)),
                sigma=diag(c(0.0022, 0.0065, 0.0203)))
 set.seed(122019)
-r3_q = rmvnorm(am3, mean=c(11, log(0.64), log(0.2/0.8)),
+r3_q = rmvnorm(aw3, mean=c(11, log(0.64), log(0.2/0.8)),
                sigma=diag(c(0.0022, 0.0065, 0.0203)))
 
 summary(r1_q[,1])
@@ -187,14 +189,32 @@ st_sam_post = function(Xpar) {
               assimetria=assi, curtose=curt))
 }
 
-st_sam_post(am1_mu_p); hist(am1_mu_p, breaks=50, prob=T)
-st_sam_post(am2_mu_p); hist(am2_mu_p, breaks=50, prob=T)
-st_sam_post(am3_mu_p); hist(am3_mu_p, breaks=50, prob=T)
+st_sam_post(am1_mu_p)
+hist(am1_mu_p, breaks=50, prob=T, main="",
+     xlab=expression(paste(mu)), ylab="")
+st_sam_post(am2_mu_p)
+hist(am2_mu_p, breaks=50, prob=T, main="",
+     xlab=expression(paste(mu)), ylab="")
+st_sam_post(am3_mu_p)
+hist(am3_mu_p, breaks=50, prob=T, main="",
+     xlab=expression(paste(mu)), ylab="")
 
-st_sam_post(am1_s2_p); hist(am1_s2_p, breaks=50, prob=T)
-st_sam_post(am2_s2_p); hist(am2_s2_p, breaks=50, prob=T)
-st_sam_post(am3_s2_p); hist(am3_s2_p, breaks=50, prob=T)
+st_sam_post(am1_s2_p);
+hist(am1_s2_p, breaks=50, prob=T, main="",
+     xlab=expression(paste(sigma^2)), ylab="")
+st_sam_post(am2_s2_p)
+hist(am2_s2_p, breaks=50, prob=T, main="",
+     xlab=expression(paste(sigma^2)), ylab="")
+st_sam_post(am3_s2_p)
+hist(am3_s2_p, breaks=50, prob=T, main="",
+     xlab=expression(paste(sigma^2)), ylab="")
 
-st_sam_post(am1_nu_p); hist(am1_nu_p, breaks=50, prob=T)
-st_sam_post(am2_nu_p); hist(am2_nu_p, breaks=50, prob=T)
-st_sam_post(am3_nu_p); hist(am3_nu_p, breaks=50, prob=T)
+st_sam_post(am1_nu_p)
+hist(am1_nu_p, breaks=50, prob=T, main="",
+     xlab=expression(paste(nu)), ylab="")
+st_sam_post(am2_nu_p)
+hist(am2_nu_p, breaks=50, prob=T, main="",
+     xlab=expression(paste(nu)), ylab="")
+st_sam_post(am3_nu_p)
+hist(am3_nu_p, breaks=50, prob=T, main="",
+     xlab=expression(paste(nu)), ylab="")

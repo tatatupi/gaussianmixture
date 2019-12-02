@@ -275,9 +275,12 @@ pmq3 = postmu_quarie(
 pmq1; pmq2; pmq3
 hist(pmq1); hist(pmq2); hist(pmq3)
 
-plot(mu_gr1, pmq1, type = "l")
-plot(mu_gr2, pmq2, type = "l")
-plot(mu_gr3, pmq3, type = "l")
+plot(mu_gr1, pmq1, type = "l", main = "",
+     xlab = expression(paste(mu)), ylab = "")
+plot(mu_gr2, pmq2, type = "l", main = "",
+     xlab = expression(paste(mu)), ylab = "")
+plot(mu_gr3, pmq3, type = "l", main = "",
+     xlab = expression(paste(mu)), ylab = "")
 
 posts2_quarie = function(l, X, mgr, s2gr, ngr, prst,
                          m, V, a, d, c) {
@@ -309,9 +312,12 @@ psq3 = posts2_quarie(
 psq1; psq2; psq3
 hist(psq1); hist(psq2); hist(psq3)
 
-plot(s2_gr1, psq1, type = "l")
-plot(s2_gr2, psq2, type = "l")
-plot(s2_gr3, psq3, type = "l")
+plot(s2_gr1, psq1, type = "l", main = "",
+     xlab = expression(paste(sigma^2)), ylab = "")
+plot(s2_gr2, psq2, type = "l", main = "",
+     xlab = expression(paste(sigma^2)), ylab = "")
+plot(s2_gr3, psq3, type = "l", main = "",
+     xlab = expression(paste(sigma^2)), ylab = "")
 
 postnu_quarie = function(l, X, mgr, s2gr, ngr, prst,
                          m, V, a, d, c) {
@@ -343,9 +349,12 @@ pnq3 = postnu_quarie(
 pnq1; pnq2; pnq3
 hist(pnq1); hist(pnq2); hist(pnq3)
 
-plot(nu_gr1, pnq1, type = "l")
-plot(nu_gr2, pnq2, type = "l")
-plot(nu_gr3, pnq3, type = "l")
+plot(nu_gr1, pnq1, type = "l", main = "",
+     xlab = expression(paste(nu)), ylab = "")
+plot(nu_gr2, pnq2, type = "l", main = "",
+     xlab = expression(paste(nu)), ylab = "")
+plot(nu_gr3, pnq3, type = "l", main = "",
+     xlab = expression(paste(nu)), ylab = "")
 
 # Para calcular média, variância, assimetria e curtose de
 # cada parâmetro a posteriori, considere as funções a se-

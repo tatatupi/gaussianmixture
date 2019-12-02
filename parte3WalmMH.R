@@ -238,33 +238,37 @@ hist(am3_p$XparMH_nu, breaks=50, prob=T, main="",
 
 library(coda)
 
-par(mar = c(5,5,3,2))
+par(mar = c(5,5,3,2), mfrow=c(3,1))
+
 traceplot(mcmc(am1_p$XparMH_mu),
           ylab=expression(paste(mu)))
-plot(acf(am1_p$XparMH_mu), main="")
 traceplot(mcmc(am2_p$XparMH_mu),
           ylab=expression(paste(mu)))
-plot(acf(am2_p$XparMH_mu), main="")
 traceplot(mcmc(am3_p$XparMH_mu),
           ylab=expression(paste(mu)))
-plot(acf(am3_p$XparMH_mu), main="")
+
+plot(acf(am1_p$XparMH_mu, plot=F), main="")
+plot(acf(am2_p$XparMH_mu, plot=F), main="")
+plot(acf(am3_p$XparMH_mu, plot=F), main="")
 
 traceplot(mcmc(am1_p$XparMH_s2),
           ylab=expression(paste(sigma^2)))
-plot(acf(am1_p$XparMH_s2), main="")
 traceplot(mcmc(am2_p$XparMH_s2),
           ylab=expression(paste(sigma^2)))
-plot(acf(am2_p$XparMH_s2), main="")
 traceplot(mcmc(am3_p$XparMH_s2),
           ylab=expression(paste(sigma^2)))
-plot(acf(am3_p$XparMH_s2), main="")
+
+plot(acf(am1_p$XparMH_s2, plot=F), main="")
+plot(acf(am2_p$XparMH_s2, plot=F), main="")
+plot(acf(am3_p$XparMH_s2, plot=F), main="")
 
 traceplot(mcmc(am1_p$XparMH_nu),
           ylab=expression(paste(nu)))
-plot(acf(am1_p$XparMH_nu), main="")
 traceplot(mcmc(am2_p$XparMH_nu),
           ylab=expression(paste(nu)))
-plot(acf(am2_p$XparMH_nu), main="")
 traceplot(mcmc(am3_p$XparMH_nu),
           ylab=expression(paste(nu)))
-plot(acf(am3_p$XparMH_nu), main="")
+
+plot(acf(am1_p$XparMH_nu, plot=F), main="")
+plot(acf(am2_p$XparMH_nu, plot=F), main="")
+plot(acf(am3_p$XparMH_nu, plot=F), main="")
