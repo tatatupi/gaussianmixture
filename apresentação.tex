@@ -2,7 +2,7 @@
 \usepackage{natbib}
 \usetheme{CambridgeUS}
 \usepackage{amsfonts, amsmath,
-			amssymb, amsthm}  % Fontes e símbolos matemáticos da AMS.
+	amssymb, amsthm}  % Fontes e símbolos matemáticos da AMS.
 \usepackage{graphicx}         % Importação de gráficos.
 \usepackage{subfig}
 \usepackage[brazil]{babel}    % Idioma português (Brasil) como padrão.
@@ -29,7 +29,7 @@
 \renewcommand\baselinestretch{1.4}  % Distância entre linhas
 
 \setbeamersize{text margin left=8mm,     %Controls left and right margins.
-			   text margin right=8mm}
+	text margin right=8mm}
 \setbeamertemplate{caption}[numbered]    %Numbers figures and table.
 \captionsetup{justification = centering} %Centers the table title.
 
@@ -42,7 +42,7 @@
 % Changing references left symbol for an ordered sequence:
 
 \setbeamertemplate{bibliography item}[text]
-
+\setbeamertemplate{navigation symbols}{}
 % Title page:
 
 \setbeamertemplate{footline}{  %Settings for the footline.
@@ -71,6 +71,12 @@
 
 \date[06/12/2019]{02 de dezembro de 2019}
 
+\AtBeginSection[]
+{
+	\begin{frame}<beamer>{Outline}
+	\tableofcontents[currentsection,currentsubsection]
+\end{frame}
+}
 
 % ======================================================== %
 \begin{document}
@@ -148,31 +154,31 @@ onde
 % ==================================================
 \begin{frame}
 \begin{itemize}
-	\justifying	
-	\item Para o presente trabalho, foram considerados uma amostra de tamanho $n=500$, da mistura finita de normais com variância contaminada parametrizada de tal forma que $\mu = 11$; $\sigma^2 = 0.64$ e $\nu = 0.2$.
-	\item Os valores escolhidos para os hiperparâmetros são $m = 11$; $V = 1$; $a = 7$ e $d = 4$ nas distribuições \textit{a priori}.
-	\item Como não se tem uma expressão fechada para $p(\mu, \sigma^2, \nu | \mathbf{x})$, mas apenas de seu núcleo, para obter as densidades \textit{a posteriori} marginais de $\mu$, $\sigma^2$ e $\nu$ dado $\mathbf{x}$, bem como as estatísticas associadas a cada uma delas, é necessário aproximá-las por algum método numérico.
+\justifying	
+\item Para o presente trabalho, foram considerados uma amostra de tamanho $n=500$, da mistura finita de normais com variância contaminada parametrizada de tal forma que $\mu = 11$; $\sigma^2 = 0.64$ e $\nu = 0.2$.
+\item Os valores escolhidos para os hiperparâmetros são $m = 11$; $V = 1$; $a = 7$ e $d = 4$ nas distribuições \textit{a priori}.
+\item Como não se tem uma expressão fechada para $p(\mu, \sigma^2, \nu | \mathbf{x})$, mas apenas de seu núcleo, para obter as densidades \textit{a posteriori} marginais de $\mu$, $\sigma^2$ e $\nu$ dado $\mathbf{x}$, bem como as estatísticas associadas a cada uma delas, é necessário aproximá-las por algum método numérico.
 \end{itemize}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{figure}[htb]
-	\centering
-	\includegraphics[scale=0.5]{amostra_n.pdf}
-	\caption{Histograma da amostra gerada do modelo}
-	\label{fig:sample_n.pdf}
+\centering
+\includegraphics[scale=0.5]{figuras/amostra_n.pdf}
+\caption{Histograma da amostra gerada do modelo}
+\label{fig:sample_n.pdf}
 \end{figure}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{figure}[htb]\footnotesize
-	\centering
-	\subfloat[$I_{\mu} = (10.85,11.13)$, dados $\sigma^2 = 0.64, \nu = 0.2$]{
-		{
-			\label{fig:maspro_mu}
-			\includegraphics[scale=0.4]{maspro_mu.pdf}}}%
+\centering
+\subfloat[$I_{\mu} = (10.85,11.13)$, dados $\sigma^2 = 0.64, \nu = 0.2$]{
+{
+\label{fig:maspro_mu}
+\includegraphics[scale=0.4]{figuras/maspro_mu.pdf}}}%
 \caption{Intervalos de massa probabilística para cada parâmetro (variável aleatória) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$}%
 \end{figure}
 \end{frame}
@@ -180,14 +186,14 @@ onde
 % ==================================================
 \begin{frame}
 \begin{figure}[htb]\footnotesize
-	\subfloat[$I_{\sigma^2} = (0.48, 0.78)$, dados $\mu = 11, \nu = 0.2$]{
-	{
-	\label{fig:maspro_s2}
-		\includegraphics[scale=0.28]{maspro_s2.pdf}}}%
+\subfloat[$I_{\sigma^2} = (0.48, 0.78)$, dados $\mu = 11, \nu = 0.2$]{
+{
+\label{fig:maspro_s2}
+\includegraphics[scale=0.28]{figuras/maspro_s2.pdf}}}%
 \subfloat[$I_{\nu} = (0.13, 0.26)$ dados $\mu = 11, \sigma^2 = 0.64$]{
-	{
-		\label{fig:maspro_nu}
-		\includegraphics[scale=0.28]{maspro_nu.pdf}}}%
+{
+\label{fig:maspro_nu}
+\includegraphics[scale=0.28]{figuras/maspro_nu.pdf}}}%
 \caption{Intervalos de massa probabilística para cada parâmetro (variável aleatória) do núcleo de $p(\mu, \sigma^2, \nu | \bm{x})$}%
 \end{figure}
 \end{frame}
@@ -221,80 +227,80 @@ p(\alpha_3 | \bm{y})
 % ==================================================
 \begin{frame}
 \begin{figure}[t]%
-	\centering
-	\subfloat[Densidade \textit{a posteriori} de $\mu$]{{
-			\label{fig:dpm_mu_qr_15}
-			\includegraphics[scale=0.2]{dpm_mu_qr_15.pdf}}}%
-	\qquad
-	\subfloat[Densidade \textit{a posteriori} de $\sigma^2$]{{
-			\label{fig:dpm_s2_qr_15}
-			\includegraphics[scale=0.2]{dpm_s2_qr_15.pdf}}}%
-	\subfloat[Densidade \textit{a posteriori} de $\nu$]{{
-			\label{fig:dpm_nu_qr_15}
-			\includegraphics[scale=0.2]{dpm_nu_qr_15.pdf}}}%
-	\caption{Densidades \textit{a posteriori} marginais pela quadratura de Riemann com $L = 15$}%
+\centering
+\subfloat[Densidade \textit{a posteriori} de $\mu$]{{
+\label{fig:dpm_mu_qr_15}
+\includegraphics[scale=0.2]{figuras/dpm_mu_qr_15.pdf}}}%
+\qquad
+\subfloat[Densidade \textit{a posteriori} de $\sigma^2$]{{
+\label{fig:dpm_s2_qr_15}
+\includegraphics[scale=0.2]{figuras/dpm_s2_qr_15.pdf}}}%
+\subfloat[Densidade \textit{a posteriori} de $\nu$]{{
+\label{fig:dpm_nu_qr_15}
+\includegraphics[scale=0.2]{figuras/dpm_nu_qr_15.pdf}}}%
+\caption{Densidades \textit{a posteriori} marginais pela quadratura de Riemann com $L = 15$}%
 \end{figure}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{figure}[t]%
-	\centering
-	\subfloat[Densidade \textit{a posteriori} de $\mu$]{{
-			\label{fig:dpm_mu_qr_50}
-			\includegraphics[scale=0.2]{dpm_mu_qr_50.pdf}}}%
-	\qquad
-	\subfloat[Densidade \textit{a posteriori} de $\sigma^2$]{{
-			\label{fig:dpm_s2_qr_50}
-			\includegraphics[scale=0.2]{dpm_s2_qr_50.pdf}}}%
-	\subfloat[Densidade \textit{a posteriori} de $\nu$]{{
-			\label{fig:dpm_nu_qr_50}
-			\includegraphics[scale=0.2]{dpm_nu_qr_50.pdf}}}%
-	\caption{Densidades \textit{a posteriori} marginais pela quadratura de Riemann com $L = 50$}%
+\centering
+\subfloat[Densidade \textit{a posteriori} de $\mu$]{{
+\label{fig:dpm_mu_qr_50}
+\includegraphics[scale=0.2]{figuras/dpm_mu_qr_50.pdf}}}%
+\qquad
+\subfloat[Densidade \textit{a posteriori} de $\sigma^2$]{{
+\label{fig:dpm_s2_qr_50}
+\includegraphics[scale=0.2]{figuras/dpm_s2_qr_50.pdf}}}%
+\subfloat[Densidade \textit{a posteriori} de $\nu$]{{
+\label{fig:dpm_nu_qr_50}
+\includegraphics[scale=0.2]{figuras/dpm_nu_qr_50.pdf}}}%
+\caption{Densidades \textit{a posteriori} marginais pela quadratura de Riemann com $L = 50$}%
 \end{figure}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{figure}[t]%
-	\centering
-	\subfloat[Densidade \textit{a posteriori} de $\mu$]{{
-			\label{fig:dpm_mu_qr_100}
-			\includegraphics[scale=0.2]{dpm_mu_qr_100.pdf}}}%
-	\qquad
-	\subfloat[Densidade \textit{a posteriori} de $\sigma^2$]{{
-			\label{fig:dpm_s2_qr_100}
-			\includegraphics[scale=0.2]{dpm_s2_qr_100.pdf}}}%
-	\subfloat[Densidade \textit{a posteriori} de $\nu$]{{
-			\label{fig:dpm_nu_qr_100}
-			\includegraphics[scale=0.2]{dpm_nu_qr_100.pdf}}}%
-	\caption{Densidades \textit{a posteriori} marginais pela quadratura de Riemann com $L = 100$}%
+\centering
+\subfloat[Densidade \textit{a posteriori} de $\mu$]{{
+\label{fig:dpm_mu_qr_100}
+\includegraphics[scale=0.2]{figuras/dpm_mu_qr_100.pdf}}}%
+\qquad
+\subfloat[Densidade \textit{a posteriori} de $\sigma^2$]{{
+\label{fig:dpm_s2_qr_100}
+\includegraphics[scale=0.2]{figuras/dpm_s2_qr_100.pdf}}}%
+\subfloat[Densidade \textit{a posteriori} de $\nu$]{{
+\label{fig:dpm_nu_qr_100}
+\includegraphics[scale=0.2]{figuras/dpm_nu_qr_100.pdf}}}%
+\caption{Densidades \textit{a posteriori} marginais pela quadratura de Riemann com $L = 100$}%
 \end{figure}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{table}[htb]
-	\caption{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pela quadratura de Riemann}
-	\label{tab1}
-	\centering
-	\begin{tabular}{cccccc}
-		\toprule
-		Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
-		\midrule
-		$L = 15$ & $\mu$      & 10.9847 & 0.0017 & 0.0022 & 2.9603 \\
-		& $\sigma^2$ &  0.6222 & 0.0022 & 0.2230 & 2.9984 \\
-		& $\nu$      &  0.1918 & 0.0004 & 0.1572 & 2.9348 \\
-		\midrule
-		$L = 50$ & $\mu$      & 10.9848 & 0.0017 & 0.0056 & 2.9346 \\
-		& $\sigma^2$ &  0.6222 & 0.0021 & 0.2149 & 2.9625 \\
-		& $\nu$      &  0.1918 & 0.0004 & 0.1523 & 2.8995 \\
-		\midrule
-		$L = 100$ & $\mu$      & 10.9848 & 0.0017 & 0.0064 & 2.9284 \\
-		& $\sigma^2$ &  0.6222 & 0.0021 & 0.2131 & 2.9542 \\
-		& $\nu$      &  0.1918 & 0.0004 & 0.1512 & 2.8913 \\
-		\bottomrule
-	\end{tabular}
+\caption{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pela quadratura de Riemann}
+\label{tab1}
+\centering
+\begin{tabular}{cccccc}
+\toprule
+Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
+\midrule
+$L = 15$ & $\mu$      & 10.9847 & 0.0017 & 0.0022 & 2.9603 \\
+& $\sigma^2$ &  0.6222 & 0.0022 & 0.2230 & 2.9984 \\
+& $\nu$      &  0.1918 & 0.0004 & 0.1572 & 2.9348 \\
+\midrule
+$L = 50$ & $\mu$      & 10.9848 & 0.0017 & 0.0056 & 2.9346 \\
+& $\sigma^2$ &  0.6222 & 0.0021 & 0.2149 & 2.9625 \\
+& $\nu$      &  0.1918 & 0.0004 & 0.1523 & 2.8995 \\
+\midrule
+$L = 100$ & $\mu$      & 10.9848 & 0.0017 & 0.0064 & 2.9284 \\
+& $\sigma^2$ &  0.6222 & 0.0021 & 0.2131 & 2.9542 \\
+& $\nu$      &  0.1918 & 0.0004 & 0.1512 & 2.8913 \\
+\bottomrule
+\end{tabular}
 \end{table}
 \end{frame}
 % ==================================================
@@ -336,92 +342,95 @@ p(\theta_1, \theta_2, \theta_3 | \bm{x})
 \begin{itemize}
 \justifying	
 \item em que $|J(\theta_1, \theta_2, \theta_3)|$ é o determinante da matriz jacobiana das derivadas parciais de $(\mu, \sigma^2, \nu)$ com respeito a $(\theta_1, \theta_2, \theta_3)$.
-\item Para a amostra de tamanho $n=500$ da mistura finita de normais com variância contaminada tal que $\mu = 11$; $\sigma^2 = 0.64$; $\nu = 0.2$; $m = 11$; $V = 1$; $a = 7$ e $d = 4$ (Figura \ref{fig:sample_n.pdf}).
 
 \item Para as médias das componentes desta distribuição, será fixado $\bm{\mu} = (\theta_1, \theta_2, \theta_3) = (\mu, \log(\sigma^2), \log[\nu/(1-\nu)]) = (11, \log(0.64), \log[0.2/0.8])$.
+
 \item Para a matriz de covariância $\bm{\Sigma}$, cada elemento da diagonal principal será dado pelo quadrado de $1/6$ do intervalo de massa probabilística do parâmetro correspondente.
 
 \item Esta escolha se justifica pelo fato de que as distribuições mostradas de \ref{fig:maspro_mu} a \ref{fig:maspro_nu} têm comportamento próximo à normalidade.
+
+
+\item Foram escolhidos três valores para $k = (500, 5000, 50000)$ e uma razão constante $\frac{k}{t} = \frac{1}{10}$
 \end{itemize}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{figure}[t]%
-	\centering
-	\subfloat[Histograma de $\mu$]{{
-			\label{fig:mu_sir_500}
-			\includegraphics[scale=0.2]{mu_sir_500.pdf}}}%
-	\qquad
-	\subfloat[Histograma de $\sigma^2$]{{
-			\label{fig:s2_sir_500}
-			\includegraphics[scale=0.2]{s2_sir_500.pdf}}}%
-	\subfloat[Histograma de $\nu$]{{
-			\label{fig:nu_sir_500}
-			\includegraphics[scale=0.2]{nu_sir_500.pdf}}}%
-	\caption{Histograma das densidades \textit{a posteriori} marginais pela método SIR com $k = 500$}%
+\centering
+\subfloat[Histograma de $\mu$]{{
+\label{fig:mu_sir_500}
+\includegraphics[scale=0.2]{figuras/mu_sir_500.pdf}}}%
+\qquad
+\subfloat[Histograma de $\sigma^2$]{{
+\label{fig:s2_sir_500}
+\includegraphics[scale=0.2]{figuras/s2_sir_500.pdf}}}%
+\subfloat[Histograma de $\nu$]{{
+\label{fig:nu_sir_500}
+\includegraphics[scale=0.2]{figuras/nu_sir_500.pdf}}}%
+\caption{Histograma das densidades \textit{a posteriori} marginais pela método SIR com $k = 500$}%
 \end{figure}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{figure}[t]%
-	\centering
-	\subfloat[Histograma de $\mu$]{{
-			\label{fig:mu_sir_5000}
-			\includegraphics[scale=0.2]{mu_sir_5000.pdf}}}%
-	\qquad
-	\subfloat[Histograma de $\sigma^2$]{{
-			\label{fig:s2_sir_5000}
-			\includegraphics[scale=0.2]{s2_sir_5000.pdf}}}%
-	\subfloat[Histograma de $\nu$]{{
-			\label{fig:nu_sir_5000}
-			\includegraphics[scale=0.2]{nu_sir_5000.pdf}}}%
-	\caption{Histograma das densidades \textit{a posteriori} marginais pela método SIR com $k = 5000$}%
+\centering
+\subfloat[Histograma de $\mu$]{{
+\label{fig:mu_sir_5000}
+\includegraphics[scale=0.2]{figuras/mu_sir_5000.pdf}}}%
+\qquad
+\subfloat[Histograma de $\sigma^2$]{{
+\label{fig:s2_sir_5000}
+\includegraphics[scale=0.2]{figuras/s2_sir_5000.pdf}}}%
+\subfloat[Histograma de $\nu$]{{
+\label{fig:nu_sir_5000}
+\includegraphics[scale=0.2]{figuras/nu_sir_5000.pdf}}}%
+\caption{Histograma das densidades \textit{a posteriori} marginais pela método SIR com $k = 5000$}%
 \end{figure}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{figure}[t]%
-	\centering
-	\subfloat[Histograma de $\mu$]{{
-			\label{fig:mu_sir_50000}
-			\includegraphics[scale=0.2]{mu_sir_50000.pdf}}}%
-	\qquad
-	\subfloat[Histograma de $\sigma^2$]{{
-			\label{fig:s2_sir_50000}
-			\includegraphics[scale=0.2]{s2_sir_50000.pdf}}}%
-	\subfloat[Histograma de $\nu$]{{
-			\label{fig:nu_sir_50000}
-			\includegraphics[scale=0.2]{nu_sir_50000.pdf}}}%
-	\caption{Histograma das densidades \textit{a posteriori} marginais pela método SIR com $k = 50000$}%
+\centering
+\subfloat[Histograma de $\mu$]{{
+\label{fig:mu_sir_50000}
+\includegraphics[scale=0.2]{figuras/mu_sir_50000.pdf}}}%
+\qquad
+\subfloat[Histograma de $\sigma^2$]{{
+\label{fig:s2_sir_50000}
+\includegraphics[scale=0.2]{figuras/s2_sir_50000.pdf}}}%
+\subfloat[Histograma de $\nu$]{{
+\label{fig:nu_sir_50000}
+\includegraphics[scale=0.2]{figuras/nu_sir_50000.pdf}}}%
+\caption{Histograma das densidades \textit{a posteriori} marginais pela método SIR com $k = 50000$}%
 \end{figure}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{table}[htb]
-	\caption{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pelo método SIR}
-	\label{tab2}
-	\centering
-	\begin{tabular}{cccccc}
-		\toprule
-		Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
-		\midrule
-		$k = 500$ & $\mu$      & 11.0003 & 0.0023 & -0.0610 & 3.0351 \\
-		& $\sigma^2$ &  0.6422 & 0.0026 &  0.1261 & 3.1453 \\
-		& $\nu$      &  0.2028 & 0.0006 &  0.3510 & 3.5475 \\
-		\midrule
-		$k = 5000$ & $\mu$      & 11.0006 & 0.0022 &  0.0216 & 3.0234 \\
-		& $\sigma^2$ &  0.6418 & 0.0027 &  0.2349 & 3.0118 \\
-		& $\nu$      &  0.2013 & 0.0005 &  0.2485 & 3.1646 \\
-		\midrule
-		$k = 50000$ & $\mu$      & 11.0002 & 0.0022 & -0.0081 & 3.0451 \\
-		& $\sigma^2$ &  0.6420 & 0.0027 &  0.2353 & 3.1153 \\
-		& $\nu$      &  0.2009 & 0.0005 &  0.2608 & 3.0849 \\
-		\bottomrule
-	\end{tabular}
+\caption{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pelo método SIR}
+\label{tab2}
+\centering
+\begin{tabular}{cccccc}
+\toprule
+Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
+\midrule
+$k = 500$ & $\mu$      & 11.0003 & 0.0023 & -0.0610 & 3.0351 \\
+& $\sigma^2$ &  0.6422 & 0.0026 &  0.1261 & 3.1453 \\
+& $\nu$      &  0.2028 & 0.0006 &  0.3510 & 3.5475 \\
+\midrule
+$k = 5000$ & $\mu$      & 11.0006 & 0.0022 &  0.0216 & 3.0234 \\
+& $\sigma^2$ &  0.6418 & 0.0027 &  0.2349 & 3.0118 \\
+& $\nu$      &  0.2013 & 0.0005 &  0.2485 & 3.1646 \\
+\midrule
+$k = 50000$ & $\mu$      & 11.0002 & 0.0022 & -0.0081 & 3.0451 \\
+& $\sigma^2$ &  0.6420 & 0.0027 &  0.2353 & 3.1153 \\
+& $\nu$      &  0.2009 & 0.0005 &  0.2608 & 3.0849 \\
+\bottomrule
+\end{tabular}
 \end{table}
 \end{frame}
 % ==================================================
@@ -457,125 +466,125 @@ e neste caso atribuir $\bm{y}^{(j + 1)} = \bm{y}^*$ ou rejeitar a transição pr
 % ==================================================
 \begin{frame}
 \begin{figure}[t]%
-	\centering
-	\subfloat[Histograma de $\mu$]{{
-			\label{fig:mu_mh_500}
-			\includegraphics[scale=0.2]{mu_mh_500.pdf}}}%
-	\qquad
-	\subfloat[Histograma de $\sigma^2$]{{
-			\label{fig:s2_mh_500}
-			\includegraphics[scale=0.2]{s2_mh_500.pdf}}}%
-	\subfloat[Histograma de $\nu$]{{
-			\label{fig:nu_mh_500}
-			\includegraphics[scale=0.2]{nu_mh_500.pdf}}}%
-	\caption{Histograma das densidades \textit{a posteriori} marginais pelo método MCMC--MH, $k = 500$}%
+\centering
+\subfloat[Histograma de $\mu$]{{
+\label{fig:mu_mh_500}
+\includegraphics[scale=0.2]{figuras/mu_mh_500.pdf}}}%
+\qquad
+\subfloat[Histograma de $\sigma^2$]{{
+\label{fig:s2_mh_500}
+\includegraphics[scale=0.2]{figuras/s2_mh_500.pdf}}}%
+\subfloat[Histograma de $\nu$]{{
+\label{fig:nu_mh_500}
+\includegraphics[scale=0.2]{figuras/nu_mh_500.pdf}}}%
+\caption{Histograma das densidades \textit{a posteriori} marginais pelo método MCMC--MH, $k = 500$}%
 \end{figure}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{figure}[t]%
-	\centering
-	\subfloat[Histograma de $\mu$]{{
-			\label{fig:mu_mh_5000}
-			\includegraphics[scale=0.2]{mu_mh_5000.pdf}}}%
-	\qquad
-	\subfloat[Histograma de $\sigma^2$]{{
-			\label{fig:s2_mh_5000}
-			\includegraphics[scale=0.2]{s2_mh_5000.pdf}}}%
-	\subfloat[Histograma de $\nu$]{{
-			\label{fig:nu_mh_5000}
-			\includegraphics[scale=0.2]{nu_mh_5000.pdf}}}%
-	\caption{Histograma das densidades \textit{a posteriori} marginais pela método MCMC--MH, $k = 5000$}%
+\centering
+\subfloat[Histograma de $\mu$]{{
+\label{fig:mu_mh_5000}
+\includegraphics[scale=0.2]{figuras/mu_mh_5000.pdf}}}%
+\qquad
+\subfloat[Histograma de $\sigma^2$]{{
+\label{fig:s2_mh_5000}
+\includegraphics[scale=0.2]{figuras/s2_mh_5000.pdf}}}%
+\subfloat[Histograma de $\nu$]{{
+\label{fig:nu_mh_5000}
+\includegraphics[scale=0.2]{figuras/nu_mh_5000.pdf}}}%
+\caption{Histograma das densidades \textit{a posteriori} marginais pela método MCMC--MH, $k = 5000$}%
 \end{figure}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{figure}[t]%
-	\centering
-	\subfloat[Histograma de $\mu$]{{
-			\label{fig:mu_mh_50000}
-			\includegraphics[scale=0.2]{mu_mh_50000.pdf}}}%
-	\qquad
-	\subfloat[Histograma de $\sigma^2$]{{
-			\label{fig:s2_mh_50000}
-			\includegraphics[scale=0.2]{s2_mh_50000.pdf}}}%
-	\subfloat[Histograma de $\nu$]{{
-			\label{fig:nu_mh_50000}
-			\includegraphics[scale=0.2]{nu_mh_50000.pdf}}}%
-	\caption{Histograma das densidades \textit{a posteriori} marginais pela método MCMC--MH, $k = 50000$}%
+\centering
+\subfloat[Histograma de $\mu$]{{
+\label{fig:mu_mh_50000}
+\includegraphics[scale=0.2]{figuras/mu_mh_50000.pdf}}}%
+\qquad
+\subfloat[Histograma de $\sigma^2$]{{
+\label{fig:s2_mh_50000}
+\includegraphics[scale=0.2]{figuras/s2_mh_50000.pdf}}}%
+\subfloat[Histograma de $\nu$]{{
+\label{fig:nu_mh_50000}
+\includegraphics[scale=0.2]{figuras/nu_mh_50000.pdf}}}%
+\caption{Histograma das densidades \textit{a posteriori} marginais pela método MCMC--MH, $k = 50000$}%
 \end{figure}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{table}[htb]
-	\caption{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pelo método MCMC--MH}
-	\label{tab3}
-	\centering
-	\begin{tabular}{cccccc}
-		\toprule
-		Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
-		\midrule
-		$k = 500$ & $\mu$ & 10.9672 & 0.0018 & -0.3768 & 3.2193 \\
-		& $\sigma^2$ & 0.6226 & 0.0020 & -0.0684 & 2.6117 \\
-		& $\nu$      & 0.1957 & 0.0006 & -0.3313 & 3.2991 \\
-		\midrule
-		$k = 5000$ & $\mu$ & 10.9818 & 0.0019 & -0.2466 & 2.9894 \\
-		& $\sigma^2$ & 0.6197 & 0.0023 & 0.2372 & 3.0057 \\
-		& $\nu$      & 0.1977 & 0.0005 & 0.3878 & 3.2038 \\
-		\midrule
-		$k = 50000$ & $\mu$ & 10.9852 & 0.0017 & -0.0272 & 2.9451 \\
-		& $\sigma^2$ & 0.6188 & 0.0021 & 0.2472 & 3.1088 \\
-		& $\nu$      & 0.1978 & 0.0005 & 0.1331 & 2.8971 \\
-		\bottomrule
-	\end{tabular}
+\caption{Estatísticas \textit{a posteriori} para $(\mu, \sigma^2, \nu)$ pelo método MCMC--MH}
+\label{tab3}
+\centering
+\begin{tabular}{cccccc}
+\toprule
+Cenário & Parâmetro & Média & Variância & Assimetria & Curtose \\
+\midrule
+$k = 500$ & $\mu$ & 10.9672 & 0.0018 & -0.3768 & 3.2193 \\
+& $\sigma^2$ & 0.6226 & 0.0020 & -0.0684 & 2.6117 \\
+& $\nu$      & 0.1957 & 0.0006 & -0.3313 & 3.2991 \\
+\midrule
+$k = 5000$ & $\mu$ & 10.9818 & 0.0019 & -0.2466 & 2.9894 \\
+& $\sigma^2$ & 0.6197 & 0.0023 & 0.2372 & 3.0057 \\
+& $\nu$      & 0.1977 & 0.0005 & 0.3878 & 3.2038 \\
+\midrule
+$k = 50000$ & $\mu$ & 10.9852 & 0.0017 & -0.0272 & 2.9451 \\
+& $\sigma^2$ & 0.6188 & 0.0021 & 0.2472 & 3.1088 \\
+& $\nu$      & 0.1978 & 0.0005 & 0.1331 & 2.8971 \\
+\bottomrule
+\end{tabular}
 \end{table}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{figure}[htb]
-	\centering
-	\subfloat[Traço de $\mu$]{{
-			\label{fig:trace_mu_mh}
-			\includegraphics[scale=0.32]{trace_mu_mh.pdf}}}%
-	\qquad
-	\subfloat[Autocorrelação de $\mu$]{{
-			\label{fig:acf_mu_mh}
-			\includegraphics[scale=0.32]{acf_mu_mh.pdf}}}%
-	\caption{Traço e autocorrelação da cadeia de $\mu$, $k = \{500, 5000, 50000\}$, respectivamente}%
+\centering
+\subfloat[Traço de $\mu$]{{
+\label{fig:trace_mu_mh}
+\includegraphics[scale=0.32]{figuras/trace_mu_mh.pdf}}}%
+\qquad
+\subfloat[Autocorrelação de $\mu$]{{
+\label{fig:acf_mu_mh}
+\includegraphics[scale=0.32]{figuras/acf_mu_mh.pdf}}}%
+\caption{Traço e autocorrelação da cadeia de $\mu$, $k = \{500, 5000, 50000\}$, respectivamente}%
 \end{figure}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{figure}[htb]
-	\centering
-	\subfloat[Traço de $\sigma^2$]{{
-			\label{fig:trace_s2_mh}
-			\includegraphics[scale=0.32]{trace_s2_mh.pdf}}}%
-	\qquad
-	\subfloat[Autocorrelação de $\sigma^2$]{{
-			\label{fig:acf_s2_mh}
-			\includegraphics[scale=0.32]{acf_s2_mh.pdf}}}%
-	\caption{Traço e autocorrelação da cadeia de $\sigma^2$, $k = \{500, 5000, 50000\}$, respectivamente}%
+\centering
+\subfloat[Traço de $\sigma^2$]{{
+\label{fig:trace_s2_mh}
+\includegraphics[scale=0.32]{figuras/trace_s2_mh.pdf}}}%
+\qquad
+\subfloat[Autocorrelação de $\sigma^2$]{{
+\label{fig:acf_s2_mh}
+\includegraphics[scale=0.32]{figuras/acf_s2_mh.pdf}}}%
+\caption{Traço e autocorrelação da cadeia de $\sigma^2$, $k = \{500, 5000, 50000\}$, respectivamente}%
 \end{figure}
 \end{frame}
 % ==================================================
 % ==================================================
 \begin{frame}
 \begin{figure}[htb]
-	\centering
-	\subfloat[Traço de $\nu$]{{
-			\label{fig:trace_nu_mh}
-			\includegraphics[scale=0.32]{trace_nu_mh.pdf}}}%
-	\qquad
-	\subfloat[Autocorrelação de $\nu^2$]{{
-			\label{fig:acf_nu_mh}
-			\includegraphics[scale=0.32]{acf_nu_mh.pdf}}}%
-	\caption{Traço e autocorrelação da cadeia de $\nu^2$, $k = \{500, 5000, 50000\}$, respectivamente}%
+\centering
+\subfloat[Traço de $\nu$]{{
+\label{fig:trace_nu_mh}
+\includegraphics[scale=0.32]{figuras/trace_nu_mh.pdf}}}%
+\qquad
+\subfloat[Autocorrelação de $\nu^2$]{{
+\label{fig:acf_nu_mh}
+\includegraphics[scale=0.32]{figuras/acf_nu_mh.pdf}}}%
+\caption{Traço e autocorrelação da cadeia de $\nu^2$, $k = \{500, 5000, 50000\}$, respectivamente}%
 \end{figure}
 \end{frame}
 % ==================================================
